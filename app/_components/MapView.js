@@ -209,7 +209,7 @@ export function MapView({
 
     const { kakao } = window;
     const centerPosition = new kakao.maps.LatLng(center.lat, center.lng);
-    const centerKey = `${center.lat},${center.lng}`;
+    const centerKey = `${center.lat},${center.lng},${center.level || ""}`;
 
     if (!mapRef.current) {
       mapRef.current = new kakao.maps.Map(containerRef.current, {
@@ -257,18 +257,14 @@ export function MapView({
     } else if (lastCenterKeyRef.current !== centerKey) {
       isApplyingSavedViewRef.current = true;
       mapRef.current.setCenter(centerPosition);
+      if (center.level && mapRef.current.getLevel() !== center.level) {
+        mapRef.current.setLevel(center.level);
+      }
       window.setTimeout(() => {
         isApplyingSavedViewRef.current = false;
       }, 0);
     }
     lastCenterKeyRef.current = centerKey;
-    if (center.level && mapRef.current.getLevel() !== center.level) {
-      isApplyingSavedViewRef.current = true;
-      mapRef.current.setLevel(center.level);
-      window.setTimeout(() => {
-        isApplyingSavedViewRef.current = false;
-      }, 0);
-    }
 
     overlaysRef.current.forEach((overlay) => overlay.setMap(null));
     overlaysRef.current = [];

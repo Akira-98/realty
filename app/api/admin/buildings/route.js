@@ -14,6 +14,7 @@ const ADMIN_LIST_SELECT = [
   "id",
   "building_name",
   "address",
+  "rental_area_pyeong",
   "deposit",
   "deposit_total",
   "rent",
@@ -71,6 +72,80 @@ function numberParam(searchParams, name, fallback) {
   return Number.isFinite(value) ? value : fallback;
 }
 
+function filterParam(searchParams, name) {
+  const rawValue = searchParams.get(name);
+  if (rawValue === null || rawValue === "") {
+    return null;
+  }
+
+  const value = Number(rawValue);
+  return Number.isFinite(value) ? value : null;
+}
+
+function numberFromListingValue(value) {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
+  }
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const text = String(value).replaceAll(",", "").trim();
+  if (!text) {
+    return null;
+  }
+
+  const eokMatch = text.match(/([\d.]+)\s*억/);
+  const manMatch = text.match(/([\d.]+)\s*만/);
+  if (eokMatch || manMatch) {
+    const eok = eokMatch ? Number(eokMatch[1]) * 10000 : 0;
+    const man = manMatch ? Number(manMatch[1]) : 0;
+    const total = eok + man;
+    return Number.isFinite(total) ? total : null;
+  }
+
+  const numericText = text.replace(/[^\d.-]/g, "");
+  if (!numericText) {
+    return null;
+  }
+  const number = Number(numericText);
+  return Number.isFinite(number) ? number : null;
+}
+
+function isWithinRange(value, min, max) {
+  if (min === null && max === null) {
+    return true;
+  }
+
+  const number = numberFromListingValue(value);
+  if (number === null) {
+    return false;
+  }
+
+  return (min === null || number >= min) && (max === null || number <= max);
+}
+
+function filterBuildings(buildings, filters) {
+  return buildings.filter(
+    (building) =>
+      isWithinRange(
+        building.rental_area_pyeong,
+        filters.areaMin,
+        filters.areaMax,
+      ) &&
+      isWithinRange(
+        building.deposit_total,
+        filters.depositTotalMin,
+        filters.depositTotalMax,
+      ) &&
+      isWithinRange(
+        building.rent_total,
+        filters.rentTotalMin,
+        filters.rentTotalMax,
+      ),
+  );
+}
+
 export async function GET(request) {
   const admin = await requireAdmin(request);
   if (admin.error) {
@@ -91,12 +166,23 @@ export async function GET(request) {
   const visibility = searchParams.get("visibility")?.trim();
   const limit = Math.min(Math.max(numberParam(searchParams, "limit", 50), 1), 200);
   const offset = Math.max(numberParam(searchParams, "offset", 0), 0);
+  const filters = {
+    areaMin: filterParam(searchParams, "areaMin"),
+    areaMax: filterParam(searchParams, "areaMax"),
+    depositTotalMin: filterParam(searchParams, "depositTotalMin"),
+    depositTotalMax: filterParam(searchParams, "depositTotalMax"),
+    rentTotalMin: filterParam(searchParams, "rentTotalMin"),
+    rentTotalMax: filterParam(searchParams, "rentTotalMax"),
+  };
+  const hasRangeFilters = Object.values(filters).some((value) => value !== null);
 
   const params = new URLSearchParams();
   params.set("select", ADMIN_LIST_SELECT);
   params.set("order", "updated_at.desc.nullslast,building_name.asc");
-  params.set("limit", String(Math.round(limit)));
-  params.set("offset", String(Math.round(offset)));
+  params.set("limit", hasRangeFilters ? "10000" : String(Math.round(limit)));
+  if (!hasRangeFilters) {
+    params.set("offset", String(Math.round(offset)));
+  }
 
   if (query) {
     const escapedQuery = escapeLike(query);
@@ -126,14 +212,25 @@ export async function GET(request) {
     });
   }
 
-  const buildings = await response.json();
+  const fetchedBuildings = await response.json();
+  const filteredBuildings = hasRangeFilters
+    ? filterBuildings(fetchedBuildings, filters)
+    : fetchedBuildings;
+  const buildings = hasRangeFilters
+    ? filteredBuildings.slice(offset, offset + limit)
+    : filteredBuildings;
   const contentRange = response.headers.get("content-range") || "";
   const total = Number(contentRange.split("/")[1]);
   const result = NextResponse.json({
     count: buildings.length,
-    total: Number.isFinite(total) ? total : null,
+    total: hasRangeFilters
+      ? filteredBuildings.length
+      : Number.isFinite(total)
+        ? total
+        : null,
     limit,
     offset,
+    filters,
     buildings,
   });
   return setAdminSessionCookies(result, admin.session);

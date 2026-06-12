@@ -8,6 +8,11 @@ import { AdminToolbar } from "./_components/AdminToolbar";
 import { BuildingEditor } from "./_components/BuildingEditor";
 import { BuildingList } from "./_components/BuildingList";
 import {
+  EMPTY_FILTERS,
+  appendFilters,
+  normalizeFilters,
+} from "../_lib/search-filters";
+import {
   PAGE_SIZE,
   emptyDraft,
   isUnauthorized,
@@ -17,15 +22,31 @@ import {
 function AdminPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const searchParamsKey = searchParams.toString();
   const urlQuery = searchParams.get("q") ?? "";
   const urlVisibility = ["public", "private"].includes(searchParams.get("visibility"))
     ? searchParams.get("visibility")
     : "all";
+  const urlFilters = useMemo(
+    () => {
+      const params = new URLSearchParams(searchParamsKey);
+      return normalizeFilters(
+        Object.fromEntries(
+          Object.keys(EMPTY_FILTERS).map((key) => [
+            key,
+            params.get(key) ?? "",
+          ]),
+        ),
+      );
+    },
+    [searchParamsKey],
+  );
   const urlPage = Math.max(1, Number(searchParams.get("page")) || 1);
   const urlOffset = (urlPage - 1) * PAGE_SIZE;
   const [sessionLoading, setSessionLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [query, setQuery] = useState(urlQuery);
+  const [filters, setFilters] = useState(urlFilters);
   const [buildings, setBuildings] = useState([]);
   const [total, setTotal] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -50,7 +71,12 @@ function AdminPageContent() {
   }, [router]);
 
   const updateAdminUrl = useCallback(
-    ({ nextQuery = query, nextVisibility = urlVisibility, nextPage = 1 } = {}) => {
+    ({
+      nextQuery = query,
+      nextVisibility = urlVisibility,
+      nextFilters = filters,
+      nextPage = 1,
+    } = {}) => {
       const params = new URLSearchParams();
       const trimmedQuery = nextQuery.trim();
       if (trimmedQuery) {
@@ -59,13 +85,14 @@ function AdminPageContent() {
       if (nextVisibility !== "all") {
         params.set("visibility", nextVisibility);
       }
+      appendFilters(params, normalizeFilters(nextFilters));
       if (nextPage > 1) {
         params.set("page", String(nextPage));
       }
       const nextUrl = params.toString() ? `/admin?${params}` : "/admin";
       router.push(nextUrl);
     },
-    [query, router, urlVisibility],
+    [filters, query, router, urlVisibility],
   );
 
   const fetchBuildings = useCallback(
@@ -84,6 +111,7 @@ function AdminPageContent() {
         if (urlVisibility !== "all") {
           params.set("visibility", urlVisibility);
         }
+        appendFilters(params, urlFilters);
 
         const response = await fetch(`/api/admin/buildings?${params}`);
         const payload = await response.json();
@@ -108,7 +136,7 @@ function AdminPageContent() {
         setLoading(false);
       }
     },
-    [redirectToLogin, urlOffset, urlQuery, urlVisibility],
+    [redirectToLogin, urlFilters, urlOffset, urlQuery, urlVisibility],
   );
 
   useEffect(() => {
@@ -140,6 +168,10 @@ function AdminPageContent() {
   useEffect(() => {
     setQuery(urlQuery);
   }, [urlQuery]);
+
+  useEffect(() => {
+    setFilters(urlFilters);
+  }, [urlFilters]);
 
   function startEdit(building) {
     setEditingId(building.id);
@@ -213,10 +245,16 @@ function AdminPageContent() {
         error={error}
         loading={loading}
         query={query}
+        filters={filters}
         setQuery={setQuery}
+        setFilters={setFilters}
         visibility={urlVisibility}
         setVisibility={(value) => updateAdminUrl({ nextVisibility: value })}
         onSearch={() => updateAdminUrl({ nextPage: 1 })}
+        onResetFilters={() => {
+          setFilters(EMPTY_FILTERS);
+          updateAdminUrl({ nextFilters: EMPTY_FILTERS, nextPage: 1 });
+        }}
       />
 
       <section className="adminWorkspace">
