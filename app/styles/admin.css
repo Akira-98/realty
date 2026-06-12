@@ -1,0 +1,513 @@
+.adminLoginPage,
+.adminPage {
+  min-height: 100vh;
+  background: #eef2f4;
+}
+
+.adminLoginPage {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.adminLoginPanel {
+  width: min(420px, 100%);
+  padding: 32px;
+  border: 1px solid #dce4e8;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgba(20, 34, 43, 0.12);
+}
+
+.adminEyebrow {
+  display: block;
+  color: #5b6b75;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.adminLoginPanel h1,
+.adminHeader h1,
+.adminTitleButton {
+  margin: 8px 0 0;
+  color: #12212b;
+  letter-spacing: 0;
+}
+
+.adminTitleButton {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.adminNav {
+  display: flex;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.adminNav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #52636d;
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.adminNavBadge {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  padding: 0 6px;
+  background: #d92929;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.adminLoginForm {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.adminLoginForm label,
+.adminEditGrid label {
+  display: grid;
+  gap: 7px;
+  color: #53636d;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.adminLoginForm input,
+.adminSearch input,
+.adminSearch select,
+.adminEditGrid input {
+  min-width: 0;
+  height: 44px;
+  border: 1px solid #cfd9de;
+  border-radius: 6px;
+  padding: 0 12px;
+  background: #fff;
+  color: #14232c;
+  outline: none;
+}
+
+.adminLoginForm input:focus,
+.adminSearch input:focus,
+.adminSearch select:focus,
+.adminEditGrid input:focus {
+  border-color: #1c6f8f;
+  box-shadow: 0 0 0 3px rgba(28, 111, 143, 0.14);
+}
+
+.adminLoginForm button,
+.adminSearch button,
+.adminUser button,
+.adminBuildingActions button,
+.adminEditorActions button {
+  height: 42px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 16px;
+  background: #102332;
+  color: #fff;
+  font-weight: 800;
+}
+
+.adminLoginForm button:disabled,
+.adminSearch button:disabled,
+.adminBuildingActions button:disabled,
+.adminEditorActions button:disabled {
+  opacity: 0.58;
+}
+
+.adminError {
+  margin: 0;
+  color: #c32323;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.adminPage {
+  padding: 24px;
+}
+
+.adminHeader,
+.adminToolbar,
+.adminWorkspace {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+}
+
+.adminHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0 22px;
+}
+
+.adminUser {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #596972;
+  font-size: 14px;
+}
+
+.adminToolbar {
+  padding: 16px;
+  border: 1px solid #dce4e8;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.adminSearch {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 130px 96px;
+  gap: 10px;
+}
+
+.inquirySearch {
+  grid-template-columns: 160px 110px;
+  justify-content: start;
+}
+
+.adminToolbar .adminError {
+  margin-top: 12px;
+}
+
+.adminWorkspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.adminList,
+.adminEditor {
+  min-height: 560px;
+  border: 1px solid #dce4e8;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.adminList {
+  overflow: hidden;
+}
+
+.adminListMeta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 52px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #dce4e8;
+  background: #f8fafb;
+  color: #5a6a74;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.adminPagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 0 18px;
+  border-top: 1px solid #e7edf0;
+}
+
+.adminPagination button {
+  min-width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 4px;
+  padding: 0 8px;
+  background: transparent;
+  color: #1e303b;
+  font-weight: 900;
+}
+
+.adminPagination button.active {
+  background: #102332;
+  color: #fff;
+}
+
+.adminPagination button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.adminPagination button.active:disabled {
+  opacity: 1;
+}
+
+.adminPagination span {
+  color: #7b8990;
+  font-weight: 900;
+}
+
+.adminBuilding {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e7edf0;
+}
+
+.adminBuilding.active {
+  background: #edf7fa;
+}
+
+.adminBuilding > button {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.adminBuilding strong,
+.adminBuilding span,
+.adminBuilding em {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminBuilding strong {
+  color: #12212b;
+  font-size: 16px;
+}
+
+.adminBuilding span {
+  margin-top: 4px;
+  color: #60707a;
+  font-size: 13px;
+}
+
+.adminBuilding em {
+  margin-top: 7px;
+  color: #253640;
+  font-size: 13px;
+  font-style: normal;
+}
+
+.adminBuildingActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inquiryList {
+  display: grid;
+}
+
+.adminInquiry {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 4px 12px;
+  border: 0;
+  border-bottom: 1px solid #e7edf0;
+  padding: 14px 16px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.adminInquiry.active {
+  background: #edf7fa;
+}
+
+.adminInquiry strong,
+.adminInquiry span,
+.adminInquiry em,
+.adminInquiry small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminInquiry strong {
+  color: #12212b;
+  font-size: 16px;
+}
+
+.adminInquiry em,
+.adminInquiry small {
+  grid-column: 2;
+  color: #60707a;
+  font-size: 13px;
+  font-style: normal;
+}
+
+.adminInquiry small {
+  color: #85929a;
+}
+
+.inquiryStatus {
+  grid-row: span 4;
+  align-self: start;
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.status-new {
+  background: #e8f7ff;
+  color: #17627f;
+}
+
+.status-contacted {
+  background: #ecf8e9;
+  color: #246b2c;
+}
+
+.status-closed {
+  background: #f1f3f5;
+  color: #56636b;
+}
+
+.statusPublic,
+.statusPrivate {
+  min-width: 52px;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.statusPublic {
+  color: #116b42;
+}
+
+.statusPrivate {
+  color: #9a3b18;
+}
+
+.adminEditor {
+  position: sticky;
+  top: 18px;
+  align-self: start;
+  padding: 22px;
+}
+
+.adminEditorTitle span {
+  color: #1c6f8f;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.adminEditorTitle h2 {
+  margin: 8px 0 6px;
+  color: #12212b;
+  font-size: 22px;
+  letter-spacing: 0;
+}
+
+.adminEditorTitle p {
+  margin: 0;
+  color: #60707a;
+}
+
+.adminEditGrid {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.inquiryDetailList {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0 0;
+}
+
+.inquiryDetailList div {
+  display: grid;
+  gap: 6px;
+}
+
+.inquiryDetailList dt {
+  color: #60707a;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.inquiryDetailList dd {
+  margin: 0;
+  color: #14232c;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.inquiryStatusActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.inquiryStatusActions button {
+  height: 38px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 13px;
+  background: #102332;
+  color: #fff;
+  font-weight: 800;
+}
+
+.inquiryStatusActions button:disabled {
+  opacity: 0.45;
+}
+
+.adminEditorActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 22px;
+}
+
+.adminEmpty {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  padding: 24px;
+  color: #657681;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .adminPage {
+    padding: 16px;
+  }
+
+  .adminHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .adminSearch,
+  .inquirySearch,
+  .adminWorkspace {
+    grid-template-columns: 1fr;
+  }
+
+  .adminEditor {
+    position: static;
+  }
+}

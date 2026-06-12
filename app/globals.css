@@ -1,0 +1,95 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  color: #172026;
+  background: #f5f7f8;
+  font-family: Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+.siteHeader,
+.resultsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: #fff;
+}
+
+.brand {
+  color: #0c1216;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.brandButton {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.searchForm {
+  display: grid;
+  gap: 16px;
+}
+
+.searchInputWrap {
+  display: flex;
+  min-height: 64px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.searchInputWrap input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  padding: 0 24px;
+  color: #172026;
+  outline: none;
+}
+
+.searchInputWrap button {
+  width: 110px;
+  border: 0;
+  background: #091928;
+  color: #fff;
+  font-weight: 800;
+}
+
+.searchInputWrap button:disabled {
+  opacity: 0.62;
+}
+
+.errorText {
+  margin: 14px 0 0;
+  color: #d92929;
+  font-weight: 800;
+}
+
+.searchPanel .errorText {
+  color: #fff;
+}

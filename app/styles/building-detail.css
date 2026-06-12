@@ -1,0 +1,410 @@
+.detailPage {
+  min-height: 100vh;
+  background: #f0f2f4;
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 76px;
+  padding: 0 64px;
+  background: #fff;
+}
+
+.detailBrand {
+  color: #0c1216;
+  font-size: 28px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.detailHeader nav {
+  display: flex;
+  align-items: center;
+  gap: 42px;
+  color: #111;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.detailHeader nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.detailContainer {
+  width: min(1500px, calc(100% - 96px));
+  margin: 0 auto;
+  padding: 58px 0 72px;
+}
+
+.detailHeroCard,
+.detailSection {
+  border: 1px solid #e3e7ea;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 24, 32, 0.08);
+}
+
+.detailHeroCard {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1fr);
+  gap: 58px;
+  align-items: center;
+  padding: 56px;
+}
+
+.detailPhoto {
+  display: grid;
+  place-items: end start;
+  min-height: 430px;
+  overflow: hidden;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(11, 20, 28, 0), rgba(11, 20, 28, 0.74)),
+    linear-gradient(135deg, #d8dde0 0%, #f7f8f4 38%, #8f9a9d 100%);
+}
+
+.detailPhoto div {
+  padding: 28px;
+  color: #fff;
+}
+
+.detailPhoto strong,
+.detailPhoto span {
+  display: block;
+}
+
+.detailPhoto strong {
+  margin-bottom: 8px;
+  font-size: 28px;
+}
+
+.detailPhoto span {
+  color: rgba(255, 255, 255, 0.84);
+  font-weight: 800;
+}
+
+.detailHeroInfo {
+  min-width: 0;
+}
+
+.detailStatusRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.detailStatus {
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.detailStatus {
+  background: #d9f8e5;
+  color: #058847;
+}
+
+.detailHeroInfo h1 {
+  margin: 14px 0 10px;
+  color: #070b0f;
+  font-size: 42px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.detailHeroInfo p {
+  margin: 0;
+  color: #66757c;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.detailHeroStats,
+.detailPriceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  border-top: 1px solid #edf1f3;
+}
+
+.detailHeroStats {
+  margin-top: 32px;
+  padding-top: 28px;
+}
+
+.detailPriceGrid {
+  margin-top: 30px;
+  padding-top: 30px;
+}
+
+.detailItem {
+  min-width: 0;
+}
+
+.detailItem span {
+  display: block;
+  margin-bottom: 8px;
+  color: #7b8790;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.detailItem strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #101820;
+  font-size: 22px;
+  line-height: 1.35;
+}
+
+.detailPriceGrid .detailItem strong {
+  color: #1668f2;
+  font-size: 25px;
+}
+
+.detailUnitPrice,
+.detailSubValue {
+  display: block;
+  margin-top: 7px;
+  color: #66757c;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.detailActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 36px;
+}
+
+.detailActions a,
+.detailActions button {
+  display: grid;
+  place-items: center;
+  min-height: 52px;
+  border: 1px solid #dfe7ef;
+  border-radius: 8px;
+  background: #fff;
+  color: #101820;
+  font-weight: 900;
+  text-align: center;
+  text-decoration: none;
+}
+
+.detailActions .detailPrimaryAction {
+  border-color: #101820;
+  background: #101820;
+  color: #fff;
+}
+
+.detailSecondaryAction {
+  width: 100%;
+}
+
+.inquiryModalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(8, 15, 20, 0.48);
+}
+
+.inquiryModal {
+  width: min(520px, 100%);
+  max-height: min(760px, calc(100vh - 48px));
+  overflow-y: auto;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+}
+
+.inquiryModalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px 24px 18px;
+  border-bottom: 1px solid #e6edf1;
+}
+
+.inquiryModalHeader span {
+  color: #60717b;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.inquiryModalHeader h2 {
+  margin: 6px 0 0;
+  color: #101820;
+  font-size: 24px;
+  letter-spacing: 0;
+}
+
+.inquiryModalHeader button {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 6px;
+  padding: 0;
+  background: #eef3f5;
+  color: #263640;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.inquiryForm {
+  display: grid;
+  gap: 14px;
+  padding: 22px 24px 24px;
+}
+
+.inquiryForm label {
+  display: grid;
+  gap: 7px;
+  color: #53636d;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.inquiryForm input,
+.inquiryForm textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #cfd9de;
+  border-radius: 6px;
+  padding: 0 12px;
+  color: #14232c;
+  outline: none;
+}
+
+.inquiryForm input {
+  height: 44px;
+}
+
+.inquiryForm textarea {
+  min-height: 130px;
+  padding-top: 12px;
+  resize: vertical;
+}
+
+.inquiryForm input:focus,
+.inquiryForm textarea:focus {
+  border-color: #1c6f8f;
+  box-shadow: 0 0 0 3px rgba(28, 111, 143, 0.14);
+}
+
+.inquiryError,
+.inquirySuccess {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.inquiryError {
+  color: #c32323;
+}
+
+.inquirySuccess {
+  color: #147044;
+}
+
+.inquiryActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.inquiryActions button {
+  height: 42px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 16px;
+  background: #102332;
+  color: #fff;
+  font-weight: 800;
+}
+
+.inquiryActions button:disabled {
+  opacity: 0.58;
+}
+
+.detailSectionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.detailSection {
+  min-height: 280px;
+  padding: 34px;
+}
+
+.detailSection h2 {
+  margin: 0 0 32px;
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.detailInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 42px;
+}
+
+.detailInfoGrid .detailItem strong {
+  font-size: 19px;
+}
+
+.detailAddress {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.detailAddress strong {
+  font-size: 19px;
+}
+
+.detailMapShell,
+.detailMapFallback {
+  min-height: 330px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.detailMapCanvas {
+  width: 100%;
+  height: 330px;
+}
+
+.detailMapFallback {
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  color: #43555d;
+  text-align: center;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.68) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.68) 1px, transparent 1px),
+    #dce6e8;
+  background-size: 36px 36px;
+}
+
+.detailMapFallback strong {
+  color: #172026;
+  font-size: 24px;
+}
