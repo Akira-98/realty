@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 
 import { jsonError, requiredEnv } from "../../../../lib/http";
 import {
+  appendSubwayWalkFilter,
+  filterBuildingsByListingFilters,
+  hasActiveListingFilters,
+  readListingFilters,
+} from "../../../_lib/listing-filters";
+import {
   requireAdmin,
   setAdminSessionCookies,
   supabaseBaseUrl,
@@ -21,6 +27,7 @@ const ADMIN_LIST_SELECT = [
   "rent_total",
   "maintenance_fee",
   "maintenance_fee_total",
+  "subway_walk_min",
   "is_public",
   "updated_at",
 ].join(",");
@@ -72,80 +79,6 @@ function numberParam(searchParams, name, fallback) {
   return Number.isFinite(value) ? value : fallback;
 }
 
-function filterParam(searchParams, name) {
-  const rawValue = searchParams.get(name);
-  if (rawValue === null || rawValue === "") {
-    return null;
-  }
-
-  const value = Number(rawValue);
-  return Number.isFinite(value) ? value : null;
-}
-
-function numberFromListingValue(value) {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : null;
-  }
-  if (value === null || value === undefined) {
-    return null;
-  }
-
-  const text = String(value).replaceAll(",", "").trim();
-  if (!text) {
-    return null;
-  }
-
-  const eokMatch = text.match(/([\d.]+)\s*억/);
-  const manMatch = text.match(/([\d.]+)\s*만/);
-  if (eokMatch || manMatch) {
-    const eok = eokMatch ? Number(eokMatch[1]) * 10000 : 0;
-    const man = manMatch ? Number(manMatch[1]) : 0;
-    const total = eok + man;
-    return Number.isFinite(total) ? total : null;
-  }
-
-  const numericText = text.replace(/[^\d.-]/g, "");
-  if (!numericText) {
-    return null;
-  }
-  const number = Number(numericText);
-  return Number.isFinite(number) ? number : null;
-}
-
-function isWithinRange(value, min, max) {
-  if (min === null && max === null) {
-    return true;
-  }
-
-  const number = numberFromListingValue(value);
-  if (number === null) {
-    return false;
-  }
-
-  return (min === null || number >= min) && (max === null || number <= max);
-}
-
-function filterBuildings(buildings, filters) {
-  return buildings.filter(
-    (building) =>
-      isWithinRange(
-        building.rental_area_pyeong,
-        filters.areaMin,
-        filters.areaMax,
-      ) &&
-      isWithinRange(
-        building.deposit_total,
-        filters.depositTotalMin,
-        filters.depositTotalMax,
-      ) &&
-      isWithinRange(
-        building.rent_total,
-        filters.rentTotalMin,
-        filters.rentTotalMax,
-      ),
-  );
-}
-
 export async function GET(request) {
   const admin = await requireAdmin(request);
   if (admin.error) {
@@ -166,15 +99,8 @@ export async function GET(request) {
   const visibility = searchParams.get("visibility")?.trim();
   const limit = Math.min(Math.max(numberParam(searchParams, "limit", 50), 1), 200);
   const offset = Math.max(numberParam(searchParams, "offset", 0), 0);
-  const filters = {
-    areaMin: filterParam(searchParams, "areaMin"),
-    areaMax: filterParam(searchParams, "areaMax"),
-    depositTotalMin: filterParam(searchParams, "depositTotalMin"),
-    depositTotalMax: filterParam(searchParams, "depositTotalMax"),
-    rentTotalMin: filterParam(searchParams, "rentTotalMin"),
-    rentTotalMax: filterParam(searchParams, "rentTotalMax"),
-  };
-  const hasRangeFilters = Object.values(filters).some((value) => value !== null);
+  const filters = readListingFilters(searchParams);
+  const hasRangeFilters = hasActiveListingFilters(filters);
 
   const params = new URLSearchParams();
   params.set("select", ADMIN_LIST_SELECT);
@@ -198,6 +124,8 @@ export async function GET(request) {
     params.set("is_public", "eq.false");
   }
 
+  appendSubwayWalkFilter(params, filters);
+
   const response = await fetch(`${supabaseUrl}/rest/v1/buildings?${params}`, {
     headers: supabaseHeaders(serviceKey, {
       Prefer: "count=exact",
@@ -214,7 +142,7 @@ export async function GET(request) {
 
   const fetchedBuildings = await response.json();
   const filteredBuildings = hasRangeFilters
-    ? filterBuildings(fetchedBuildings, filters)
+    ? filterBuildingsByListingFilters(fetchedBuildings, filters)
     : fetchedBuildings;
   const buildings = hasRangeFilters
     ? filteredBuildings.slice(offset, offset + limit)

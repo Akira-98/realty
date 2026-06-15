@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 
 import { jsonError, requiredEnv } from "../../../../lib/http";
+import {
+  appendSubwayWalkFilter,
+  filterBuildingsByListingFilters,
+  readListingFilters,
+} from "../../../_lib/listing-filters";
 
 export const dynamic = "force-dynamic";
+export const preferredRegion = "syd1";
 
 const LIST_SELECT = [
   "id",
@@ -13,6 +19,7 @@ const LIST_SELECT = [
   "rental_area_pyeong",
   "deposit_total",
   "rent_total",
+  "subway_walk_min",
   "lat",
   "lng",
 ].join(",");
@@ -41,75 +48,6 @@ function compareBuildingName(a, b) {
   return a.building_name > b.building_name ? 1 : -1;
 }
 
-function filterParam(searchParams, name) {
-  const value = numberParam(searchParams, name);
-  return value === null ? null : value;
-}
-
-function numberFromListingValue(value) {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : null;
-  }
-  if (value === null || value === undefined) {
-    return null;
-  }
-
-  const text = String(value).replaceAll(",", "").trim();
-  if (!text) {
-    return null;
-  }
-
-  const eokMatch = text.match(/([\d.]+)\s*억/);
-  const manMatch = text.match(/([\d.]+)\s*만/);
-  if (eokMatch || manMatch) {
-    const eok = eokMatch ? Number(eokMatch[1]) * 10000 : 0;
-    const man = manMatch ? Number(manMatch[1]) : 0;
-    const total = eok + man;
-    return Number.isFinite(total) ? total : null;
-  }
-
-  const numericText = text.replace(/[^\d.-]/g, "");
-  if (!numericText) {
-    return null;
-  }
-  const number = Number(numericText);
-  return Number.isFinite(number) ? number : null;
-}
-
-function isWithinRange(value, min, max) {
-  if (min === null && max === null) {
-    return true;
-  }
-
-  const number = numberFromListingValue(value);
-  if (number === null) {
-    return false;
-  }
-
-  return (min === null || number >= min) && (max === null || number <= max);
-}
-
-function filterBuildings(buildings, filters) {
-  return buildings.filter(
-    (building) =>
-      isWithinRange(
-        building.rental_area_pyeong,
-        filters.areaMin,
-        filters.areaMax,
-      ) &&
-      isWithinRange(
-        building.deposit_total,
-        filters.depositTotalMin,
-        filters.depositTotalMax,
-      ) &&
-      isWithinRange(
-        building.rent_total,
-        filters.rentTotalMin,
-        filters.rentTotalMax,
-      ),
-  );
-}
-
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const rawSwLat = numberParam(searchParams, "swLat");
@@ -126,14 +64,7 @@ export async function GET(request) {
   const swLng = Math.min(rawSwLng, rawNeLng);
   const neLng = Math.max(rawSwLng, rawNeLng);
   const limit = clamp(numberParam(searchParams, "limit") ?? 2000, 1, 5000);
-  const filters = {
-    areaMin: filterParam(searchParams, "areaMin"),
-    areaMax: filterParam(searchParams, "areaMax"),
-    depositTotalMin: filterParam(searchParams, "depositTotalMin"),
-    depositTotalMax: filterParam(searchParams, "depositTotalMax"),
-    rentTotalMin: filterParam(searchParams, "rentTotalMin"),
-    rentTotalMax: filterParam(searchParams, "rentTotalMax"),
-  };
+  const filters = readListingFilters(searchParams);
 
   let supabaseUrl;
   let supabaseKey;
@@ -152,6 +83,7 @@ export async function GET(request) {
   params.set("lng", `gte.${swLng}`);
   params.append("lng", `lte.${neLng}`);
   params.set("limit", String(Math.round(limit)));
+  appendSubwayWalkFilter(params, filters);
 
   const response = await fetch(
     `${supabaseUrl}/rest/v1/buildings?${params}`,
@@ -171,9 +103,11 @@ export async function GET(request) {
     });
   }
 
-  const buildings = filterBuildings(await response.json(), filters).sort(
-    compareBuildingName,
-  );
+  const fetchedBuildings = await response.json();
+  const buildings = filterBuildingsByListingFilters(
+    fetchedBuildings,
+    filters,
+  ).sort(compareBuildingName);
 
   return NextResponse.json(
     {

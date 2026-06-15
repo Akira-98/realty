@@ -2,42 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const FILTER_GROUPS = [
-  {
-    label: "면적",
-    unit: "평",
-    minKey: "areaMin",
-    maxKey: "areaMax",
-  },
-  {
-    label: "보증금",
-    unit: "만원",
-    minKey: "depositTotalMin",
-    maxKey: "depositTotalMax",
-  },
-  {
-    label: "임대료",
-    unit: "만원",
-    minKey: "rentTotalMin",
-    maxKey: "rentTotalMax",
-  },
-];
-
-function filterSummary(filters, group) {
-  const min = filters[group.minKey];
-  const max = filters[group.maxKey];
-
-  if (min && max) {
-    return `${min}~${max}${group.unit}`;
-  }
-  if (min) {
-    return `${min}${group.unit} 이상`;
-  }
-  if (max) {
-    return `${max}${group.unit} 이하`;
-  }
-  return "전체";
-}
+import {
+  FILTER_GROUPS,
+  SUBWAY_WALK_OPTIONS,
+  filterSummary,
+} from "../../_lib/search-filters";
 
 export function AdminToolbar({
   error,
@@ -168,6 +137,59 @@ export function AdminToolbar({
               </details>
             );
           })}
+          <details
+            open={openFilter === "subwayWalk"}
+            className={filters.subwayWalkMax ? "adminFilterPopover active" : "adminFilterPopover"}
+          >
+            <summary
+              onClick={(event) => {
+                event.preventDefault();
+                setOpenFilter((currentFilter) =>
+                  currentFilter === "subwayWalk" ? "" : "subwayWalk",
+                );
+              }}
+            >
+              <span>지하철</span>
+            </summary>
+            <div className="adminFilterDropdown">
+              <strong>지하철역과의 거리</strong>
+              <div className="adminFilterChoices">
+                {SUBWAY_WALK_OPTIONS.map((minutes) => (
+                  <button
+                    key={minutes}
+                    type="button"
+                    className={filters.subwayWalkMax === minutes ? "active" : ""}
+                    onClick={() =>
+                      setFilters((current) => ({
+                        ...current,
+                        subwayWalkMax:
+                          current.subwayWalkMax === minutes ? "" : minutes,
+                      }))
+                    }
+                  >
+                    {minutes}분
+                  </button>
+                ))}
+              </div>
+              <div className="adminFilterActions">
+                <button
+                  type="button"
+                  className="adminGhostButton"
+                  onClick={() =>
+                    setFilters((current) => ({
+                      ...current,
+                      subwayWalkMax: "",
+                    }))
+                  }
+                >
+                  초기화
+                </button>
+                <button type="submit" onClick={() => setOpenFilter("")}>
+                  적용
+                </button>
+              </div>
+            </div>
+          </details>
         </div>
       </form>
       {error && <p className="adminError">{error}</p>}
