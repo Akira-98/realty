@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 
 import { jsonError, requiredEnv } from "../../../../lib/http";
 import {
-  appendSubwayWalkFilter,
-  filterBuildingsByListingFilters,
-  hasActiveListingFilters,
+  appendListingFilterParams,
   readListingFilters,
 } from "../../../_lib/listing-filters";
 import {
@@ -100,15 +98,12 @@ export async function GET(request) {
   const limit = Math.min(Math.max(numberParam(searchParams, "limit", 50), 1), 200);
   const offset = Math.max(numberParam(searchParams, "offset", 0), 0);
   const filters = readListingFilters(searchParams);
-  const hasRangeFilters = hasActiveListingFilters(filters);
 
   const params = new URLSearchParams();
   params.set("select", ADMIN_LIST_SELECT);
   params.set("order", "updated_at.desc.nullslast,building_name.asc");
-  params.set("limit", hasRangeFilters ? "10000" : String(Math.round(limit)));
-  if (!hasRangeFilters) {
-    params.set("offset", String(Math.round(offset)));
-  }
+  params.set("limit", String(Math.round(limit)));
+  params.set("offset", String(Math.round(offset)));
 
   if (query) {
     const escapedQuery = escapeLike(query);
@@ -124,7 +119,7 @@ export async function GET(request) {
     params.set("is_public", "eq.false");
   }
 
-  appendSubwayWalkFilter(params, filters);
+  appendListingFilterParams(params, filters);
 
   const response = await fetch(`${supabaseUrl}/rest/v1/buildings?${params}`, {
     headers: supabaseHeaders(serviceKey, {
@@ -140,22 +135,12 @@ export async function GET(request) {
     });
   }
 
-  const fetchedBuildings = await response.json();
-  const filteredBuildings = hasRangeFilters
-    ? filterBuildingsByListingFilters(fetchedBuildings, filters)
-    : fetchedBuildings;
-  const buildings = hasRangeFilters
-    ? filteredBuildings.slice(offset, offset + limit)
-    : filteredBuildings;
+  const buildings = await response.json();
   const contentRange = response.headers.get("content-range") || "";
   const total = Number(contentRange.split("/")[1]);
   const result = NextResponse.json({
     count: buildings.length,
-    total: hasRangeFilters
-      ? filteredBuildings.length
-      : Number.isFinite(total)
-        ? total
-        : null,
+    total: Number.isFinite(total) ? total : null,
     limit,
     offset,
     filters,

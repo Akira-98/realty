@@ -34,31 +34,49 @@ export function useSearchWorkspace() {
   const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
   const [center, setCenter] = useState(null);
-  const [buildings, setBuildings] = useState([]);
+  const [markerBuildings, setMarkerBuildings] = useState([]);
+  const [listBuildings, setListBuildings] = useState([]);
+  const [resultCount, setResultCount] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [focusedBuildingIds, setFocusedBuildingIds] = useState(null);
   const [mode, setMode] = useState("bounds");
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [boundsRefreshKey, setBoundsRefreshKey] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(false);
   const [error, setError] = useState("");
   const [hasCheckedSearchUrl, setHasCheckedSearchUrl] = useState(false);
   const latestBoundsKeyRef = useRef("");
+  const markerDetailsAbortRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      markerDetailsAbortRef.current?.abort();
+    };
+  }, []);
 
   const hasResults = Boolean(center);
-  const selectedBuilding = useMemo(
-    () => buildings.find((building) => building.id === selectedId),
-    [buildings, selectedId],
-  );
+  const selectedBuilding = useMemo(() => {
+    return (
+      listBuildings.find((building) => building.id === selectedId) ||
+      markerBuildings.find((building) => building.id === selectedId)
+    );
+  }, [listBuildings, markerBuildings, selectedId]);
   const displayedBuildings = useMemo(() => {
     if (!focusedBuildingIds) {
-      return buildings;
+      return listBuildings;
     }
     const focusedIdSet = new Set(focusedBuildingIds);
-    return buildings.filter((building) => focusedIdSet.has(building.id));
-  }, [buildings, focusedBuildingIds]);
+    return listBuildings.filter((building) => focusedIdSet.has(building.id));
+  }, [listBuildings, focusedBuildingIds]);
+
+  const abortMarkerDetails = useCallback(() => {
+    markerDetailsAbortRef.current?.abort();
+    markerDetailsAbortRef.current = null;
+  }, []);
 
   const resetMapFilter = useCallback((refreshBounds = true) => {
+    abortMarkerDetails();
     setMode("bounds");
     setSelectedId(null);
     setFocusedBuildingIds(null);
@@ -66,7 +84,7 @@ export function useSearchWorkspace() {
     if (refreshBounds) {
       setBoundsRefreshKey((key) => key + 1);
     }
-  }, []);
+  }, [abortMarkerDetails]);
 
   const applyFilters = useCallback((nextFilters) => {
     setFilters(normalizeFilters(nextFilters));
@@ -82,14 +100,17 @@ export function useSearchWorkspace() {
   }, [applyFilters]);
 
   const resetToLanding = useCallback(() => {
+    abortMarkerDetails();
     router.push("/");
     setMode("bounds");
     setSelectedId(null);
     setFocusedBuildingIds(null);
     setCenter(null);
-    setBuildings([]);
+    setMarkerBuildings([]);
+    setListBuildings([]);
+    setResultCount(null);
     latestBoundsKeyRef.current = "";
-  }, [router]);
+  }, [abortMarkerDetails, router]);
 
   useEffect(() => {
     const urlQuery = searchParams.get("q")?.trim() ?? "";
@@ -100,7 +121,9 @@ export function useSearchWorkspace() {
     if (!urlQuery || lat === null || lng === null) {
       setQuery(urlQuery);
       setCenter(null);
-      setBuildings([]);
+      setMarkerBuildings([]);
+      setListBuildings([]);
+      setResultCount(null);
       setSelectedId(null);
       setFocusedBuildingIds(null);
       setMode("bounds");
@@ -118,7 +141,9 @@ export function useSearchWorkspace() {
       source: searchParams.get("source") || "location",
       level,
     });
-    setBuildings([]);
+    setMarkerBuildings([]);
+    setListBuildings([]);
+    setResultCount(null);
     setSelectedId(null);
     setFocusedBuildingIds(null);
     setMode(urlMode);
@@ -141,7 +166,9 @@ export function useSearchWorkspace() {
         if (!response.ok) {
           return;
         }
-        setBuildings(payload.buildings);
+        setMarkerBuildings(payload.buildings);
+        setListBuildings(payload.buildings);
+        setResultCount(payload.count ?? payload.buildings.length);
         setSelectedId(payload.buildings[0]?.id ?? null);
       } catch (restoreError) {
         if (restoreError.name !== "AbortError") {
@@ -169,12 +196,15 @@ export function useSearchWorkspace() {
     [],
   );
 
-  const fetchBuildingsInBounds = useBoundsBuildings({
+  const boundsBuildings = useBoundsBuildings({
     filters,
     latestBoundsKeyRef,
     mode,
-    setBuildings,
+    setListBuildings,
+    setListLoading,
+    setMarkerBuildings,
     setError,
+    setResultCount,
     setSelectedId,
   });
 
@@ -186,32 +216,70 @@ export function useSearchWorkspace() {
     setLoading,
   });
 
-  const handleMarkerSelect = useCallback((markerBuildings) => {
+  const handleMarkerSelect = useCallback(async (markerBuildings) => {
     const markerIds = markerBuildings.map((building) => building.id);
+    abortMarkerDetails();
     setMode("marker");
     setSelectedId(markerIds[0] ?? null);
     setFocusedBuildingIds(markerIds);
-  }, []);
+    setResultCount(markerIds.length);
+    setListBuildings([]);
+
+    if (markerIds.length === 0) {
+      return;
+    }
+
+    const controller = new AbortController();
+    markerDetailsAbortRef.current = controller;
+    setListLoading(true);
+    setError("");
+
+    try {
+      const params = new URLSearchParams();
+      markerIds.forEach((id) => params.append("id", id));
+      const response = await fetch(`/api/buildings/by-ids?${params}`, {
+        signal: controller.signal,
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || "선택한 매물 목록을 불러오지 못했습니다.");
+      }
+      setListBuildings(payload.buildings);
+      setResultCount(payload.count ?? markerIds.length);
+    } catch (markerError) {
+      if (markerError.name !== "AbortError") {
+        setError(markerError.message);
+      }
+    } finally {
+      if (markerDetailsAbortRef.current === controller) {
+        markerDetailsAbortRef.current = null;
+        setListLoading(false);
+      }
+    }
+  }, [abortMarkerDetails]);
 
   return {
     boundsRefreshKey,
-    buildings,
     center,
     displayedBuildings,
     error,
     filters,
     applyFilters,
-    fetchBuildingsInBounds,
+    fetchBuildingsInBounds: boundsBuildings.fetchBuildingsInBounds,
+    fetchNextListPage: boundsBuildings.fetchNextListPage,
     handleMapMove,
     handleMapViewportChange,
     handleMarkerSelect,
     handleSearch,
     hasCheckedSavedState: hasCheckedSearchUrl,
     hasResults,
+    listLoading,
     loading,
+    markerBuildings,
     query,
     resetToLanding,
     resetListingFilters,
+    resultCount,
     selectedBuilding,
     selectedId,
     setQuery,

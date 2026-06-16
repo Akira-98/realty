@@ -128,11 +128,13 @@ export function MapView({
     const mapBounds = mapBoundsToPayload(mapRef.current.getBounds());
     const viewportWidth = containerRef.current.clientWidth;
     const viewportHeight = containerRef.current.clientHeight;
+    const level = mapRef.current.getLevel();
 
     groupBuildingsForMarkers(buildings, {
       bounds: mapBounds,
       viewportWidth,
       viewportHeight,
+      level,
     }).forEach((group) => {
       const firstBuilding = group.buildings[0];
       const position = new kakao.maps.LatLng(group.lat, group.lng);
@@ -188,19 +190,6 @@ export function MapView({
       onBoundsChange(mapBoundsToPayload(mapRef.current.getBounds()));
     }, 0);
   }, [ready, center, onBoundsChange, boundsRefreshKey]);
-
-  useEffect(() => {
-    if (!ready || !mapRef.current || !selectedId) {
-      return;
-    }
-    const selected = buildings.find((building) => building.id === selectedId);
-    if (!selected?.lat || !selected?.lng) {
-      return;
-    }
-    mapRef.current.panTo(
-      new window.kakao.maps.LatLng(Number(selected.lat), Number(selected.lng)),
-    );
-  }, [ready, selectedId, buildings]);
 
   return (
     <div className="mapShell">

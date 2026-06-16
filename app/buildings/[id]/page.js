@@ -49,6 +49,10 @@ function withUnit(value, unit, unitPattern) {
   return unitPattern.test(text) ? text : `${text}${unit}`;
 }
 
+function withSquareMeterUnit(value) {
+  return withUnit(value, "m²", /(㎡|m2|m²|제곱미터)/i);
+}
+
 function formatApprovalDate(value) {
   if (!value) {
     return "-";
@@ -150,7 +154,7 @@ export default async function BuildingDetailPage({ params }) {
     { label: "규모", value: building.building_scale },
     { label: "용도", value: building.building_use },
     { label: "사용승인일", value: formatApprovalDate(building.approval_date) },
-    { label: "연면적", value: building.gross_floor_area },
+    { label: "연면적", value: withSquareMeterUnit(building.gross_floor_area) },
   ];
   const facilityItems = [
     { label: "천정고", value: building.ceiling_height },

@@ -390,6 +390,15 @@
   color: #172026;
 }
 
+.listLoading {
+  display: grid;
+  place-items: center;
+  min-height: 72px;
+  color: #66757c;
+  font-size: 14px;
+  font-weight: 800;
+}
+
 .selectedBar {
   position: sticky;
   right: auto;

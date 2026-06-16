@@ -12,12 +12,21 @@ export function compactText(value) {
   return value || "-";
 }
 
+function formatGrossFloorArea(value) {
+  if (!value) {
+    return "";
+  }
+  const text = String(value).trim();
+  if (!text) {
+    return "";
+  }
+  return /(㎡|m2|m²|제곱미터)/i.test(text) ? text : `${text}m²`;
+}
+
 export function buildSummary(building) {
   return [
-    building.subway && `지하철 ${building.subway}`,
     building.building_scale && `규모 ${building.building_scale}`,
-    building.distance_m !== undefined &&
-      `거리 ${formatDistance(building.distance_m)}`,
+    building.gross_floor_area && `연면적 ${formatGrossFloorArea(building.gross_floor_area)}`,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -70,14 +79,32 @@ export function isSpecificBuildingSearch(query, buildings) {
   return normalizedQuery.length >= 3 && buildings.length <= 3;
 }
 
-const DEFAULT_CLUSTER_PIXEL_SIZE = 144;
+const DEFAULT_CLUSTER_PIXEL_SIZE = 176;
+
+function clusterPixelSizeForLevel(level) {
+  if (!Number.isFinite(level)) {
+    return DEFAULT_CLUSTER_PIXEL_SIZE;
+  }
+
+  if (level <= 3) {
+    return 144;
+  }
+  if (level <= 5) {
+    return 176;
+  }
+  if (level <= 7) {
+    return 220;
+  }
+  return 264;
+}
 
 export function groupBuildingsForMarkers(buildings, options = {}) {
   const {
     bounds,
     viewportWidth = 0,
     viewportHeight = 0,
-    clusterPixelSize = DEFAULT_CLUSTER_PIXEL_SIZE,
+    level = null,
+    clusterPixelSize = clusterPixelSizeForLevel(level),
   } = options;
   const locatedBuildings = buildings
     .map((building) => ({

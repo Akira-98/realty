@@ -8,8 +8,8 @@ const LIST_SELECT = [
   "id",
   "building_name",
   "address",
-  "subway",
   "building_scale",
+  "gross_floor_area",
   "lat",
   "lng",
 ].join(",");

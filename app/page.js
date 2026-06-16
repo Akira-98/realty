@@ -46,7 +46,7 @@ function HomeContent() {
           <div className="workspaceBody">
             <MapView
               center={search.center}
-              buildings={search.buildings}
+              buildings={search.markerBuildings}
               filters={search.filters}
               selectedId={search.selectedId}
               onSelect={search.handleMarkerSelect}
@@ -62,7 +62,10 @@ function HomeContent() {
               displayedBuildings={search.displayedBuildings}
               selectedId={search.selectedId}
               selectedBuilding={search.selectedBuilding}
+              resultCount={search.resultCount}
+              listLoading={search.listLoading}
               error={search.error}
+              onLoadMore={search.fetchNextListPage}
             />
           </div>
         </section>
