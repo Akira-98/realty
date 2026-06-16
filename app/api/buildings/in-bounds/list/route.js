@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 
 import {
   BOUNDS_CACHE_HEADERS,
-  LIST_SELECT,
-  fetchBoundsRows,
+  createBoundsRpcPayload,
+  fetchBoundsRpc,
   readBoundsRequest,
 } from "../../_bounds-query";
 
@@ -22,33 +22,21 @@ export async function GET(request) {
   }
 
   const { bounds, filters, limit, offset } = requestState;
-  const result = await fetchBoundsRows({
-    select: LIST_SELECT,
-    bounds,
-    filters,
-    limit,
-    offset,
+  const result = await fetchBoundsRpc({
+    functionName: "search_buildings_list",
     errorMessage: "Supabase bounds list failed.",
+    body: createBoundsRpcPayload({
+      bounds,
+      filters,
+      limit,
+      offset,
+    }),
   });
   if (result.error) {
     return result.error;
   }
 
-  const nextOffset = offset + result.rows.length;
-
-  return NextResponse.json(
-    {
-      bounds,
-      filters,
-      count: result.rows.length,
-      total: result.total,
-      limit,
-      offset,
-      nextOffset: nextOffset < result.total ? nextOffset : null,
-      buildings: result.rows,
-    },
-    {
-      headers: BOUNDS_CACHE_HEADERS,
-    },
-  );
+  return NextResponse.json(result.payload, {
+    headers: BOUNDS_CACHE_HEADERS,
+  });
 }

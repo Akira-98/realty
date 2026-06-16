@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 
 import {
   BOUNDS_CACHE_HEADERS,
-  LIST_SELECT,
-  MARKER_SELECT,
-  fetchBoundsRows,
+  createBoundsRpcPayload,
+  fetchBoundsRpc,
+  numberParam,
   readBoundsRequest,
 } from "../../_bounds-query";
 
@@ -16,54 +16,37 @@ const FIRST_LIST_PAGE_SIZE = 30;
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const requestState = readBoundsRequest(searchParams, {
-    defaultLimit: 5000,
-    maxLimit: 5000,
+    defaultLimit: FIRST_LIST_PAGE_SIZE,
+    maxLimit: 100,
   });
   if (requestState.error) {
     return requestState.error;
   }
 
-  const { bounds, filters, limit } = requestState;
-  const [markerResult, listResult] = await Promise.all([
-    fetchBoundsRows({
-      select: MARKER_SELECT,
+  const { bounds, filters, limit, offset } = requestState;
+  const mapLevel =
+    numberParam(searchParams, "mapLevel") ??
+    numberParam(searchParams, "map_level") ??
+    4;
+
+  const result = await fetchBoundsRpc({
+    functionName: "search_buildings_summary",
+    errorMessage: "Supabase bounds summary failed.",
+    body: createBoundsRpcPayload({
       bounds,
       filters,
       limit,
-      errorMessage: "Supabase bounds summary failed.",
+      offset,
+      extra: {
+        map_level: Math.round(mapLevel),
+      },
     }),
-    fetchBoundsRows({
-      select: LIST_SELECT,
-      bounds,
-      filters,
-      limit: FIRST_LIST_PAGE_SIZE,
-      errorMessage: "Supabase bounds list failed.",
-    }),
-  ]);
-  if (markerResult.error) {
-    return markerResult.error;
-  }
-  if (listResult.error) {
-    return listResult.error;
+  });
+  if (result.error) {
+    return result.error;
   }
 
-  const nextOffset = listResult.rows.length;
-
-  return NextResponse.json(
-    {
-      bounds,
-      filters,
-      count: markerResult.total,
-      markerCount: markerResult.rows.length,
-      markersTruncated: markerResult.rows.length < markerResult.total,
-      markers: markerResult.rows,
-      buildings: listResult.rows,
-      limit: FIRST_LIST_PAGE_SIZE,
-      offset: 0,
-      nextOffset: nextOffset < markerResult.total ? nextOffset : null,
-    },
-    {
-      headers: BOUNDS_CACHE_HEADERS,
-    },
-  );
+  return NextResponse.json(result.payload, {
+    headers: BOUNDS_CACHE_HEADERS,
+  });
 }

@@ -12,6 +12,7 @@ function boundsCacheKey(bounds, filters) {
     bounds.swLng.toFixed(5),
     bounds.neLat.toFixed(5),
     bounds.neLng.toFixed(5),
+    bounds.mapLevel ?? "",
   ].join(",");
 
   return `${boundsKey}|${filtersKey(filters)}`;
@@ -167,7 +168,9 @@ export function useBoundsBuildings({
         setResultCount(cachedSummary.count);
         setListLoading(false);
         setSelectedId((currentId) =>
-          cachedSummary.markers.some((building) => building.id === currentId)
+          cachedSummary.markers.some(
+            (building) => building.type !== "cluster" && building.id === currentId,
+          )
             ? currentId
             : null,
         );
@@ -181,9 +184,10 @@ export function useBoundsBuildings({
       setError("");
 
       try {
-        const params = paramsFromBounds(bounds, filters, {
-          limit: "2000",
-        });
+        const params = paramsFromBounds(bounds, filters);
+        if (bounds.mapLevel) {
+          params.set("mapLevel", String(bounds.mapLevel));
+        }
         const response = await fetch(`/api/buildings/in-bounds/summary?${params}`, {
           signal: controller.signal,
         });
@@ -206,7 +210,9 @@ export function useBoundsBuildings({
         setResultCount(payload.count);
         setListLoading(false);
         setSelectedId((currentId) =>
-          payload.markers.some((building) => building.id === currentId)
+          payload.markers.some(
+            (building) => building.type !== "cluster" && building.id === currentId,
+          )
             ? currentId
             : null,
         );

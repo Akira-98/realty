@@ -6,15 +6,44 @@ import { useKakaoMap } from "../_hooks/useKakaoMap";
 import { groupBuildingsForMarkers } from "../_lib/buildings";
 import { MapFilters } from "./MapFilters";
 
-function mapBoundsToPayload(bounds) {
+function mapBoundsToPayload(bounds, mapLevel = null) {
   const sw = bounds.getSouthWest();
   const ne = bounds.getNorthEast();
-  return {
+  const payload = {
     swLat: sw.getLat(),
     swLng: sw.getLng(),
     neLat: ne.getLat(),
     neLng: ne.getLng(),
   };
+  if (mapLevel) {
+    payload.mapLevel = mapLevel;
+  }
+  return payload;
+}
+
+function hasServerClusterMarkers(buildings) {
+  return buildings.some((building) => building.type === "cluster" || building.type === "building");
+}
+
+function markerGroupsForRender(buildings, options) {
+  if (!hasServerClusterMarkers(buildings)) {
+    return groupBuildingsForMarkers(buildings, options).map((group) => ({
+      ...group,
+      type: group.buildings.length > 1 ? "cluster" : "building",
+      count: group.buildings.length,
+    }));
+  }
+
+  return buildings
+    .map((marker) => ({
+      type: marker.type,
+      count: marker.count ?? 1,
+      lat: Number(marker.lat),
+      lng: Number(marker.lng),
+      marker,
+      buildings: marker.type === "building" ? [marker] : [],
+    }))
+    .filter((group) => Number.isFinite(group.lat) && Number.isFinite(group.lng));
 }
 
 export function MapView({
@@ -76,7 +105,9 @@ export function MapView({
         window.clearTimeout(debounceRef.current);
         debounceRef.current = window.setTimeout(() => {
           setMarkerRenderKey((key) => key + 1);
-          onBoundsChangeRef.current(mapBoundsToPayload(mapRef.current.getBounds()));
+          onBoundsChangeRef.current(
+            mapBoundsToPayload(mapRef.current.getBounds(), mapRef.current.getLevel()),
+          );
           if (hasUserMovedMapRef.current) {
             const currentCenter = mapRef.current.getCenter();
             onViewportChangeRef.current?.({
@@ -130,7 +161,7 @@ export function MapView({
     const viewportHeight = containerRef.current.clientHeight;
     const level = mapRef.current.getLevel();
 
-    groupBuildingsForMarkers(buildings, {
+    markerGroupsForRender(buildings, {
       bounds: mapBounds,
       viewportWidth,
       viewportHeight,
@@ -143,17 +174,29 @@ export function MapView({
       markerContent.className = group.buildings.some((building) => building.id === selectedId)
         ? "mapBuildingMarker active"
         : "mapBuildingMarker";
-      if (group.buildings.length === 1) {
+      if (group.type === "building") {
         markerContent.classList.add("single");
-        markerContent.setAttribute("aria-label", firstBuilding.building_name);
+        markerContent.setAttribute(
+          "aria-label",
+          firstBuilding?.building_name || group.marker?.building_name || "매물",
+        );
       } else {
-        markerContent.textContent = String(group.buildings.length);
+        markerContent.textContent = String(group.count);
       }
       markerContent.title =
-        group.buildings.length > 1
-          ? `${group.buildings.length}개 매물`
-          : firstBuilding.building_name;
-      markerContent.addEventListener("click", () => onSelect(group.buildings));
+        group.type === "cluster"
+          ? `${group.count}개 매물`
+          : firstBuilding?.building_name || group.marker?.building_name || "매물";
+      markerContent.addEventListener("click", () => {
+        if (group.type === "cluster") {
+          hasUserMovedMapRef.current = true;
+          onMapMoveRef.current?.();
+          mapRef.current.setCenter(position);
+          mapRef.current.setLevel(Math.max(level - 2, 1));
+          return;
+        }
+        onSelect(group.buildings);
+      });
 
       const overlay = new kakao.maps.CustomOverlay({
         position,
@@ -187,7 +230,7 @@ export function MapView({
 
     window.clearTimeout(debounceRef.current);
     debounceRef.current = window.setTimeout(() => {
-      onBoundsChange(mapBoundsToPayload(mapRef.current.getBounds()));
+      onBoundsChange(mapBoundsToPayload(mapRef.current.getBounds(), mapRef.current.getLevel()));
     }, 0);
   }, [ready, center, onBoundsChange, boundsRefreshKey]);
 

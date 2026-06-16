@@ -29,7 +29,7 @@ export const MARKER_SELECT = [
   "lng",
 ].join(",");
 
-function numberParam(searchParams, name) {
+export function numberParam(searchParams, name) {
   const rawValue = searchParams.get(name);
   if (rawValue === null || rawValue === "") {
     return null;
@@ -89,6 +89,57 @@ export function requiredSupabasePublicConfig() {
   return {
     supabaseUrl: requiredEnv("SUPABASE_URL").replace(/\/$/, ""),
     supabaseKey: requiredEnv("SUPABASE_ANON_KEY"),
+  };
+}
+
+export function createBoundsRpcPayload({ bounds, filters, limit, offset, extra = {} }) {
+  return {
+    sw_lat: bounds.swLat,
+    sw_lng: bounds.swLng,
+    ne_lat: bounds.neLat,
+    ne_lng: bounds.neLng,
+    min_deposit: filters.depositTotalMin,
+    max_deposit: filters.depositTotalMax,
+    min_rent: filters.rentTotalMin,
+    max_rent: filters.rentTotalMax,
+    min_area: filters.areaMin,
+    max_area: filters.areaMax,
+    subway_walk_max: filters.subwayWalkMax,
+    list_limit: limit,
+    list_offset: offset,
+    ...extra,
+  };
+}
+
+export async function fetchBoundsRpc({ functionName, body, errorMessage }) {
+  let supabaseUrl;
+  let supabaseKey;
+  try {
+    ({ supabaseUrl, supabaseKey } = requiredSupabasePublicConfig());
+  } catch (error) {
+    return { error: jsonError(error.message, 500) };
+  }
+
+  const response = await fetch(`${supabaseUrl}/rest/v1/rpc/${functionName}`, {
+    method: "POST",
+    headers: {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const responseBody = await response.text();
+    return {
+      error: jsonError(errorMessage, response.status, { body: responseBody }),
+    };
+  }
+
+  return {
+    payload: await response.json(),
   };
 }
 
