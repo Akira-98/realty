@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useBoundsBuildings } from "./useBoundsBuildings";
+import { boundsFromClusterMarker, useClusterBuildings } from "./useClusterBuildings";
 import { useSearchSubmit } from "./useSearchSubmit";
 import { EMPTY_FILTERS, normalizeFilters } from "../_lib/search-filters";
 import { numberParam } from "../_lib/search-url";
@@ -208,6 +209,15 @@ export function useSearchWorkspace() {
     setSelectedId,
   });
 
+  const clusterBuildings = useClusterBuildings({
+    filters,
+    mode,
+    setError,
+    setListBuildings,
+    setListLoading,
+    setResultCount,
+  });
+
   const handleSearch = useSearchSubmit({
     latestBoundsKeyRef,
     query,
@@ -216,14 +226,37 @@ export function useSearchWorkspace() {
     setLoading,
   });
 
-  const handleMarkerSelect = useCallback(async (markerBuildings) => {
-    const markerIds = markerBuildings.map((building) => building.id);
+  const handleMarkerSelect = useCallback(async (markerGroup) => {
     abortMarkerDetails();
+    clusterBuildings.abortClusterList();
     setMode("marker");
+    setListBuildings([]);
+
+    if (markerGroup?.type === "cluster") {
+      const clusterBounds = boundsFromClusterMarker(markerGroup.marker);
+      setSelectedId(null);
+      setFocusedBuildingIds(null);
+      setResultCount(markerGroup.count ?? null);
+
+      if (!clusterBounds) {
+        setError("선택한 클러스터의 범위 정보가 없습니다.");
+        return;
+      }
+
+      await clusterBuildings.selectCluster({
+        bounds: clusterBounds,
+        total: markerGroup.count ?? null,
+      });
+      return;
+    }
+
+    const markerBuildings = Array.isArray(markerGroup)
+      ? markerGroup
+      : markerGroup?.buildings ?? [];
+    const markerIds = markerBuildings.map((building) => building.id);
     setSelectedId(markerIds[0] ?? null);
     setFocusedBuildingIds(markerIds);
     setResultCount(markerIds.length);
-    setListBuildings([]);
 
     if (markerIds.length === 0) {
       return;
@@ -256,7 +289,16 @@ export function useSearchWorkspace() {
         setListLoading(false);
       }
     }
-  }, [abortMarkerDetails]);
+  }, [abortMarkerDetails, clusterBuildings, setError]);
+
+  const handleLoadMore = useCallback(async () => {
+    const didFetchClusterPage = await clusterBuildings.fetchNextClusterListPage();
+    if (didFetchClusterPage) {
+      return;
+    }
+
+    await boundsBuildings.fetchNextListPage();
+  }, [boundsBuildings, clusterBuildings]);
 
   return {
     boundsRefreshKey,
@@ -266,7 +308,7 @@ export function useSearchWorkspace() {
     filters,
     applyFilters,
     fetchBuildingsInBounds: boundsBuildings.fetchBuildingsInBounds,
-    fetchNextListPage: boundsBuildings.fetchNextListPage,
+    fetchNextListPage: handleLoadMore,
     handleMapMove,
     handleMapViewportChange,
     handleMarkerSelect,

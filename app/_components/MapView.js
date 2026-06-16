@@ -188,14 +188,7 @@ export function MapView({
           ? `${group.count}개 매물`
           : firstBuilding?.building_name || group.marker?.building_name || "매물";
       markerContent.addEventListener("click", () => {
-        if (group.type === "cluster") {
-          hasUserMovedMapRef.current = true;
-          onMapMoveRef.current?.();
-          mapRef.current.setCenter(position);
-          mapRef.current.setLevel(Math.max(level - 2, 1));
-          return;
-        }
-        onSelect(group.buildings);
+        onSelect(group);
       });
 
       const overlay = new kakao.maps.CustomOverlay({
