@@ -18,13 +18,7 @@ function HomeContent() {
   return (
     <main className={search.hasResults ? "app resultsMode" : "app"}>
       {!search.hasResults ? (
-        <LandingView
-          query={search.query}
-          setQuery={search.setQuery}
-          loading={search.loading}
-          error={search.error}
-          onSearch={search.handleSearch}
-        />
+        <LandingView />
       ) : (
         <section className="searchWorkspace">
           <header className="resultsHeader">

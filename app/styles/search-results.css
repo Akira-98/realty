@@ -394,9 +394,43 @@
   display: grid;
   place-items: center;
   min-height: 72px;
-  color: #66757c;
-  font-size: 14px;
-  font-weight: 800;
+}
+
+.loadingDots {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+}
+
+.loadingDots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #0b7a83;
+  animation: loadingDotPulse 0.9s ease-in-out infinite;
+}
+
+.loadingDots span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.loadingDots span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+@keyframes loadingDotPulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+
+  40% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
 }
 
 .selectedBar {

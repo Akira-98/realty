@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { SiteFooter } from "../../_components/SiteFooter";
 import { DetailMap } from "../../_components/detail/DetailMap";
 import { InquiryForm } from "../../_components/inquiries/InquiryForm";
+import { formatNumber, formatWithUnit } from "../../_lib/formatters";
 import { requiredEnv } from "../../../lib/http";
 
 export const revalidate = 60;
@@ -15,18 +16,12 @@ const BUILDING_SELECT = [
   "subway",
   "building_use",
   "building_scale",
+  "scale",
   "gross_floor_area",
   "approval_date",
-  "rental_area_m2",
-  "rental_area_pyeong",
-  "exclusive_area_m2",
-  "exclusive_area_pyeong",
-  "deposit",
-  "deposit_total",
-  "rent",
-  "rent_total",
-  "maintenance_fee",
-  "maintenance_fee_total",
+  "deposit_num",
+  "rent_num",
+  "maintenance_num",
   "parking_fee",
   "elevator",
   "parking",
@@ -41,16 +36,20 @@ function field(value, fallback = "-") {
   return value || fallback;
 }
 
-function withUnit(value, unit, unitPattern) {
-  if (!value) {
-    return "";
-  }
-  const text = String(value).trim();
-  return unitPattern.test(text) ? text : `${text}${unit}`;
+function withSquareMeterUnit(value) {
+  return formatWithUnit(value, "m²", /(㎡|m2|m²|제곱미터)/i);
 }
 
-function withSquareMeterUnit(value) {
-  return withUnit(value, "m²", /(㎡|m2|m²|제곱미터)/i);
+function joinValues(...values) {
+  return values.filter(Boolean).join(" ");
+}
+
+function formatPriceNumber(value) {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+
+  return `${formatNumber(value)} / 3.3㎡`;
 }
 
 function formatApprovalDate(value) {
@@ -102,25 +101,11 @@ function DetailItem({ label, value }) {
   );
 }
 
-function PriceItem({ label, total, unitPrice }) {
+function PriceItem({ label, unitPrice }) {
   return (
     <div className="detailItem">
       <span>{label}</span>
-      <strong>{field(total)}</strong>
-      {unitPrice && <em className="detailUnitPrice">평단가 {unitPrice}</em>}
-    </div>
-  );
-}
-
-function AreaItem({ label, pyeong, squareMeters }) {
-  const primary = withUnit(pyeong, "평", /평/);
-  const secondary = withUnit(squareMeters, "㎡", /(㎡|m2|m²|제곱미터)/i);
-
-  return (
-    <div className="detailItem">
-      <span>{label}</span>
-      <strong>{field(primary || secondary)}</strong>
-      {primary && secondary && <em className="detailSubValue">{secondary}</em>}
+      <strong>{field(unitPrice)}</strong>
     </div>
   );
 }
@@ -132,7 +117,7 @@ function InfoSection({ title, items, children }) {
       {items?.length > 0 && (
         <div className="detailInfoGrid">
           {items.map((item) => (
-            <DetailItem key={item.label} label={item.label} value={item.value} />
+            <DetailItem key={item.label || item.value} label={item.label} value={item.value} />
           ))}
         </div>
       )}
@@ -150,8 +135,9 @@ export default async function BuildingDetailPage({ params }) {
   }
 
   const title = field(building.building_name, "이름 없는 빌딩");
+  const buildingScale = joinValues(building.building_scale, building.scale);
   const basicItems = [
-    { label: "규모", value: building.building_scale },
+    { label: "규모", value: buildingScale },
     { label: "용도", value: building.building_use },
     { label: "사용승인일", value: formatApprovalDate(building.approval_date) },
     { label: "연면적", value: withSquareMeterUnit(building.gross_floor_area) },
@@ -190,40 +176,15 @@ export default async function BuildingDetailPage({ params }) {
             </div>
           </div>
           <div className="detailHeroInfo">
-            <div className="detailStatusRow">
-              <span className="detailStatus">임대가능</span>
-            </div>
             <h1>{title}</h1>
             <p>{field(building.address)}</p>
             <div className="detailHeroStats">
-              <AreaItem
-                label="임대면적"
-                pyeong={building.rental_area_pyeong}
-                squareMeters={building.rental_area_m2}
-              />
-              <AreaItem
-                label="전용면적"
-                pyeong={building.exclusive_area_pyeong}
-                squareMeters={building.exclusive_area_m2}
-              />
-              <DetailItem label="규모" value={building.building_scale} />
+              <DetailItem label="규모" value={buildingScale} />
             </div>
             <div className="detailPriceGrid">
-              <PriceItem
-                label="보증금"
-                total={building.deposit_total}
-                unitPrice={building.deposit}
-              />
-              <PriceItem
-                label="월 임대료"
-                total={building.rent_total}
-                unitPrice={building.rent}
-              />
-              <PriceItem
-                label="관리비"
-                total={building.maintenance_fee_total}
-                unitPrice={building.maintenance_fee}
-              />
+              <PriceItem label="보증금" unitPrice={formatPriceNumber(building.deposit_num)} />
+              <PriceItem label="월 임대료" unitPrice={formatPriceNumber(building.rent_num)} />
+              <PriceItem label="관리비" unitPrice={formatPriceNumber(building.maintenance_num)} />
             </div>
             <div className="detailActions">
               <a className="detailPrimaryAction">전화 문의</a>

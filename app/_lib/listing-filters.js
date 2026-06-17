@@ -1,10 +1,11 @@
 const FILTER_KEYS = [
   "areaMin",
   "areaMax",
-  "depositTotalMin",
-  "depositTotalMax",
-  "rentTotalMin",
-  "rentTotalMax",
+  "scale",
+  "depositMin",
+  "depositMax",
+  "rentMin",
+  "rentMax",
   "subwayWalkMax",
 ];
 
@@ -19,9 +20,11 @@ function filterParam(searchParams, name) {
 }
 
 export function readListingFilters(searchParams) {
-  return Object.fromEntries(
+  const filters = Object.fromEntries(
     FILTER_KEYS.map((key) => [key, filterParam(searchParams, key)]),
   );
+  filters.scale = searchParams.get("scale")?.trim() || null;
+  return filters;
 }
 
 export function appendSubwayWalkFilter(params, filters) {
@@ -42,21 +45,24 @@ function appendRangeFilter(params, column, min, max) {
 export function appendListingFilterParams(params, filters) {
   appendRangeFilter(
     params,
-    "rental_area_pyeong_num",
+    "gross_floor_area",
     filters.areaMin,
     filters.areaMax,
   );
+  if (filters.scale !== null) {
+    params.set("scale", `eq.${filters.scale}`);
+  }
   appendRangeFilter(
     params,
-    "deposit_total_num",
-    filters.depositTotalMin,
-    filters.depositTotalMax,
+    "deposit_num",
+    filters.depositMin,
+    filters.depositMax,
   );
   appendRangeFilter(
     params,
-    "rent_total_num",
-    filters.rentTotalMin,
-    filters.rentTotalMax,
+    "rent_num",
+    filters.rentMin,
+    filters.rentMax,
   );
   appendSubwayWalkFilter(params, filters);
 }

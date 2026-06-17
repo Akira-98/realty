@@ -75,8 +75,12 @@ export function ResultsPanel({
           </div>
         )}
         {listLoading && (
-          <div className="listLoading">
-            <span>매물 목록을 불러오는 중입니다.</span>
+          <div className="listLoading" aria-label="매물 목록을 불러오는 중입니다.">
+            <span className="loadingDots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </div>
         )}
       </div>

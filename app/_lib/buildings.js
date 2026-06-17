@@ -1,3 +1,5 @@
+import { formatWithUnit } from "./formatters";
+
 export function formatDistance(value) {
   if (!Number.isFinite(value)) {
     return "";
@@ -13,14 +15,7 @@ export function compactText(value) {
 }
 
 function formatGrossFloorArea(value) {
-  if (!value) {
-    return "";
-  }
-  const text = String(value).trim();
-  if (!text) {
-    return "";
-  }
-  return /(㎡|m2|m²|제곱미터)/i.test(text) ? text : `${text}m²`;
+  return formatWithUnit(value, "m²", /(㎡|m2|m²|제곱미터)/i);
 }
 
 export function buildSummary(building) {

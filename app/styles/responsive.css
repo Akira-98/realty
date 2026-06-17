@@ -47,12 +47,17 @@
 
 @media (max-width: 760px) {
   .siteHeader {
-    height: 64px;
+    min-height: 64px;
+    height: auto;
+    gap: 16px;
     padding: 0 20px;
   }
 
   .siteHeader nav {
-    display: none;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px 18px;
+    font-size: 14px;
   }
 
   .brand {
@@ -73,20 +78,13 @@
     font-size: 38px;
   }
 
-  .searchPanel {
-    padding: 24px;
+  .inquiryMenu {
+    right: 20px;
   }
 
-  .searchPanel h2 {
-    font-size: 25px;
-  }
-
-  .searchInputWrap {
-    min-height: 56px;
-  }
-
-  .searchInputWrap button {
-    width: 86px;
+  .heroActions a {
+    min-height: 46px;
+    padding: 0 18px;
   }
 
   .stats {

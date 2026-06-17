@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import {
   FILTER_GROUPS,
+  SCALE_OPTIONS,
   SUBWAY_WALK_OPTIONS,
   filterSummary,
 } from "../../_lib/search-filters";
@@ -117,7 +118,7 @@ export function AdminToolbar({
                       />
                     </label>
                   </div>
-                  <span>{group.unit} 기준</span>
+                  <span>{group.basisLabel || `${group.unit} 기준`}</span>
                   <div className="adminFilterActions">
                     <button
                       type="button"
@@ -137,6 +138,58 @@ export function AdminToolbar({
               </details>
             );
           })}
+          <details
+            open={openFilter === "scale"}
+            className={filters.scale ? "adminFilterPopover active" : "adminFilterPopover"}
+          >
+            <summary
+              onClick={(event) => {
+                event.preventDefault();
+                setOpenFilter((currentFilter) =>
+                  currentFilter === "scale" ? "" : "scale",
+                );
+              }}
+            >
+              <span>규모</span>
+            </summary>
+            <div className="adminFilterDropdown">
+              <strong>{filters.scale || "전체"}</strong>
+              <div className="adminFilterChoices">
+                {SCALE_OPTIONS.map((scale) => (
+                  <button
+                    key={scale}
+                    type="button"
+                    className={filters.scale === scale ? "active" : ""}
+                    onClick={() =>
+                      setFilters((current) => ({
+                        ...current,
+                        scale: current.scale === scale ? "" : scale,
+                      }))
+                    }
+                  >
+                    {scale}
+                  </button>
+                ))}
+              </div>
+              <div className="adminFilterActions">
+                <button
+                  type="button"
+                  className="adminGhostButton"
+                  onClick={() =>
+                    setFilters((current) => ({
+                      ...current,
+                      scale: "",
+                    }))
+                  }
+                >
+                  초기화
+                </button>
+                <button type="submit" onClick={() => setOpenFilter("")}>
+                  적용
+                </button>
+              </div>
+            </div>
+          </details>
           <details
             open={openFilter === "subwayWalk"}
             className={filters.subwayWalkMax ? "adminFilterPopover active" : "adminFilterPopover"}

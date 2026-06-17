@@ -1,28 +1,33 @@
+import { formatNumber } from "../../_lib/formatters";
+
 export const EDIT_FIELDS = [
-  ["deposit", "보증금 단가"],
-  ["deposit_total", "보증금 총액"],
-  ["rent", "임대료 단가"],
-  ["rent_total", "임대료 총액"],
-  ["maintenance_fee", "관리비 단가"],
-  ["maintenance_fee_total", "관리비 총액"],
+  ["deposit_num", "보증금 / 3.3㎡"],
+  ["rent_num", "임대료 / 3.3㎡"],
+  ["maintenance_num", "관리비 / 3.3㎡"],
 ];
 
 export const PAGE_SIZE = 10;
 
 export function emptyDraft(building) {
   return Object.fromEntries(
-    EDIT_FIELDS.map(([key]) => [key, building?.[key] || ""]),
+    EDIT_FIELDS.map(([key]) => [key, building?.[key] ?? ""]),
   );
 }
 
 export function priceSummary(building) {
   return [
-    building.deposit || building.deposit_total,
-    building.rent || building.rent_total,
-    building.maintenance_fee || building.maintenance_fee_total,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+    priceLabel("보증금", building.deposit_num),
+    priceLabel("임대료", building.rent_num),
+    priceLabel("관리비", building.maintenance_num),
+  ].join(" · ");
+}
+
+function priceLabel(label, value) {
+  if (value === null || value === undefined || value === "") {
+    return `${label} 별도 문의`;
+  }
+
+  return `${label} ${formatNumber(value)} / 3.3㎡`;
 }
 
 export function isUnauthorized(response) {

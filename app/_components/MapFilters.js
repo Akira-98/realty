@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import {
   FILTER_GROUPS,
+  SCALE_OPTIONS,
   SUBWAY_WALK_OPTIONS,
   filterSummary,
 } from "../_lib/search-filters";
@@ -43,73 +44,126 @@ export function MapFilters({ filters, onApply, onReset }) {
       {FILTER_GROUPS.map((group) => {
         const isActive = Boolean(filters[group.minKey] || filters[group.maxKey]);
         return (
-          <details
-            key={group.label}
-            open={openFilter === group.label}
-            className={isActive ? "mapFilterPopover active" : "mapFilterPopover"}
-          >
-            <summary
-              onClick={(event) => {
-                event.preventDefault();
-                setOpenFilter((currentFilter) =>
-                  currentFilter === group.label ? "" : group.label,
-                );
-              }}
+          <Fragment key={group.label}>
+            <details
+              open={openFilter === group.label}
+              className={isActive ? "mapFilterPopover active" : "mapFilterPopover"}
             >
-              <span>{group.label}</span>
-            </summary>
-            <div className="mapFilterDropdown">
-              <strong>{filterSummary(draft, group)}</strong>
-              <div className="mapFilterInputs">
-                <label>
-                  최소
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    min="0"
-                    placeholder="0"
-                    value={draft[group.minKey] ?? ""}
-                    onChange={(event) =>
-                      setDraft((currentDraft) => ({
-                        ...currentDraft,
-                        [group.minKey]: event.target.value,
-                      }))
-                    }
-                  />
-                </label>
-                <label>
-                  최대
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    min="0"
-                    placeholder="제한 없음"
-                    value={draft[group.maxKey] ?? ""}
-                    onChange={(event) =>
-                      setDraft((currentDraft) => ({
-                        ...currentDraft,
-                        [group.maxKey]: event.target.value,
-                      }))
-                    }
-                  />
-                </label>
+              <summary
+                onClick={(event) => {
+                  event.preventDefault();
+                  setOpenFilter((currentFilter) =>
+                    currentFilter === group.label ? "" : group.label,
+                  );
+                }}
+              >
+                <span>{group.label}</span>
+              </summary>
+              <div className="mapFilterDropdown">
+                <strong>{filterSummary(draft, group)}</strong>
+                <div className="mapFilterInputs">
+                  <label>
+                    최소
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min="0"
+                      placeholder="0"
+                      value={draft[group.minKey] ?? ""}
+                      onChange={(event) =>
+                        setDraft((currentDraft) => ({
+                          ...currentDraft,
+                          [group.minKey]: event.target.value,
+                        }))
+                      }
+                    />
+                  </label>
+                  <label>
+                    최대
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min="0"
+                      placeholder="제한 없음"
+                      value={draft[group.maxKey] ?? ""}
+                      onChange={(event) =>
+                        setDraft((currentDraft) => ({
+                          ...currentDraft,
+                          [group.maxKey]: event.target.value,
+                        }))
+                      }
+                    />
+                  </label>
+                </div>
+                <span>{group.basisLabel || `${group.unit} 기준`}</span>
+                <div className="mapFilterActions">
+                  <button
+                    type="button"
+                    className="ghostButton"
+                    onClick={() => {
+                      onReset();
+                      setOpenFilter("");
+                    }}
+                  >
+                    초기화
+                  </button>
+                  <button type="submit">적용</button>
+                </div>
               </div>
-              <span>{group.unit} 기준</span>
-              <div className="mapFilterActions">
-                <button
-                  type="button"
-                  className="ghostButton"
-                  onClick={() => {
-                    onReset();
-                    setOpenFilter("");
+            </details>
+            {group.minKey === "areaMin" && (
+              <details
+                open={openFilter === "scale"}
+                className={filters.scale ? "mapFilterPopover active" : "mapFilterPopover"}
+              >
+                <summary
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setOpenFilter((currentFilter) =>
+                      currentFilter === "scale" ? "" : "scale",
+                    );
                   }}
                 >
-                  초기화
-                </button>
-                <button type="submit">적용</button>
-              </div>
-            </div>
-          </details>
+                  <span>규모</span>
+                </summary>
+                <div className="mapFilterDropdown">
+                  <strong>{draft.scale || "전체"}</strong>
+                  <div className="mapFilterChoices">
+                    {SCALE_OPTIONS.map((scale) => (
+                      <button
+                        key={scale}
+                        type="button"
+                        className={draft.scale === scale ? "active" : ""}
+                        onClick={() =>
+                          setDraft((currentDraft) => ({
+                            ...currentDraft,
+                            scale: currentDraft.scale === scale ? "" : scale,
+                          }))
+                        }
+                      >
+                        {scale}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mapFilterActions">
+                    <button
+                      type="button"
+                      className="ghostButton"
+                      onClick={() => {
+                        setDraft((currentDraft) => ({
+                          ...currentDraft,
+                          scale: "",
+                        }));
+                      }}
+                    >
+                      초기화
+                    </button>
+                    <button type="submit">적용</button>
+                  </div>
+                </div>
+              </details>
+            )}
+          </Fragment>
         );
       })}
       <details

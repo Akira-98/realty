@@ -90,25 +90,6 @@
   min-width: 0;
 }
 
-.detailStatusRow {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: center;
-}
-
-.detailStatus {
-  border-radius: 999px;
-  padding: 7px 11px;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.detailStatus {
-  background: #d9f8e5;
-  color: #058847;
-}
-
 .detailHeroInfo h1 {
   margin: 14px 0 10px;
   color: #070b0f;
@@ -166,17 +147,6 @@
 .detailPriceGrid .detailItem strong {
   color: #1668f2;
   font-size: 25px;
-}
-
-.detailUnitPrice,
-.detailSubValue {
-  display: block;
-  margin-top: 7px;
-  color: #66757c;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 800;
-  line-height: 1.45;
 }
 
 .detailActions {

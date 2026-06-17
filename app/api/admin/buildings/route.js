@@ -19,25 +19,25 @@ const ADMIN_LIST_SELECT = [
   "building_name",
   "address",
   "rental_area_pyeong",
-  "deposit",
-  "deposit_total",
-  "rent",
-  "rent_total",
-  "maintenance_fee",
-  "maintenance_fee_total",
+  "deposit_num",
+  "rent_num",
+  "maintenance_num",
   "subway_walk_min",
   "is_public",
   "updated_at",
 ].join(",");
 
 const EDITABLE_FIELDS = new Set([
-  "deposit",
-  "deposit_total",
-  "rent",
-  "rent_total",
-  "maintenance_fee",
-  "maintenance_fee_total",
+  "deposit_num",
+  "rent_num",
+  "maintenance_num",
   "is_public",
+]);
+
+const NUMERIC_FIELDS = new Set([
+  "deposit_num",
+  "rent_num",
+  "maintenance_num",
 ]);
 
 function escapeLike(value) {
@@ -50,6 +50,17 @@ function cleanPatchValue(key, value) {
       throw new Error("is_public must be a boolean.");
     }
     return value;
+  }
+
+  if (NUMERIC_FIELDS.has(key)) {
+    if (value === null || value === "") {
+      return null;
+    }
+    const number = Number(value);
+    if (!Number.isFinite(number)) {
+      throw new Error(`${key} must be a number.`);
+    }
+    return number;
   }
 
   if (value === null) {

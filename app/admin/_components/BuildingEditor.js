@@ -27,6 +27,8 @@ export function BuildingEditor({ building, draft, saving, onChange, onSave }) {
             <label key={key}>
               {label}
               <input
+                type="number"
+                step="0.01"
                 value={draft[key] ?? ""}
                 onChange={(event) => onChange(key, event.target.value)}
               />
