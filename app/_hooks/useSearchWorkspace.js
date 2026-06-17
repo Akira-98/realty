@@ -30,6 +30,14 @@ function replaceSearchViewUrl(view) {
   window.history.replaceState(window.history.state, "", nextUrl);
 }
 
+function idKey(id) {
+  return id === null || id === undefined ? "" : String(id);
+}
+
+function isSameId(left, right) {
+  return idKey(left) !== "" && idKey(left) === idKey(right);
+}
+
 export function useSearchWorkspace() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -59,16 +67,16 @@ export function useSearchWorkspace() {
   const hasResults = Boolean(center);
   const selectedBuilding = useMemo(() => {
     return (
-      listBuildings.find((building) => building.id === selectedId) ||
-      markerBuildings.find((building) => building.id === selectedId)
+      listBuildings.find((building) => isSameId(building.id, selectedId)) ||
+      markerBuildings.find((building) => isSameId(building.id, selectedId))
     );
   }, [listBuildings, markerBuildings, selectedId]);
   const displayedBuildings = useMemo(() => {
     if (!focusedBuildingIds) {
       return listBuildings;
     }
-    const focusedIdSet = new Set(focusedBuildingIds);
-    return listBuildings.filter((building) => focusedIdSet.has(building.id));
+    const focusedIdSet = new Set(focusedBuildingIds.map(idKey));
+    return listBuildings.filter((building) => focusedIdSet.has(idKey(building.id)));
   }, [listBuildings, focusedBuildingIds]);
 
   const abortMarkerDetails = useCallback(() => {
