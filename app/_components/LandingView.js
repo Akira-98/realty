@@ -18,10 +18,10 @@ export function LandingView({ query, setQuery, loading, error, onSearch }) {
           <div className="heroCopy">
             <span>오피스 · 업무시설 · 위치기반 검색</span>
             <h1>원하는 지역 근처의 오피스를 빠르게 찾아보세요.</h1>
-            <p>지하철역, 주소, 건물명으로 검색하고 지도 영역 안의 매물을 확인합니다.</p>
+            <p>지역, 지하철역, 주소로 검색하고 지도 영역 안의 매물을 확인합니다.</p>
           </div>
           <div className="searchPanel">
-            <h2>지역 또는 건물 검색</h2>
+            <h2>지역 검색</h2>
             <SearchForm
               query={query}
               setQuery={setQuery}

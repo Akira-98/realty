@@ -141,7 +141,6 @@ export function useSearchWorkspace() {
       return;
     }
 
-    const urlMode = searchParams.get("mode") === "marker" ? "marker" : "bounds";
     setQuery(urlQuery);
     setCenter({
       label: searchParams.get("label") || urlQuery,
@@ -155,40 +154,10 @@ export function useSearchWorkspace() {
     setResultCount(null);
     setSelectedId(null);
     setFocusedBuildingIds(null);
-    setMode(urlMode);
+    setMode("bounds");
     latestBoundsKeyRef.current = "";
     setBoundsRefreshKey((key) => key + 1);
     setHasCheckedSearchUrl(true);
-
-    if (urlMode !== "marker") {
-      return;
-    }
-
-    const controller = new AbortController();
-    async function restoreBuildingSearch() {
-      try {
-        const response = await fetch(
-          `/api/buildings/search?q=${encodeURIComponent(urlQuery)}`,
-          { signal: controller.signal },
-        );
-        const payload = await response.json();
-        if (!response.ok) {
-          return;
-        }
-        setMarkerBuildings(payload.buildings);
-        setListBuildings(payload.buildings);
-        setResultCount(payload.count ?? payload.buildings.length);
-        setSelectedId(payload.buildings[0]?.id ?? null);
-      } catch (restoreError) {
-        if (restoreError.name !== "AbortError") {
-          setError(restoreError.message);
-        }
-      }
-    }
-    restoreBuildingSearch();
-    return () => {
-      controller.abort();
-    };
   }, [searchParams]);
 
   const handleMapMove = useCallback(() => {

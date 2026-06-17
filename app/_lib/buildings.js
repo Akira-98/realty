@@ -32,53 +32,6 @@ export function buildSummary(building) {
     .join(" · ");
 }
 
-export function centerFromBuildings(query, buildings) {
-  const located = buildings.filter((building) => building.lat && building.lng);
-  if (located.length === 0) {
-    return null;
-  }
-
-  const lat =
-    located.reduce((sum, building) => sum + Number(building.lat), 0) /
-    located.length;
-  const lng =
-    located.reduce((sum, building) => sum + Number(building.lng), 0) /
-    located.length;
-
-  return {
-    label: query,
-    lat,
-    lng,
-    source: "building-search",
-  };
-}
-
-function normalizeSearchText(value) {
-  return String(value ?? "")
-    .toLowerCase()
-    .replace(/\s+/g, "");
-}
-
-export function isSpecificBuildingSearch(query, buildings) {
-  if (buildings.length === 0) {
-    return false;
-  }
-
-  const normalizedQuery = normalizeSearchText(query);
-  const hasExactMatch = buildings.some(
-    (building) => normalizeSearchText(building.building_name) === normalizedQuery,
-  );
-  if (hasExactMatch) {
-    return true;
-  }
-
-  if (normalizedQuery.length >= 4 && buildings.length <= 20) {
-    return true;
-  }
-
-  return normalizedQuery.length >= 3 && buildings.length <= 3;
-}
-
 const DEFAULT_CLUSTER_PIXEL_SIZE = 176;
 
 function clusterPixelSizeForLevel(level) {

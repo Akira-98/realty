@@ -5,7 +5,7 @@ export function SearchForm({ query, setQuery, onSearch, loading, compact = false
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="지역, 지하철역, 주소, 건물명"
+          placeholder="지역, 지하철역, 주소"
           aria-label="검색어"
         />
         <button type="submit" disabled={loading}>
