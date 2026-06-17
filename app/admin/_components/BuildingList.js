@@ -60,7 +60,7 @@ function BuildingRow({ active, building, saving, onEdit, onTogglePublic }) {
       <button type="button" onClick={onEdit}>
         <strong>{building.building_name}</strong>
         <span>{building.address}</span>
-        <em>{priceSummary(building) || "별도 문의"}</em>
+        <em>{priceSummary(building) || "별도문의"}</em>
       </button>
       <div className="adminBuildingActions">
         <span className={building.is_public ? "statusPublic" : "statusPrivate"}>

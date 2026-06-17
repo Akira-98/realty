@@ -46,10 +46,10 @@ function joinValues(...values) {
 
 function formatPriceNumber(value) {
   if (value === null || value === undefined || value === "") {
-    return "";
+    return "별도문의";
   }
 
-  return `${formatNumber(value)} / 3.3㎡`;
+  return `${formatNumber(value)}원 / 3.3㎡`;
 }
 
 function formatApprovalDate(value) {

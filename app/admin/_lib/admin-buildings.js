@@ -24,10 +24,10 @@ export function priceSummary(building) {
 
 function priceLabel(label, value) {
   if (value === null || value === undefined || value === "") {
-    return `${label} 별도 문의`;
+    return `${label} 별도문의`;
   }
 
-  return `${label} ${formatNumber(value)} / 3.3㎡`;
+  return `${label} ${formatNumber(value)}원 / 3.3㎡`;
 }
 
 export function isUnauthorized(response) {
