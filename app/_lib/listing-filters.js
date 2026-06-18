@@ -42,6 +42,9 @@ export function appendSubwayWalkFilter(params, filters) {
 }
 
 export function minApprovalYearFromFilters(filters, currentYear = new Date().getFullYear()) {
+  if (filters.buildingAgeMax === null || filters.buildingAgeMax === "") {
+    return null;
+  }
   const ageMax = Number(filters.buildingAgeMax);
   if (!Number.isFinite(ageMax)) {
     return null;
