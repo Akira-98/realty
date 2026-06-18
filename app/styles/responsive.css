@@ -76,15 +76,32 @@
 
   .heroCopy h1 {
     font-size: 38px;
+    line-height: 1.14;
+  }
+
+  .heroCopy p {
+    font-size: 16px;
+  }
+
+  .districtShortcuts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .inquiryMenu {
     right: 20px;
   }
 
-  .heroActions a {
-    min-height: 46px;
-    padding: 0 18px;
+  .heroPreview {
+    border-radius: 10px;
+  }
+
+  .previewMap {
+    height: 240px;
+  }
+
+  .previewList div {
+    min-height: 62px;
+    padding: 0 16px;
   }
 
   .stats {
