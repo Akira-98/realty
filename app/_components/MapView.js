@@ -53,7 +53,6 @@ export function MapView({
   selectedId,
   onSelect,
   onFiltersApply,
-  onFiltersReset,
   onBoundsChange,
   onMapMove,
   onViewportChange,
@@ -233,7 +232,6 @@ export function MapView({
       <MapFilters
         filters={filters}
         onApply={onFiltersApply}
-        onReset={onFiltersReset}
       />
       {(!ready || error) && (
         <div className="mapFallback">

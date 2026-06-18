@@ -7,6 +7,8 @@ export const EMPTY_FILTERS = {
   rentMin: "",
   rentMax: "",
   subwayWalkMax: "",
+  buildingAgeMax: "",
+  businessDistrict: "",
 };
 
 export const FILTER_GROUPS = [
@@ -37,8 +39,49 @@ export const SCALE_OPTIONS = ["소형", "중형", "중대형", "대형", "초대
 
 export const SUBWAY_WALK_OPTIONS = ["2", "5", "10"];
 
-function normalizeFilterValue(value) {
-  if (typeof value === "string" && SCALE_OPTIONS.includes(value)) {
+export const BUILDING_AGE_OPTIONS = ["3", "5", "10", "20"];
+
+export const BUSINESS_DISTRICT_OPTIONS = [
+  {
+    value: "GBD",
+    label: "GBD",
+    description: "강남구 · 서초구 · 송파구",
+    center: { label: "GBD", lat: 37.4979, lng: 127.0276, level: 8 },
+  },
+  {
+    value: "YBD",
+    label: "YBD",
+    description: "영등포구",
+    center: { label: "YBD", lat: 37.5263, lng: 126.9259, level: 8 },
+  },
+  {
+    value: "CBD",
+    label: "CBD",
+    description: "종로구 · 중구",
+    center: { label: "CBD", lat: 37.5663, lng: 126.9782, level: 7 },
+  },
+  {
+    value: "BBD",
+    label: "BBD",
+    description: "분당구",
+    center: { label: "BBD", lat: 37.3827, lng: 127.1189, level: 8 },
+  },
+];
+
+export function businessDistrictLabel(value) {
+  const option = BUSINESS_DISTRICT_OPTIONS.find((district) => district.value === value);
+  return option ? `${option.label} · ${option.description}` : "";
+}
+
+function normalizeFilterValue(value, key) {
+  if (typeof value === "string" && key === "scale" && SCALE_OPTIONS.includes(value)) {
+    return value;
+  }
+  if (
+    typeof value === "string" &&
+    key === "businessDistrict" &&
+    BUSINESS_DISTRICT_OPTIONS.some((district) => district.value === value)
+  ) {
     return value;
   }
   const number = Number(value);
@@ -49,7 +92,7 @@ export function normalizeFilters(filters) {
   return Object.fromEntries(
     Object.keys(EMPTY_FILTERS).map((key) => [
       key,
-      normalizeFilterValue(filters[key]),
+      normalizeFilterValue(filters[key], key),
     ]),
   );
 }

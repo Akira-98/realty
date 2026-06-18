@@ -95,8 +95,15 @@ export function useSearchWorkspace() {
     }
   }, [abortMarkerDetails]);
 
-  const applyFilters = useCallback((nextFilters) => {
+  const applyFilters = useCallback((nextFilters, options = {}) => {
     setFilters(normalizeFilters(nextFilters));
+    if (options.center) {
+      setCenter((currentCenter) => ({
+        ...(currentCenter ?? {}),
+        ...options.center,
+        source: "businessDistrict",
+      }));
+    }
     setMode("bounds");
     setSelectedId(null);
     setFocusedBuildingIds(null);

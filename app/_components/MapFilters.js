@@ -3,13 +3,15 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 
 import {
+  BUILDING_AGE_OPTIONS,
+  BUSINESS_DISTRICT_OPTIONS,
   FILTER_GROUPS,
   SCALE_OPTIONS,
   SUBWAY_WALK_OPTIONS,
   filterSummary,
 } from "../_lib/search-filters";
 
-export function MapFilters({ filters, onApply, onReset }) {
+export function MapFilters({ filters, onApply }) {
   const filtersRef = useRef(null);
   const [draft, setDraft] = useState(filters);
   const [openFilter, setOpenFilter] = useState("");
@@ -30,6 +32,31 @@ export function MapFilters({ filters, onApply, onReset }) {
       document.removeEventListener("pointerdown", closeOnOutsideClick);
     };
   }, []);
+
+  const applyDraft = (nextDraft, options = {}) => {
+    setDraft(nextDraft);
+    onApply(nextDraft, options);
+    setOpenFilter("");
+  };
+
+  const resetDraftValues = (values) => {
+    applyDraft({
+      ...draft,
+      ...values,
+    });
+  };
+
+  const resetButton = (label, values) => (
+    <button
+      type="button"
+      className="ghostButton"
+      aria-label={`${label} 초기화`}
+      title={`${label} 초기화`}
+      onClick={() => resetDraftValues(values)}
+    >
+      ↺
+    </button>
+  );
 
   return (
     <form
@@ -100,12 +127,16 @@ export function MapFilters({ filters, onApply, onReset }) {
                   <button
                     type="button"
                     className="ghostButton"
+                    aria-label={`${group.label} 초기화`}
+                    title={`${group.label} 초기화`}
                     onClick={() => {
-                      onReset();
-                      setOpenFilter("");
+                      resetDraftValues({
+                        [group.minKey]: "",
+                        [group.maxKey]: "",
+                      });
                     }}
                   >
-                    초기화
+                    ↺
                   </button>
                   <button type="submit">적용</button>
                 </div>
@@ -134,31 +165,19 @@ export function MapFilters({ filters, onApply, onReset }) {
                         key={scale}
                         type="button"
                         className={draft.scale === scale ? "active" : ""}
-                        onClick={() =>
-                          setDraft((currentDraft) => ({
-                            ...currentDraft,
-                            scale: currentDraft.scale === scale ? "" : scale,
-                          }))
-                        }
+                        onClick={() => {
+                          applyDraft({
+                            ...draft,
+                            scale: draft.scale === scale ? "" : scale,
+                          });
+                        }}
                       >
                         {scale}
                       </button>
                     ))}
                   </div>
                   <div className="mapFilterActions">
-                    <button
-                      type="button"
-                      className="ghostButton"
-                      onClick={() => {
-                        setDraft((currentDraft) => ({
-                          ...currentDraft,
-                          scale: "",
-                        }));
-                      }}
-                    >
-                      초기화
-                    </button>
-                    <button type="submit">적용</button>
+                    {resetButton("규모", { scale: "" })}
                   </div>
                 </div>
               </details>
@@ -166,6 +185,92 @@ export function MapFilters({ filters, onApply, onReset }) {
           </Fragment>
         );
       })}
+      <details
+        open={openFilter === "businessDistrict"}
+        className={filters.businessDistrict ? "mapFilterPopover active" : "mapFilterPopover"}
+      >
+        <summary
+          onClick={(event) => {
+            event.preventDefault();
+            setOpenFilter((currentFilter) =>
+              currentFilter === "businessDistrict" ? "" : "businessDistrict",
+            );
+          }}
+        >
+          <span>업무권역</span>
+        </summary>
+        <div className="mapFilterDropdown">
+          <strong>{draft.businessDistrict || "전체"}</strong>
+          <div className="mapFilterChoices">
+            {BUSINESS_DISTRICT_OPTIONS.map((district) => {
+              const isActive = draft.businessDistrict === district.value;
+              return (
+                <button
+                  key={district.value}
+                  type="button"
+                  className={isActive ? "active" : ""}
+                  title={district.description}
+                  onClick={() => {
+                    applyDraft(
+                      {
+                        ...draft,
+                        businessDistrict: isActive ? "" : district.value,
+                      },
+                      isActive ? {} : { center: district.center },
+                    );
+                  }}
+                >
+                  {district.label}
+                </button>
+              );
+            })}
+          </div>
+          <span>GBD · YBD · CBD · BBD</span>
+          <div className="mapFilterActions">
+            {resetButton("업무권역", { businessDistrict: "" })}
+          </div>
+        </div>
+      </details>
+      <details
+        open={openFilter === "buildingAge"}
+        className={filters.buildingAgeMax ? "mapFilterPopover active" : "mapFilterPopover"}
+      >
+        <summary
+          onClick={(event) => {
+            event.preventDefault();
+            setOpenFilter((currentFilter) =>
+              currentFilter === "buildingAge" ? "" : "buildingAge",
+            );
+          }}
+        >
+          <span>준공연차</span>
+        </summary>
+        <div className="mapFilterDropdown">
+          <strong>
+            {draft.buildingAgeMax ? `${draft.buildingAgeMax}년 이하` : "전체"}
+          </strong>
+          <div className="mapFilterChoices">
+            {BUILDING_AGE_OPTIONS.map((years) => (
+              <button
+                key={years}
+                type="button"
+                className={draft.buildingAgeMax === years ? "active" : ""}
+                onClick={() => {
+                  applyDraft({
+                    ...draft,
+                    buildingAgeMax: draft.buildingAgeMax === years ? "" : years,
+                  });
+                }}
+              >
+                {years}년
+              </button>
+            ))}
+          </div>
+          <div className="mapFilterActions">
+            {resetButton("준공연차", { buildingAgeMax: "" })}
+          </div>
+        </div>
+      </details>
       <details
         open={openFilter === "subwayWalk"}
         className={filters.subwayWalkMax ? "mapFilterPopover active" : "mapFilterPopover"}
@@ -188,32 +293,19 @@ export function MapFilters({ filters, onApply, onReset }) {
                 key={minutes}
                 type="button"
                 className={draft.subwayWalkMax === minutes ? "active" : ""}
-                onClick={() =>
-                  setDraft((currentDraft) => ({
-                    ...currentDraft,
-                    subwayWalkMax:
-                      currentDraft.subwayWalkMax === minutes ? "" : minutes,
-                  }))
-                }
+                onClick={() => {
+                  applyDraft({
+                    ...draft,
+                    subwayWalkMax: draft.subwayWalkMax === minutes ? "" : minutes,
+                  });
+                }}
               >
                 {minutes}분
               </button>
             ))}
           </div>
           <div className="mapFilterActions">
-            <button
-              type="button"
-              className="ghostButton"
-              onClick={() => {
-                setDraft((currentDraft) => ({
-                  ...currentDraft,
-                  subwayWalkMax: "",
-                }));
-              }}
-            >
-              초기화
-            </button>
-            <button type="submit">적용</button>
+            {resetButton("지하철", { subwayWalkMax: "" })}
           </div>
         </div>
       </details>

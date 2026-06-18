@@ -45,7 +45,6 @@ function HomeContent() {
               selectedId={search.selectedId}
               onSelect={search.handleMarkerSelect}
               onFiltersApply={search.applyFilters}
-              onFiltersReset={search.resetListingFilters}
               onBoundsChange={search.fetchBuildingsInBounds}
               onMapMove={search.handleMapMove}
               onViewportChange={search.handleMapViewportChange}

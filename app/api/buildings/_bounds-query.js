@@ -1,6 +1,7 @@
 import { jsonError, requiredEnv } from "../../../lib/http";
 import {
   appendListingFilterParams,
+  minApprovalYearFromFilters,
   readListingFilters,
 } from "../../_lib/listing-filters";
 
@@ -13,7 +14,9 @@ export const LIST_SELECT = [
   "building_name",
   "address",
   "building_scale",
+  "business_district",
   "gross_floor_area",
+  "approval_date_parsed",
   "rental_area_pyeong",
   "deposit_total",
   "rent_total",
@@ -106,6 +109,8 @@ export function createBoundsRpcPayload({ bounds, filters, limit, offset, extra =
     max_area: filters.areaMax,
     scale: filters.scale,
     subway_walk_max: filters.subwayWalkMax,
+    min_approval_year: minApprovalYearFromFilters(filters),
+    business_district_filter: filters.businessDistrict,
     list_limit: limit,
     list_offset: offset,
     ...extra,

@@ -7,7 +7,11 @@ const FILTER_KEYS = [
   "rentMin",
   "rentMax",
   "subwayWalkMax",
+  "buildingAgeMax",
+  "businessDistrict",
 ];
+
+const BUSINESS_DISTRICT_CODES = new Set(["GBD", "YBD", "CBD", "BBD"]);
 
 function filterParam(searchParams, name) {
   const rawValue = searchParams.get(name);
@@ -24,6 +28,10 @@ export function readListingFilters(searchParams) {
     FILTER_KEYS.map((key) => [key, filterParam(searchParams, key)]),
   );
   filters.scale = searchParams.get("scale")?.trim() || null;
+  const businessDistrict = searchParams.get("businessDistrict")?.trim().toUpperCase() || null;
+  filters.businessDistrict = BUSINESS_DISTRICT_CODES.has(businessDistrict)
+    ? businessDistrict
+    : null;
   return filters;
 }
 
@@ -31,6 +39,14 @@ export function appendSubwayWalkFilter(params, filters) {
   if (filters.subwayWalkMax !== null) {
     params.set("subway_walk_min", `lte.${filters.subwayWalkMax}`);
   }
+}
+
+export function minApprovalYearFromFilters(filters, currentYear = new Date().getFullYear()) {
+  const ageMax = Number(filters.buildingAgeMax);
+  if (!Number.isFinite(ageMax)) {
+    return null;
+  }
+  return currentYear - ageMax;
 }
 
 function appendRangeFilter(params, column, min, max) {
@@ -65,4 +81,11 @@ export function appendListingFilterParams(params, filters) {
     filters.rentMax,
   );
   appendSubwayWalkFilter(params, filters);
+  const minApprovalYear = minApprovalYearFromFilters(filters);
+  if (minApprovalYear !== null) {
+    params.set("approval_date_parsed", `gte.${minApprovalYear}`);
+  }
+  if (filters.businessDistrict !== null) {
+    params.set("business_district", `eq.${filters.businessDistrict}`);
+  }
 }

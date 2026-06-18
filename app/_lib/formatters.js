@@ -22,3 +22,19 @@ export function formatWithUnit(value, unit, unitPattern) {
 
   return unitPattern.test(text) ? text : `${formatNumber(text)}${unit}`;
 }
+
+export function formatBuildingAge(value, options = {}) {
+  const year = Number(value);
+  if (!Number.isInteger(year)) {
+    return "";
+  }
+
+  const currentYear = options.currentYear ?? new Date().getFullYear();
+  const age = currentYear - year;
+  if (age < 0) {
+    return "준공 예정";
+  }
+
+  const ageText = `${formatNumber(age)}년`;
+  return options.withPrefix ? `준공 ${ageText}` : ageText;
+}

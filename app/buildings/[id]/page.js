@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { SiteFooter } from "../../_components/SiteFooter";
 import { DetailMap } from "../../_components/detail/DetailMap";
 import { InquiryForm } from "../../_components/inquiries/InquiryForm";
-import { formatNumber, formatWithUnit } from "../../_lib/formatters";
+import { businessDistrictLabel } from "../../_lib/search-filters";
+import { formatBuildingAge, formatNumber, formatWithUnit } from "../../_lib/formatters";
 import { requiredEnv } from "../../../lib/http";
 
 export const revalidate = 60;
@@ -16,9 +17,11 @@ const BUILDING_SELECT = [
   "subway",
   "building_use",
   "building_scale",
+  "business_district",
   "scale",
   "gross_floor_area",
   "approval_date",
+  "approval_date_parsed",
   "deposit_num",
   "rent_num",
   "maintenance_num",
@@ -136,12 +139,18 @@ export default async function BuildingDetailPage({ params }) {
 
   const title = field(building.building_name, "이름 없는 빌딩");
   const buildingScale = joinValues(building.building_scale, building.scale);
+  const businessDistrict = businessDistrictLabel(building.business_district);
   const basicItems = [
     { label: "규모", value: buildingScale },
     { label: "용도", value: building.building_use },
+    businessDistrict && {
+      label: "업무권역",
+      value: businessDistrict,
+    },
     { label: "사용승인일", value: formatApprovalDate(building.approval_date) },
+    { label: "준공연차", value: formatBuildingAge(building.approval_date_parsed) },
     { label: "연면적", value: withSquareMeterUnit(building.gross_floor_area) },
-  ];
+  ].filter(Boolean);
   const facilityItems = [
     { label: "천정고", value: building.ceiling_height },
     { label: "냉난방방식", value: building.hvac },
