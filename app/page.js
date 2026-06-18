@@ -37,7 +37,7 @@ function HomeContent() {
               compact
             />
           </header>
-          <div className="workspaceBody">
+          <div className={search.listMode === "empty" ? "workspaceBody mapOnly" : "workspaceBody"}>
             <MapView
               center={search.center}
               buildings={search.markerBuildings}
@@ -50,16 +50,18 @@ function HomeContent() {
               onViewportChange={search.handleMapViewportChange}
               boundsRefreshKey={search.boundsRefreshKey}
             />
-            <ResultsPanel
-              center={search.center}
-              displayedBuildings={search.displayedBuildings}
-              selectedId={search.selectedId}
-              selectedBuilding={search.selectedBuilding}
-              resultCount={search.resultCount}
-              listLoading={search.listLoading}
-              error={search.error}
-              onLoadMore={search.fetchNextListPage}
-            />
+            {search.listMode !== "empty" && (
+              <ResultsPanel
+                center={search.center}
+                displayedBuildings={search.displayedBuildings}
+                selectedId={search.selectedId}
+                resultCount={search.resultCount}
+                listLoading={search.listLoading}
+                error={search.error}
+                onLoadMore={search.fetchNextClusterListPage}
+                onClose={search.handleCloseResultsPanel}
+              />
+            )}
           </div>
         </section>
       )}

@@ -46,6 +46,19 @@ function markerGroupsForRender(buildings, options) {
     .filter((group) => Number.isFinite(group.lat) && Number.isFinite(group.lng));
 }
 
+function markerSizeClass(count) {
+  if (count >= 200) {
+    return "xl";
+  }
+  if (count >= 50) {
+    return "lg";
+  }
+  if (count >= 10) {
+    return "md";
+  }
+  return "sm";
+}
+
 export function MapView({
   center,
   buildings,
@@ -180,6 +193,7 @@ export function MapView({
           firstBuilding?.building_name || group.marker?.building_name || "매물",
         );
       } else {
+        markerContent.classList.add(markerSizeClass(group.count));
         markerContent.textContent = String(group.count);
       }
       markerContent.title =

@@ -144,7 +144,7 @@ export default async function BuildingDetailPage({ params }) {
     { label: "규모", value: buildingScale },
     { label: "용도", value: building.building_use },
     businessDistrict && {
-      label: "업무권역",
+      label: "권역",
       value: businessDistrict,
     },
     { label: "사용승인일", value: formatApprovalDate(building.approval_date) },

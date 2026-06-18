@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 
 import { jsonError } from "../../../../lib/http";
 import {
+  appendListingFilterParams,
+  readListingFilters,
+} from "../../../_lib/listing-filters";
+import {
   LIST_SELECT,
   requiredSupabasePublicConfig,
 } from "../_bounds-query";
@@ -26,6 +30,7 @@ function serializeIdFilter(ids) {
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const ids = [...new Set(readIds(searchParams))];
+  const filters = readListingFilters(searchParams);
 
   if (ids.length === 0) {
     return jsonError("At least one id is required.");
@@ -46,6 +51,7 @@ export async function GET(request) {
   params.set("select", LIST_SELECT);
   params.set("is_public", "eq.true");
   params.set("id", `in.(${serializeIdFilter(ids)})`);
+  appendListingFilterParams(params, filters);
   params.set("order", "building_name.asc,id.asc");
   params.set("limit", String(ids.length));
 

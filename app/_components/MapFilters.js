@@ -197,7 +197,7 @@ export function MapFilters({ filters, onApply }) {
             );
           }}
         >
-          <span>업무권역</span>
+          <span>권역</span>
         </summary>
         <div className="mapFilterDropdown">
           <strong>{draft.businessDistrict || "전체"}</strong>
@@ -227,7 +227,7 @@ export function MapFilters({ filters, onApply }) {
           </div>
           <span>GBD · YBD · CBD · BBD</span>
           <div className="mapFilterActions">
-            {resetButton("업무권역", { businessDistrict: "" })}
+            {resetButton("권역", { businessDistrict: "" })}
           </div>
         </div>
       </details>

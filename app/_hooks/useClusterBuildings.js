@@ -19,7 +19,7 @@ export function boundsFromClusterMarker(marker) {
 
 export function useClusterBuildings({
   filters,
-  mode,
+  listMode,
   setError,
   setListBuildings,
   setListLoading,
@@ -29,23 +29,26 @@ export function useClusterBuildings({
   const pendingClusterAbortRef = useRef(null);
   const isFetchingClusterListRef = useRef(false);
 
-  const abortClusterList = useCallback(() => {
+  const abortClusterList = useCallback((clearLoading = true) => {
     pendingClusterAbortRef.current?.abort();
     pendingClusterAbortRef.current = null;
     clusterListRef.current = null;
     isFetchingClusterListRef.current = false;
-  }, []);
+    if (clearLoading) {
+      setListLoading(false);
+    }
+  }, [setListLoading]);
 
-  useEffect(() => abortClusterList, [abortClusterList]);
+  useEffect(() => () => abortClusterList(false), [abortClusterList]);
 
   useEffect(() => {
-    if (mode !== "marker") {
+    if (listMode !== "cluster") {
       abortClusterList();
     }
-  }, [abortClusterList, mode]);
+  }, [abortClusterList, listMode]);
 
   const fetchClusterListPage = useCallback(
-    async ({ bounds, offset = 0, append = false, total = null }) => {
+    async ({ bounds, offset = 0, append = false, total = null, filtersOverride = filters }) => {
       if (isFetchingClusterListRef.current) {
         return clusterListRef.current?.nextOffset ?? null;
       }
@@ -65,7 +68,7 @@ export function useClusterBuildings({
           limit: String(CLUSTER_LIST_PAGE_SIZE),
           offset: String(offset),
         });
-        appendFilters(params, filters);
+        appendFilters(params, filtersOverride);
         const response = await fetch(`/api/buildings/in-bounds/list?${params}`, {
           signal: controller.signal,
         });
@@ -95,15 +98,17 @@ export function useClusterBuildings({
   );
 
   const selectCluster = useCallback(
-    async ({ bounds, total = null }) => {
+    async ({ bounds, total = null, filtersOverride = filters }) => {
+      pendingClusterAbortRef.current?.abort();
       const clusterListState = {
         bounds,
+        filters: filtersOverride,
         nextOffset: null,
         total,
       };
       clusterListRef.current = clusterListState;
 
-      const nextOffset = await fetchClusterListPage({ bounds, total });
+      const nextOffset = await fetchClusterListPage({ bounds, total, filtersOverride });
       if (clusterListRef.current === clusterListState) {
         clusterListRef.current = {
           ...clusterListState,
@@ -111,12 +116,12 @@ export function useClusterBuildings({
         };
       }
     },
-    [fetchClusterListPage],
+    [fetchClusterListPage, filters],
   );
 
   const fetchNextClusterListPage = useCallback(async () => {
     const clusterList = clusterListRef.current;
-    if (mode !== "marker" || clusterList?.nextOffset === null) {
+    if (listMode !== "cluster" || !clusterList || clusterList.nextOffset === null) {
       return false;
     }
 
@@ -125,13 +130,16 @@ export function useClusterBuildings({
       offset: clusterList.nextOffset,
       append: true,
       total: clusterList.total,
+      filtersOverride: clusterList.filters,
     });
-    clusterListRef.current = {
-      ...clusterList,
-      nextOffset,
-    };
+    if (clusterListRef.current === clusterList) {
+      clusterListRef.current = {
+        ...clusterList,
+        nextOffset,
+      };
+    }
     return true;
-  }, [fetchClusterListPage, mode]);
+  }, [fetchClusterListPage, listMode]);
 
   return useMemo(
     () => ({
