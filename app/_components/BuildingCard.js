@@ -1,12 +1,19 @@
+"use client";
+
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 import { buildSummary } from "../_lib/buildings";
 
 export function BuildingCard({ building, active }) {
+  const searchParams = useSearchParams();
+  const currentSearch = searchParams.toString();
+  const href = `/buildings/${building.id}${currentSearch ? `?${currentSearch}` : ""}`;
+
   return (
     <Link
       className={active ? "buildingCard active" : "buildingCard"}
-      href={`/buildings/${building.id}`}
+      href={href}
     >
       <div className="photoSlot" aria-label="건물 사진 자리" />
       <div className="buildingInfo">

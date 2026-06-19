@@ -10,10 +10,13 @@ export const metadata = {
   description: "Location-based building search",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children, detail }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        {children}
+        {detail}
+      </body>
     </html>
   );
 }

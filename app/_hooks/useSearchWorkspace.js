@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useBoundsBuildings } from "./useBoundsBuildings";
@@ -35,8 +35,10 @@ function replaceSearchViewUrl(view) {
 }
 
 export function useSearchWorkspace() {
+  const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const searchParamsKey = searchParams.toString();
   const [query, setQuery] = useState("");
   const [center, setCenter] = useState(null);
   const [markerBuildings, setMarkerBuildings] = useState([]);
@@ -90,6 +92,14 @@ export function useSearchWorkspace() {
     latestBoundsKeyRef.current = "";
   }, [resultsPanel, router]);
 
+  const closeResultsPanel = useCallback(() => {
+    resultsPanel.closeResultsPanel();
+    if (pathname.startsWith("/buildings/")) {
+      const currentSearch = searchParams.toString();
+      router.replace(`/${currentSearch ? `?${currentSearch}` : ""}`);
+    }
+  }, [pathname, resultsPanel, router, searchParams]);
+
   useEffect(() => {
     const urlQuery = searchParams.get("q")?.trim() ?? "";
     const lat = numberParam(searchParams, "lat");
@@ -123,7 +133,7 @@ export function useSearchWorkspace() {
     latestBoundsKeyRef.current = "";
     setBoundsRefreshKey((key) => key + 1);
     setHasCheckedSearchUrl(true);
-  }, [searchParams]);
+  }, [searchParamsKey]);
 
   const handleMapMove = useCallback(() => {
     if (mode !== "marker") {
@@ -168,7 +178,7 @@ export function useSearchWorkspace() {
     handleMapMove,
     handleMapViewportChange,
     handleMarkerSelect: resultsPanel.selectMarkerGroup,
-    handleCloseResultsPanel: resultsPanel.closeResultsPanel,
+    handleCloseResultsPanel: closeResultsPanel,
     handleSearch,
     hasCheckedSavedState: hasCheckedSearchUrl,
     hasResults,

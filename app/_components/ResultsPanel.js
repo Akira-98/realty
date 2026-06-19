@@ -11,7 +11,6 @@ function isActiveBuilding(building, selectedId) {
 }
 
 export function ResultsPanel({
-  center,
   displayedBuildings,
   selectedId,
   resultCount,
@@ -33,7 +32,6 @@ export function ResultsPanel({
     <aside className="resultsPanel" onScroll={handleScroll}>
       <div className="panelHeader">
         <div>
-          <span>{center.label}</span>
           <h2>
             빌딩목록{resultCount === null ? "" : ` ${resultCount}`}
           </h2>

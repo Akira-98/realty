@@ -57,7 +57,6 @@ function HomeContent() {
             />
             {search.listMode !== "empty" && (
               <ResultsPanel
-                center={search.center}
                 displayedBuildings={search.displayedBuildings}
                 selectedId={search.selectedId}
                 resultCount={search.resultCount}

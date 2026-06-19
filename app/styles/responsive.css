@@ -6,13 +6,23 @@
   }
 
   .workspaceBody {
+    display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 48vh minmax(0, 1fr);
   }
 
   .resultsPanel {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    z-index: auto;
+    width: auto;
+    height: 100%;
+    border-radius: 0;
     border-left: 0;
     border-top: 1px solid #dde4e8;
+    box-shadow: none;
   }
 
   .detailHeader {
@@ -229,6 +239,14 @@
     height: auto;
     min-height: 64px;
     padding: 14px 20px;
+  }
+
+  .detailPanel {
+    bottom: 0;
+    right: 0;
+    top: 0;
+    width: min(100vw, 430px);
+    border-radius: 0;
   }
 
   .detailHeader nav {

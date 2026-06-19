@@ -11,7 +11,7 @@ const EMPTY_FORM = {
   message: "",
 };
 
-export function InquiryForm({ building }) {
+export function InquiryForm({ building, buttonLabel = "온라인 문의" }) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
@@ -76,7 +76,7 @@ export function InquiryForm({ building }) {
         className="detailSecondaryAction"
         onClick={openForm}
       >
-        온라인 문의
+        {buttonLabel}
       </button>
 
       {open && (

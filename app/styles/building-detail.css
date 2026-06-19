@@ -176,6 +176,216 @@
   color: #fff;
 }
 
+.detailPanel {
+  position: fixed;
+  top: 94px;
+  right: 452px;
+  bottom: 16px;
+  left: auto;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  width: min(460px, calc(100vw - 32px));
+  border: 1px solid #d9e2e6;
+  border-radius: 18px;
+  background: #f0f2f4;
+  overflow: hidden;
+  box-shadow: 0 16px 42px rgba(9, 25, 40, 0.18);
+}
+
+.detailPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 0 0 auto;
+  min-height: 56px;
+  padding: 0 18px;
+  border-bottom: 1px solid #dfe6ea;
+  background: #fff;
+}
+
+.detailPanelHeader strong {
+  color: #101820;
+  font-size: 17px;
+}
+
+.detailPanelHeader button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: #eef3f5;
+  color: #263640;
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.detailPanelBody {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px 18px 108px;
+}
+
+.detailPanelActionBar {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  padding: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.detailPanelActionBar .detailSecondaryAction {
+  width: 100%;
+  min-height: 64px;
+  border: 0;
+  border-radius: 16px;
+  background: #00aebe;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 900;
+  pointer-events: auto;
+  box-shadow: 0 12px 24px rgba(0, 174, 190, 0.24);
+}
+
+.detailPanelActionBar .detailSecondaryAction:hover {
+  background: #05bdce;
+}
+
+.detailPanel .detailHeroCard,
+.detailPanel .detailSection {
+  box-shadow: none;
+}
+
+.detailPanel .detailHeroCard {
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding: 18px;
+}
+
+.detailPanel .detailPhoto {
+  min-height: 220px;
+}
+
+.detailPanel .detailPhoto div {
+  padding: 20px;
+}
+
+.detailPanel .detailPhoto strong {
+  font-size: 22px;
+}
+
+.detailPanel .detailHeroInfo h1 {
+  margin-top: 0;
+  font-size: 28px;
+}
+
+.detailPanel .detailHeroInfo p {
+  font-size: 15px;
+}
+
+.detailPanel .detailHeroStats,
+.detailPanel .detailPriceGrid,
+.detailPanel .detailActions,
+.detailPanel .detailInfoGrid {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.detailPanel .detailHeroStats {
+  margin-top: 22px;
+  padding-top: 20px;
+}
+
+.detailPanel .detailPriceGrid {
+  margin-top: 18px;
+  padding-top: 18px;
+}
+
+.detailPanel .detailItem span {
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.detailPanel .detailItem strong,
+.detailPanel .detailPriceGrid .detailItem strong {
+  font-size: 18px;
+}
+
+.detailPanel .detailActions {
+  margin-top: 22px;
+}
+
+.detailPanel .detailSectionsGrid {
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.detailPanel .detailSection {
+  padding: 18px;
+}
+
+.detailPanel .detailSection h2 {
+  font-size: 18px;
+}
+
+.detailPanel .footerInner {
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  padding: 28px 18px 30px;
+}
+
+.detailPanel .siteFooter {
+  margin: 14px -18px -18px;
+  background: #f3f5f7;
+  color: #737a82;
+}
+
+.detailPanel .footerBrand {
+  margin-bottom: 18px;
+  color: #5f666d;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.detailPanel .footerCompany p,
+.detailPanel .footerLinks p {
+  color: #737a82;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.detailPanel .footerLinks {
+  gap: 20px;
+  justify-items: start;
+  text-align: left;
+}
+
+.detailPanel .footerLinks nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  gap: 8px 0;
+  font-size: 12px;
+}
+
+.detailPanel .footerLinks a {
+  color: #4f565d;
+}
+
+.detailPanel .footerLinks a + a::before {
+  margin: 0 8px;
+  color: #c5cbd1;
+  content: "|";
+}
+
 .detailSecondaryAction {
   width: 100%;
 }
