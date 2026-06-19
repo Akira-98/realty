@@ -1,4 +1,4 @@
-import { formatBuildingAge, formatWithUnit } from "./formatters";
+import { formatWithUnit } from "./formatters";
 
 export function formatDistance(value) {
   if (!Number.isFinite(value)) {
@@ -21,7 +21,6 @@ function formatGrossFloorArea(value) {
 export function buildSummary(building) {
   return [
     building.building_scale && `규모 ${building.building_scale}`,
-    formatBuildingAge(building.approval_date_parsed, { withPrefix: true }),
     building.gross_floor_area && `연면적 ${formatGrossFloorArea(building.gross_floor_area)}`,
   ]
     .filter(Boolean)

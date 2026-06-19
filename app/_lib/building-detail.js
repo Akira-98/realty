@@ -94,21 +94,21 @@ export function getBuildingDetailModel(building) {
   const buildingAge = formatBuildingAge(building.approval_date_parsed);
   const heroMeta = [businessDistrict, building.scale, buildingAge].filter(Boolean);
   const basicItems = [
-    { label: "규모", value: buildingScale },
-    { label: "용도", value: building.building_use },
-    { label: "사용승인일", value: formatApprovalDate(building.approval_date) },
-    { label: "연면적", value: withSquareMeterUnit(building.gross_floor_area) },
+    { icon: "building", label: "규모", value: buildingScale },
+    { icon: "tag", label: "용도", value: building.building_use },
+    { icon: "calendar", label: "사용승인일", value: formatApprovalDate(building.approval_date) },
+    { icon: "area", label: "연면적", value: withSquareMeterUnit(building.gross_floor_area) },
   ].filter(Boolean);
   const facilityItems = [
-    { label: "천정고", value: building.ceiling_height },
-    { label: "냉난방방식", value: building.hvac },
-    { label: "엘리베이터", value: building.elevator },
+    { icon: "height", label: "천정고", value: building.ceiling_height },
+    { icon: "wind", label: "냉난방방식", value: building.hvac },
+    { icon: "elevator", label: "엘리베이터", value: building.elevator },
   ];
   const transportItems = [
-    { label: "지하철", value: building.subway },
-    { label: "주소", value: building.address },
-    { label: "주차", value: building.parking },
-    { label: "주차비", value: building.parking_fee },
+    { icon: "train", label: "지하철", value: building.subway },
+    { icon: "pin", label: "주소", value: building.address },
+    { icon: "parking", label: "주차", value: building.parking },
+    { icon: "coin", label: "주차비", value: building.parking_fee },
   ];
 
   return {
