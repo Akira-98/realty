@@ -1,14 +1,8 @@
+import { priceSummary } from "../../_lib/admin-buildings";
 import { STATUS_LABELS, formatInquiryDate } from "../_lib/inquiries";
 
 function buildingSummary(inquiry) {
-  const building = inquiry.building;
-  return [
-    building?.rental_area_pyeong && `면적 ${building.rental_area_pyeong}평`,
-    building?.deposit_total && `보증금 ${building.deposit_total}`,
-    building?.rent_total && `임대료 ${building.rent_total}`,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  return inquiry.building ? priceSummary(inquiry.building) : "";
 }
 
 export function InquiryList({ inquiries, selectedId, onSelect }) {

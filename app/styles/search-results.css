@@ -64,6 +64,10 @@
   max-width: calc(100% - 36px);
 }
 
+.mapFilters.withResultsPanel {
+  right: 454px;
+}
+
 .mapFilterPopover {
   position: relative;
 }

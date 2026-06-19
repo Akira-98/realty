@@ -106,6 +106,14 @@
   line-height: 1.6;
 }
 
+.detailHeroInfo .detailHeroMeta {
+  margin: 4px 0 0;
+  color: #1668f2;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.45;
+}
+
 .detailHeroStats,
 .detailPriceGrid {
   display: grid;
@@ -226,7 +234,7 @@
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 18px 18px 108px;
+  padding: 0 0 108px;
 }
 
 .detailPanelActionBar {
@@ -262,11 +270,13 @@
 .detailPanel .detailHeroCard {
   grid-template-columns: 1fr;
   gap: 20px;
-  padding: 18px;
+  overflow: hidden;
+  padding: 0 0 18px;
 }
 
 .detailPanel .detailPhoto {
   min-height: 220px;
+  border-radius: 8px 8px 0 0;
 }
 
 .detailPanel .detailPhoto div {
@@ -280,6 +290,10 @@
 .detailPanel .detailHeroInfo h1 {
   margin-top: 0;
   font-size: 28px;
+}
+
+.detailPanel .detailHeroInfo {
+  padding: 0 18px;
 }
 
 .detailPanel .detailHeroInfo p {
@@ -341,7 +355,7 @@
 }
 
 .detailPanel .siteFooter {
-  margin: 14px -18px -18px;
+  margin: 14px 0 0;
   background: #f3f5f7;
   color: #737a82;
 }

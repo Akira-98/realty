@@ -63,6 +63,8 @@ export function MapView({
   center,
   buildings,
   filters,
+  detailPanelOpen = false,
+  resultsPanelOpen = false,
   selectedId,
   onSelect,
   onFiltersApply,
@@ -243,10 +245,13 @@ export function MapView({
   return (
     <div className="mapShell">
       <div ref={containerRef} className="mapCanvas" />
-      <MapFilters
-        filters={filters}
-        onApply={onFiltersApply}
-      />
+      {!detailPanelOpen && (
+        <MapFilters
+          filters={filters}
+          onApply={onFiltersApply}
+          resultsPanelOpen={resultsPanelOpen}
+        />
+      )}
       {(!ready || error) && (
         <div className="mapFallback">
           <strong>지도 영역</strong>

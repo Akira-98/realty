@@ -55,19 +55,22 @@ export function BuildingList({
 }
 
 function BuildingRow({ active, building, saving, onEdit, onTogglePublic }) {
+  const className = [
+    "adminBuilding",
+    active && "active",
+    !building.is_public && "private",
+  ].filter(Boolean).join(" ");
+
   return (
-    <article className={active ? "adminBuilding active" : "adminBuilding"}>
+    <article className={className}>
       <button type="button" onClick={onEdit}>
         <strong>{building.building_name}</strong>
         <span>{building.address}</span>
         <em>{priceSummary(building) || "별도문의"}</em>
       </button>
       <div className="adminBuildingActions">
-        <span className={building.is_public ? "statusPublic" : "statusPrivate"}>
-          {building.is_public ? "공개" : "비공개"}
-        </span>
         <button type="button" disabled={saving} onClick={onTogglePublic}>
-          {building.is_public ? "비공개" : "공개"}
+          {building.is_public ? "노출종료" : "노출"}
         </button>
       </div>
     </article>

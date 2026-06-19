@@ -44,8 +44,8 @@ export function InfoSection({ title, items, children }) {
 export function BuildingDetailView({ building, panel = false }) {
   const {
     basicItems,
-    buildingScale,
     facilityItems,
+    heroMeta,
     title,
     transportItems,
   } = getBuildingDetailModel(building);
@@ -62,9 +62,9 @@ export function BuildingDetailView({ building, panel = false }) {
         <div className="detailHeroInfo">
           <h1>{title}</h1>
           <p>{field(building.address)}</p>
-          <div className="detailHeroStats">
-            <DetailItem label="규모" value={buildingScale} />
-          </div>
+          {heroMeta.length > 0 && (
+            <p className="detailHeroMeta">{heroMeta.join(" · ")}</p>
+          )}
           <div className="detailPriceGrid">
             <PriceItem label="보증금" unitPrice={formatPriceNumber(building.deposit_num)} />
             <PriceItem label="월 임대료" unitPrice={formatPriceNumber(building.rent_num)} />

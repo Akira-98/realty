@@ -89,17 +89,14 @@ export async function fetchBuildingDetail(id) {
 
 export function getBuildingDetailModel(building) {
   const title = field(building.building_name, "이름 없는 빌딩");
-  const buildingScale = joinValues(building.building_scale, building.scale);
+  const buildingScale = building.building_scale;
   const businessDistrict = businessDistrictLabel(building.business_district);
+  const buildingAge = formatBuildingAge(building.approval_date_parsed);
+  const heroMeta = [businessDistrict, building.scale, buildingAge].filter(Boolean);
   const basicItems = [
     { label: "규모", value: buildingScale },
     { label: "용도", value: building.building_use },
-    businessDistrict && {
-      label: "권역",
-      value: businessDistrict,
-    },
     { label: "사용승인일", value: formatApprovalDate(building.approval_date) },
-    { label: "준공연차", value: formatBuildingAge(building.approval_date_parsed) },
     { label: "연면적", value: withSquareMeterUnit(building.gross_floor_area) },
   ].filter(Boolean);
   const facilityItems = [
@@ -118,6 +115,7 @@ export function getBuildingDetailModel(building) {
     basicItems,
     buildingScale,
     facilityItems,
+    heroMeta,
     title,
     transportItems,
   };

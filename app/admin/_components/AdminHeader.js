@@ -53,8 +53,14 @@ export function AdminHeader({ user, onReset, onLogout }) {
       </div>
       <div className="adminUser">
         <span>{user?.email}</span>
-        <button type="button" onClick={onLogout}>
-          로그아웃
+        <button
+          type="button"
+          className="adminLogoutButton"
+          aria-label="로그아웃"
+          title="로그아웃"
+          onClick={onLogout}
+        >
+          ⏻
         </button>
       </div>
     </header>

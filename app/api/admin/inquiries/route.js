@@ -24,14 +24,14 @@ const INQUIRY_SELECT = [
   "updated_at",
 ].join(",");
 
-const STATUSES = new Set(["new", "contacted", "closed"]);
+const STATUSES = new Set(["new", "contacted"]);
 const BUILDING_SELECT = [
   "id",
   "building_name",
   "address",
-  "rental_area_pyeong",
-  "deposit_total",
-  "rent_total",
+  "deposit_num",
+  "rent_num",
+  "maintenance_num",
 ].join(",");
 
 function numberParam(searchParams, name, fallback) {

@@ -1,9 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export function DetailPanelShell({ action, children }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentSearch = searchParams.toString();
+  const closeHref = `/${currentSearch ? `?${currentSearch}` : ""}`;
 
   return (
     <aside className="detailPanel" aria-label="매물 상세 패널">
@@ -12,7 +15,7 @@ export function DetailPanelShell({ action, children }) {
         <button
           type="button"
           aria-label="상세 패널 닫기"
-          onClick={() => router.back()}
+          onClick={() => router.replace(closeHref)}
         >
           ×
         </button>

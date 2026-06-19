@@ -123,9 +123,7 @@ export function useAdminInquiries(router) {
 
   return {
     error,
-    fetchInquiries,
     inquiries,
-    loading,
     logout,
     savingId,
     selectedId,

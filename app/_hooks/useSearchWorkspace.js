@@ -52,6 +52,7 @@ export function useSearchWorkspace() {
   const activeFiltersKey = filtersKey(filters);
 
   const hasResults = Boolean(center);
+  const detailPanelOpen = pathname.startsWith("/buildings/");
 
   const resultsPanel = useResultsPanel({
     filters,
@@ -169,6 +170,7 @@ export function useSearchWorkspace() {
   return {
     boundsRefreshKey,
     center,
+    detailPanelOpen,
     displayedBuildings: resultsPanel.displayedBuildings,
     error,
     filters,

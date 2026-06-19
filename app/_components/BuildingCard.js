@@ -14,6 +14,7 @@ export function BuildingCard({ building, active }) {
     <Link
       className={active ? "buildingCard active" : "buildingCard"}
       href={href}
+      replace
     >
       <div className="photoSlot" aria-label="건물 사진 자리" />
       <div className="buildingInfo">

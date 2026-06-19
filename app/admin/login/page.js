@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { AdminFooter } from "../_components/AdminFooter";
+
 export default function AdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -38,9 +40,14 @@ export default function AdminLoginPage() {
 
   return (
     <main className="adminLoginPage">
+      <section className="adminLoginIntro" aria-label="REALTY FIND 관리자">
+        <span>REALTY FIND ADMIN</span>
+        <h1>오피스 매물 관리</h1>
+        <p>APLUS REALTY 업무용 관리자 영역</p>
+      </section>
       <section className="adminLoginPanel">
         <div>
-          <span className="adminEyebrow">매물관리</span>
+          <span className="adminEyebrow">SECURE ACCESS</span>
           <h1>관리자 로그인</h1>
         </div>
         <form className="adminLoginForm" onSubmit={handleSubmit}>
@@ -70,6 +77,7 @@ export default function AdminLoginPage() {
           </button>
         </form>
       </section>
+      <AdminFooter />
     </main>
   );
 }

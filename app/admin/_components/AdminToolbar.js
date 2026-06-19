@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import {
+  BUILDING_AGE_OPTIONS,
+  BUSINESS_DISTRICT_OPTIONS,
   FILTER_GROUPS,
   SCALE_OPTIONS,
   SUBWAY_WALK_OPTIONS,
@@ -12,13 +14,15 @@ import {
 export function AdminToolbar({
   error,
   filters,
+  hasActiveSearch,
   loading,
   query,
   setFilters,
   setQuery,
+  onFiltersChange,
+  onResetSearch,
   visibility,
   setVisibility,
-  onResetFilters,
   onSearch,
 }) {
   const filtersRef = useRef(null);
@@ -36,6 +40,71 @@ export function AdminToolbar({
       document.removeEventListener("pointerdown", closeOnOutsideClick);
     };
   }, []);
+
+  const applyFilterValues = (values) => {
+    const nextFilters = {
+      ...filters,
+      ...values,
+    };
+    onFiltersChange(nextFilters);
+    setOpenFilter("");
+  };
+
+  const resetButton = (label, values) => (
+    <button
+      type="button"
+      className="adminGhostButton adminIconButton"
+      aria-label={`${label} 초기화`}
+      title={`${label} 초기화`}
+      onClick={() => applyFilterValues(values)}
+    >
+      ↺
+    </button>
+  );
+
+  const choiceFilters = [
+    {
+      key: "scale",
+      label: "규모",
+      valueKey: "scale",
+      summary: filters.scale || "전체",
+      options: SCALE_OPTIONS.map((scale) => ({
+        label: scale,
+        value: scale,
+      })),
+    },
+    {
+      key: "businessDistrict",
+      label: "권역",
+      valueKey: "businessDistrict",
+      summary: filters.businessDistrict || "전체",
+      options: BUSINESS_DISTRICT_OPTIONS.map((district) => ({
+        label: district.label,
+        title: district.description,
+        value: district.value,
+      })),
+    },
+    {
+      key: "buildingAge",
+      label: "준공연차",
+      valueKey: "buildingAgeMax",
+      summary: filters.buildingAgeMax ? `${filters.buildingAgeMax}년 이하` : "전체",
+      options: BUILDING_AGE_OPTIONS.map((years) => ({
+        label: `${years}년`,
+        value: years,
+      })),
+    },
+    {
+      key: "subwayWalk",
+      label: "지하철",
+      valueKey: "subwayWalkMax",
+      summary: filters.subwayWalkMax ? `${filters.subwayWalkMax}분 이내` : "지하철역과의 거리",
+      options: SUBWAY_WALK_OPTIONS.map((minutes) => ({
+        label: `${minutes}분`,
+        value: minutes,
+      })),
+    },
+  ];
 
   return (
     <section className="adminToolbar">
@@ -56,11 +125,15 @@ export function AdminToolbar({
           onChange={(event) => setVisibility(event.target.value)}
         >
           <option value="all">전체</option>
-          <option value="public">공개</option>
-          <option value="private">비공개</option>
+          <option value="public">노출</option>
+          <option value="private">노출종료</option>
         </select>
-        <button type="submit" disabled={loading}>
-          {loading ? "조회 중" : "조회"}
+        <button
+          type={hasActiveSearch ? "button" : "submit"}
+          disabled={loading}
+          onClick={hasActiveSearch ? onResetSearch : undefined}
+        >
+          {loading ? "조회 중" : hasActiveSearch ? "초기화" : "조회"}
         </button>
         <div ref={filtersRef} className="adminRangeFilters">
           {FILTER_GROUPS.map((group) => {
@@ -120,16 +193,10 @@ export function AdminToolbar({
                   </div>
                   <span>{group.basisLabel || `${group.unit} 기준`}</span>
                   <div className="adminFilterActions">
-                    <button
-                      type="button"
-                      className="adminGhostButton"
-                      onClick={() => {
-                        onResetFilters();
-                        setOpenFilter("");
-                      }}
-                    >
-                      초기화
-                    </button>
+                    {resetButton(group.label, {
+                      [group.minKey]: "",
+                      [group.maxKey]: "",
+                    })}
                     <button type="submit" onClick={() => setOpenFilter("")}>
                       적용
                     </button>
@@ -138,111 +205,51 @@ export function AdminToolbar({
               </details>
             );
           })}
-          <details
-            open={openFilter === "scale"}
-            className={filters.scale ? "adminFilterPopover active" : "adminFilterPopover"}
-          >
-            <summary
-              onClick={(event) => {
-                event.preventDefault();
-                setOpenFilter((currentFilter) =>
-                  currentFilter === "scale" ? "" : "scale",
-                );
-              }}
-            >
-              <span>규모</span>
-            </summary>
-            <div className="adminFilterDropdown">
-              <strong>{filters.scale || "전체"}</strong>
-              <div className="adminFilterChoices">
-                {SCALE_OPTIONS.map((scale) => (
-                  <button
-                    key={scale}
-                    type="button"
-                    className={filters.scale === scale ? "active" : ""}
-                    onClick={() =>
-                      setFilters((current) => ({
-                        ...current,
-                        scale: current.scale === scale ? "" : scale,
-                      }))
-                    }
-                  >
-                    {scale}
-                  </button>
-                ))}
-              </div>
-              <div className="adminFilterActions">
-                <button
-                  type="button"
-                  className="adminGhostButton"
-                  onClick={() =>
-                    setFilters((current) => ({
-                      ...current,
-                      scale: "",
-                    }))
-                  }
+          {choiceFilters.map((filter) => {
+            const activeValue = filters[filter.valueKey];
+            const isActive = Boolean(activeValue);
+
+            return (
+              <details
+                key={filter.key}
+                open={openFilter === filter.key}
+                className={isActive ? "adminFilterPopover active" : "adminFilterPopover"}
+              >
+                <summary
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setOpenFilter((currentFilter) =>
+                      currentFilter === filter.key ? "" : filter.key,
+                    );
+                  }}
                 >
-                  초기화
-                </button>
-                <button type="submit" onClick={() => setOpenFilter("")}>
-                  적용
-                </button>
-              </div>
-            </div>
-          </details>
-          <details
-            open={openFilter === "subwayWalk"}
-            className={filters.subwayWalkMax ? "adminFilterPopover active" : "adminFilterPopover"}
-          >
-            <summary
-              onClick={(event) => {
-                event.preventDefault();
-                setOpenFilter((currentFilter) =>
-                  currentFilter === "subwayWalk" ? "" : "subwayWalk",
-                );
-              }}
-            >
-              <span>지하철</span>
-            </summary>
-            <div className="adminFilterDropdown">
-              <strong>지하철역과의 거리</strong>
-              <div className="adminFilterChoices">
-                {SUBWAY_WALK_OPTIONS.map((minutes) => (
-                  <button
-                    key={minutes}
-                    type="button"
-                    className={filters.subwayWalkMax === minutes ? "active" : ""}
-                    onClick={() =>
-                      setFilters((current) => ({
-                        ...current,
-                        subwayWalkMax:
-                          current.subwayWalkMax === minutes ? "" : minutes,
-                      }))
-                    }
-                  >
-                    {minutes}분
-                  </button>
-                ))}
-              </div>
-              <div className="adminFilterActions">
-                <button
-                  type="button"
-                  className="adminGhostButton"
-                  onClick={() =>
-                    setFilters((current) => ({
-                      ...current,
-                      subwayWalkMax: "",
-                    }))
-                  }
-                >
-                  초기화
-                </button>
-                <button type="submit" onClick={() => setOpenFilter("")}>
-                  적용
-                </button>
-              </div>
-            </div>
-          </details>
+                  <span>{filter.label}</span>
+                </summary>
+                <div className="adminFilterDropdown">
+                  <strong>{filter.summary}</strong>
+                  <div className="adminFilterChoices">
+                    {filter.options.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        className={activeValue === option.value ? "active" : ""}
+                        title={option.title}
+                        onClick={() => applyFilterValues({
+                          [filter.valueKey]:
+                            activeValue === option.value ? "" : option.value,
+                        })}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="adminFilterActions">
+                    {resetButton(filter.label, { [filter.valueKey]: "" })}
+                  </div>
+                </div>
+              </details>
+            );
+          })}
         </div>
       </form>
       {error && <p className="adminError">{error}</p>}

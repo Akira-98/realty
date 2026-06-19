@@ -70,7 +70,7 @@ export const BUSINESS_DISTRICT_OPTIONS = [
 
 export function businessDistrictLabel(value) {
   const option = BUSINESS_DISTRICT_OPTIONS.find((district) => district.value === value);
-  return option ? `${option.label} · ${option.description}` : "";
+  return option ? option.label : "";
 }
 
 function normalizeFilterValue(value, key) {

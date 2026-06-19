@@ -1,8 +1,9 @@
 export const STATUS_LABELS = {
   new: "신규",
   contacted: "연락완료",
-  closed: "종료",
 };
+
+export const STATUS_OPTIONS = Object.keys(STATUS_LABELS);
 
 export function formatInquiryDate(value) {
   if (!value) {

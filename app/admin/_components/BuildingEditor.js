@@ -39,7 +39,7 @@ export function BuildingEditor({ building, draft, saving, onChange, onSave }) {
         }}
       >
         <div className="adminEditorTitle">
-          <span>{building.is_public ? "공개" : "비공개"}</span>
+          <span>{building.is_public ? "노출" : "노출종료"}</span>
           <h2>{building.building_name}</h2>
           <p>{building.address}</p>
         </div>

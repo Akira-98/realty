@@ -1,4 +1,4 @@
-import { STATUS_LABELS, formatInquiryDate } from "../_lib/inquiries";
+import { STATUS_LABELS, STATUS_OPTIONS, formatInquiryDate } from "../_lib/inquiries";
 
 export function InquiryDetail({ inquiry, savingId, onStatusChange }) {
   if (!inquiry) {
@@ -35,7 +35,7 @@ export function InquiryDetail({ inquiry, savingId, onStatusChange }) {
         </div>
       </dl>
       <div className="inquiryStatusActions">
-        {Object.keys(STATUS_LABELS).map((nextStatus) => (
+        {STATUS_OPTIONS.map((nextStatus) => (
           <button
             type="button"
             key={nextStatus}

@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
 import { AdminHeader } from "./_components/AdminHeader";
+import { AdminFooter } from "./_components/AdminFooter";
 import { AdminToolbar } from "./_components/AdminToolbar";
 import { BuildingEditor } from "./_components/BuildingEditor";
 import { BuildingList } from "./_components/BuildingList";
@@ -65,6 +66,11 @@ function AdminPageContent() {
     () => buildings.find((building) => building.id === editingId),
     [buildings, editingId],
   );
+  const hasActiveAdminSearch = Boolean(
+    urlQuery.trim() ||
+      urlVisibility !== "all" ||
+      Object.values(urlFilters).some(Boolean),
+  );
 
   const redirectToLogin = useCallback(() => {
     router.replace("/admin/login");
@@ -94,6 +100,17 @@ function AdminPageContent() {
     },
     [filters, query, router, urlVisibility],
   );
+
+  const resetAdminSearch = useCallback(() => {
+    setQuery("");
+    setFilters(EMPTY_FILTERS);
+    updateAdminUrl({
+      nextQuery: "",
+      nextVisibility: "all",
+      nextFilters: EMPTY_FILTERS,
+      nextPage: 1,
+    });
+  }, [updateAdminUrl]);
 
   const fetchBuildings = useCallback(
     async () => {
@@ -248,13 +265,15 @@ function AdminPageContent() {
         filters={filters}
         setQuery={setQuery}
         setFilters={setFilters}
+        hasActiveSearch={hasActiveAdminSearch}
+        onFiltersChange={(nextFilters) => {
+          setFilters(nextFilters);
+          updateAdminUrl({ nextFilters, nextPage: 1 });
+        }}
+        onResetSearch={resetAdminSearch}
         visibility={urlVisibility}
         setVisibility={(value) => updateAdminUrl({ nextVisibility: value })}
         onSearch={() => updateAdminUrl({ nextPage: 1 })}
-        onResetFilters={() => {
-          setFilters(EMPTY_FILTERS);
-          updateAdminUrl({ nextFilters: EMPTY_FILTERS, nextPage: 1 });
-        }}
       />
 
       <section className="adminWorkspace">
@@ -283,6 +302,7 @@ function AdminPageContent() {
           onSave={() => saveBuilding(editingBuilding, draft)}
         />
       </section>
+      <AdminFooter />
     </main>
   );
 }

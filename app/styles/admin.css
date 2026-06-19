@@ -1,22 +1,62 @@
 .adminLoginPage,
 .adminPage {
   min-height: 100vh;
-  background: #eef2f4;
+  background:
+    linear-gradient(120deg, rgba(244, 251, 250, 0.96) 0%, rgba(231, 246, 245, 0.94) 46%, rgba(0, 174, 190, 0.12) 100%),
+    #eef2f4;
 }
 
 .adminLoginPage {
   display: grid;
-  place-items: center;
-  padding: 24px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 420px);
+  align-items: center;
+  gap: 56px;
+  padding: 56px;
+}
+
+.adminLoginIntro {
+  width: min(680px, 100%);
+  color: #182329;
+}
+
+.adminLoginIntro span {
+  display: block;
+  margin-bottom: 18px;
+  color: #007a86;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.adminLoginIntro h1 {
+  margin: 0;
+  max-width: 640px;
+  color: #12212b;
+  font-size: 54px;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.adminLoginIntro p {
+  max-width: 520px;
+  margin: 22px 0 0;
+  color: #40545b;
+  font-size: 18px;
+  line-height: 1.68;
 }
 
 .adminLoginPanel {
   width: min(420px, 100%);
-  padding: 32px;
-  border: 1px solid #dce4e8;
+  justify-self: end;
+  padding: 34px;
+  border: 1px solid rgba(218, 226, 224, 0.96);
   border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 18px 45px rgba(20, 34, 43, 0.12);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 28px 80px rgba(24, 35, 41, 0.16);
+}
+
+.adminLoginPage .adminFooter {
+  grid-column: 1 / -1;
 }
 
 .adminEyebrow {
@@ -41,6 +81,7 @@
   font-size: 32px;
   font-weight: 900;
   line-height: 1.2;
+  cursor: pointer;
 }
 
 .adminNav {
@@ -53,7 +94,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #52636d;
+  color: #3d505a;
   font-size: 14px;
   font-weight: 900;
   text-decoration: none;
@@ -111,16 +152,21 @@
 
 .adminLoginForm button,
 .adminSearch button,
-.adminUser button,
 .adminBuildingActions button,
 .adminEditorActions button {
   height: 42px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 0 16px;
   background: #102332;
   color: #fff;
   font-weight: 800;
+}
+
+.adminLoginForm button,
+.adminSearch button {
+  background: #00aebe;
+  color: #06343a;
 }
 
 .adminLoginForm button:disabled,
@@ -153,7 +199,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 18px 0 22px;
+  padding: 22px 24px;
+  border: 1px solid rgba(220, 228, 232, 0.92);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 18px 50px rgba(20, 34, 43, 0.08);
 }
 
 .adminUser {
@@ -164,11 +214,33 @@
   font-size: 14px;
 }
 
+.adminLogoutButton {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #d5e0e4;
+  border-radius: 999px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.8);
+  color: #263842;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.adminLogoutButton:hover {
+  border-color: #00aebe;
+  color: #007a86;
+}
+
 .adminToolbar {
+  margin-top: 16px;
   padding: 16px;
-  border: 1px solid #dce4e8;
-  border-radius: 8px;
-  background: #fff;
+  border: 1px solid rgba(220, 228, 232, 0.96);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 14px 38px rgba(20, 34, 43, 0.08);
 }
 
 .adminSearch {
@@ -296,6 +368,13 @@
   color: #263842 !important;
 }
 
+.adminIconButton {
+  width: 34px;
+  padding: 0 !important;
+  font-size: 16px;
+  line-height: 1;
+}
+
 .inquirySearch {
   grid-template-columns: 160px 110px;
   justify-content: start;
@@ -312,12 +391,63 @@
   margin-top: 18px;
 }
 
+.adminFooter {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 36px;
+  width: min(1440px, 100%);
+  margin: 34px auto 0;
+  padding: 0 4px 10px;
+  color: #65737a;
+}
+
+.adminFooter strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #4f5d64;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.adminFooter p {
+  margin: 0;
+  color: #65737a;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.adminFooter nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 0;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.adminFooter a {
+  color: #4f5d64;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.adminFooter a + a::before {
+  margin: 0 8px;
+  color: #aab6bb;
+  content: "|";
+}
+
+.adminFooter > div:last-child {
+  text-align: right;
+}
+
 .adminList,
 .adminEditor {
   min-height: 560px;
-  border: 1px solid #dce4e8;
-  border-radius: 8px;
-  background: #fff;
+  border: 1px solid rgba(220, 228, 232, 0.96);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 48px rgba(20, 34, 43, 0.08);
 }
 
 .adminList {
@@ -331,7 +461,7 @@
   min-height: 52px;
   padding: 10px 16px;
   border-bottom: 1px solid #dce4e8;
-  background: #f8fafb;
+  background: #f8fbfb;
   color: #5a6a74;
   font-size: 13px;
   font-weight: 900;
@@ -385,7 +515,21 @@
 }
 
 .adminBuilding.active {
-  background: #edf7fa;
+  background: rgba(0, 174, 190, 0.1);
+}
+
+.adminBuilding.private {
+  background: rgba(18, 33, 43, 0.08);
+}
+
+.adminBuilding.private.active {
+  background: rgba(18, 33, 43, 0.16);
+}
+
+.adminBuilding.private strong,
+.adminBuilding.private span,
+.adminBuilding.private em {
+  color: #66737a;
 }
 
 .adminBuilding > button {
@@ -430,6 +574,16 @@
   gap: 10px;
 }
 
+.adminBuildingActions button {
+  height: 32px;
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #eef3f5;
+  color: #263842;
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .inquiryList {
   display: grid;
 }
@@ -447,7 +601,7 @@
 }
 
 .adminInquiry.active {
-  background: #edf7fa;
+  background: rgba(0, 174, 190, 0.1);
 }
 
 .adminInquiry strong,
@@ -512,11 +666,6 @@
 .status-contacted {
   background: #ecf8e9;
   color: #246b2c;
-}
-
-.status-closed {
-  background: #f1f3f5;
-  color: #56636b;
 }
 
 .statusPublic,
@@ -628,6 +777,20 @@
 }
 
 @media (max-width: 900px) {
+  .adminLoginPage {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 28px 18px;
+  }
+
+  .adminLoginIntro h1 {
+    font-size: 38px;
+  }
+
+  .adminLoginPanel {
+    justify-self: stretch;
+  }
+
   .adminPage {
     padding: 16px;
   }
@@ -635,6 +798,19 @@
   .adminHeader {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .adminFooter {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .adminFooter nav {
+    justify-content: flex-start;
+  }
+
+  .adminFooter > div:last-child {
+    text-align: left;
   }
 
   .adminSearch,

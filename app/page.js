@@ -47,6 +47,8 @@ function HomeContent() {
               center={search.center}
               buildings={search.markerBuildings}
               filters={search.filters}
+              detailPanelOpen={search.detailPanelOpen}
+              resultsPanelOpen={search.listMode !== "empty"}
               selectedId={search.selectedId}
               onSelect={search.handleMarkerSelect}
               onFiltersApply={search.applyFilters}

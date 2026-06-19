@@ -11,10 +11,14 @@ import {
   filterSummary,
 } from "../_lib/search-filters";
 
-export function MapFilters({ filters, onApply }) {
+export function MapFilters({ filters, onApply, resultsPanelOpen = false }) {
   const filtersRef = useRef(null);
   const [draft, setDraft] = useState(filters);
   const [openFilter, setOpenFilter] = useState("");
+  const className = [
+    "mapFilters",
+    resultsPanelOpen && "withResultsPanel",
+  ].filter(Boolean).join(" ");
 
   useEffect(() => {
     setDraft(filters);
@@ -61,7 +65,7 @@ export function MapFilters({ filters, onApply }) {
   return (
     <form
       ref={filtersRef}
-      className="mapFilters"
+      className={className}
       onSubmit={(event) => {
         event.preventDefault();
         onApply(draft);

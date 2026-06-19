@@ -26,10 +26,8 @@ export default function AdminInquiriesPage() {
 
       <InquiryToolbar
         error={inquiries.error}
-        loading={inquiries.loading}
         status={inquiries.status}
         setStatus={inquiries.setStatus}
-        onRefresh={inquiries.fetchInquiries}
       />
 
       <section className="adminWorkspace inquiryWorkspace">
