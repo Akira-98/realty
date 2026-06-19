@@ -1,6 +1,13 @@
-export function Pagination({ currentPage, loading, pages, totalPages, onPage }) {
+export function Pagination({
+  currentPage,
+  loading,
+  pages,
+  totalPages,
+  onPage,
+  ariaLabel = "매물 페이지",
+}) {
   return (
-    <nav className="adminPagination" aria-label="매물 페이지">
+    <nav className="adminPagination" aria-label={ariaLabel}>
       <button
         type="button"
         aria-label="첫 페이지"

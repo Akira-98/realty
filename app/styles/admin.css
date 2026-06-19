@@ -588,6 +588,15 @@
   display: grid;
 }
 
+.inquiryAdminList {
+  display: flex;
+  flex-direction: column;
+}
+
+.inquiryAdminList .adminPagination {
+  margin-top: auto;
+}
+
 .adminInquiry {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr) max-content;

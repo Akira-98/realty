@@ -13,22 +13,22 @@ const DISTRICT_LINKS = [
   {
     label: "GBD",
     name: "강남 · 서초 · 송파",
-    href: "/?q=GBD&label=GBD&lat=37.4979&lng=127.0276&level=8&source=default&mode=bounds",
+    href: "/?q=GBD&label=GBD&lat=37.4979&lng=127.0276&level=6&source=default&mode=bounds",
   },
   {
     label: "YBD",
     name: "여의도 · 영등포",
-    href: "/?q=YBD&label=YBD&lat=37.5263&lng=126.9259&level=8&source=default&mode=bounds",
+    href: "/?q=YBD&label=YBD&lat=37.5263&lng=126.9259&level=6&source=default&mode=bounds",
   },
   {
     label: "CBD",
     name: "종로 · 중구",
-    href: "/?q=CBD&label=CBD&lat=37.5663&lng=126.9782&level=7&source=default&mode=bounds",
+    href: "/?q=CBD&label=CBD&lat=37.5663&lng=126.9782&level=6&source=default&mode=bounds",
   },
   {
     label: "BBD",
     name: "분당",
-    href: "/?q=BBD&label=BBD&lat=37.3827&lng=127.1189&level=8&source=default&mode=bounds",
+    href: "/?q=BBD&label=BBD&lat=37.3827&lng=127.1189&level=6&source=default&mode=bounds",
   },
 ];
 

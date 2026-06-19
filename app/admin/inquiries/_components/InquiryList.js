@@ -1,14 +1,31 @@
 import { priceSummary } from "../../_lib/admin-buildings";
+import { Pagination } from "../../_components/Pagination";
 import { STATUS_LABELS, formatInquiryDate } from "../_lib/inquiries";
 
 function buildingSummary(inquiry) {
   return inquiry.building ? priceSummary(inquiry.building) : "";
 }
 
-export function InquiryList({ inquiries, selectedId, onSelect }) {
+export function InquiryList({
+  currentPage,
+  inquiries,
+  loading,
+  offset,
+  pages,
+  selectedId,
+  total,
+  totalPages,
+  onPage,
+  onSelect,
+}) {
   return (
-    <div className="adminList">
-      <div className="adminListMeta">문의 {inquiries.length}건</div>
+    <div className="adminList inquiryAdminList">
+      <div className="adminListMeta">
+        <span>
+          {inquiries.length > 0 ? `${offset + 1}-${offset + inquiries.length}` : "0"}
+          {total !== null ? ` / ${total}` : ""}
+        </span>
+      </div>
       <div className="inquiryList">
         {inquiries.map((inquiry) => (
           <button
@@ -29,9 +46,22 @@ export function InquiryList({ inquiries, selectedId, onSelect }) {
           </button>
         ))}
         {inquiries.length === 0 && (
-          <div className="adminEmpty">접수된 문의가 없습니다.</div>
+          <div className="adminEmpty">
+            {loading ? "문의를 불러오는 중입니다." : "접수된 문의가 없습니다."}
+          </div>
         )}
       </div>
+
+      {total !== null && (
+        <Pagination
+          ariaLabel="문의 페이지"
+          currentPage={currentPage}
+          loading={loading}
+          pages={pages}
+          totalPages={totalPages}
+          onPage={onPage}
+        />
+      )}
     </div>
   );
 }

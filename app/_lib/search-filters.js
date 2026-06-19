@@ -46,25 +46,25 @@ export const BUSINESS_DISTRICT_OPTIONS = [
     value: "GBD",
     label: "GBD",
     description: "강남구 · 서초구 · 송파구",
-    center: { label: "GBD", lat: 37.4979, lng: 127.0276, level: 8 },
+    center: { label: "GBD", lat: 37.4979, lng: 127.0276, level: 6 },
   },
   {
     value: "YBD",
     label: "YBD",
     description: "영등포구",
-    center: { label: "YBD", lat: 37.5263, lng: 126.9259, level: 8 },
+    center: { label: "YBD", lat: 37.5263, lng: 126.9259, level: 6 },
   },
   {
     value: "CBD",
     label: "CBD",
     description: "종로구 · 중구",
-    center: { label: "CBD", lat: 37.5663, lng: 126.9782, level: 7 },
+    center: { label: "CBD", lat: 37.5663, lng: 126.9782, level: 6 },
   },
   {
     value: "BBD",
     label: "BBD",
     description: "분당구",
-    center: { label: "BBD", lat: 37.3827, lng: 127.1189, level: 8 },
+    center: { label: "BBD", lat: 37.3827, lng: 127.1189, level: 6 },
   },
 ];
 

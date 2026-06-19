@@ -1,16 +1,24 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { isUnauthorized } from "../../_lib/admin-buildings";
+import { isUnauthorized, PAGE_SIZE, pageWindow } from "../../_lib/admin-buildings";
 
 export function useAdminInquiries(router) {
   const [sessionLoading, setSessionLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState("all");
   const [inquiries, setInquiries] = useState([]);
+  const [total, setTotal] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [savingId, setSavingId] = useState(null);
   const [error, setError] = useState("");
+  const offset = (currentPage - 1) * PAGE_SIZE;
+  const totalPages = total ? Math.max(1, Math.ceil(total / PAGE_SIZE)) : 1;
+  const pages = useMemo(
+    () => pageWindow(currentPage, totalPages),
+    [currentPage, totalPages],
+  );
 
   const selectedInquiry = useMemo(
     () => inquiries.find((inquiry) => inquiry.id === selectedId),
@@ -26,7 +34,10 @@ export function useAdminInquiries(router) {
     setError("");
 
     try {
-      const params = new URLSearchParams({ limit: "100" });
+      const params = new URLSearchParams({
+        limit: String(PAGE_SIZE),
+        offset: String(offset),
+      });
       if (status !== "all") {
         params.set("status", status);
       }
@@ -42,6 +53,7 @@ export function useAdminInquiries(router) {
       }
 
       setInquiries(payload.inquiries);
+      setTotal(payload.total);
       setSelectedId((currentId) =>
         payload.inquiries.some((inquiry) => inquiry.id === currentId)
           ? currentId
@@ -52,7 +64,7 @@ export function useAdminInquiries(router) {
     } finally {
       setLoading(false);
     }
-  }, [redirectToLogin, status]);
+  }, [offset, redirectToLogin, status]);
 
   useEffect(() => {
     async function checkSession() {
@@ -116,22 +128,34 @@ export function useAdminInquiries(router) {
     }
   }
 
+  function updateFilterStatus(nextStatus) {
+    setStatus(nextStatus);
+    setCurrentPage(1);
+  }
+
   async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
     redirectToLogin();
   }
 
   return {
+    currentPage,
     error,
     inquiries,
+    loading,
     logout,
+    offset,
+    pages,
     savingId,
     selectedId,
     selectedInquiry,
     sessionLoading,
+    setCurrentPage,
     setSelectedId,
-    setStatus,
+    setStatus: updateFilterStatus,
     status,
+    total,
+    totalPages,
     updateStatus,
     user,
   };

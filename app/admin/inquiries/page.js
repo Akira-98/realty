@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
+import { AdminFooter } from "../_components/AdminFooter";
 import { AdminHeader } from "../_components/AdminHeader";
 import { InquiryDetail } from "./_components/InquiryDetail";
 import { InquiryList } from "./_components/InquiryList";
@@ -32,8 +33,15 @@ export default function AdminInquiriesPage() {
 
       <section className="adminWorkspace inquiryWorkspace">
         <InquiryList
+          currentPage={inquiries.currentPage}
           inquiries={inquiries.inquiries}
+          loading={inquiries.loading}
+          offset={inquiries.offset}
+          pages={inquiries.pages}
           selectedId={inquiries.selectedId}
+          total={inquiries.total}
+          totalPages={inquiries.totalPages}
+          onPage={inquiries.setCurrentPage}
           onSelect={inquiries.setSelectedId}
         />
         <InquiryDetail
@@ -42,6 +50,7 @@ export default function AdminInquiriesPage() {
           onStatusChange={inquiries.updateStatus}
         />
       </section>
+      <AdminFooter />
     </main>
   );
 }
