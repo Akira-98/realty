@@ -236,7 +236,6 @@
   left: 18px;
   padding: 0;
   background: transparent;
-  pointer-events: none;
 }
 
 .detailPanelActionBar .detailSecondaryAction {
@@ -248,7 +247,6 @@
   color: #fff;
   font-size: 22px;
   font-weight: 900;
-  pointer-events: auto;
   box-shadow: 0 12px 24px rgba(0, 174, 190, 0.24);
 }
 
