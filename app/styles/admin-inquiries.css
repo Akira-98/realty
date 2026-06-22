@@ -1,0 +1,108 @@
+.inquiryList {
+  display: grid;
+}
+
+.inquiryAdminList {
+  display: flex;
+  flex-direction: column;
+}
+
+.inquiryAdminList .adminPagination {
+  margin-top: auto;
+}
+
+.adminInquiry {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) max-content;
+  gap: 4px 12px;
+  border: 0;
+  border-bottom: 1px solid #e7edf0;
+  padding: 14px 16px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.adminInquiry.active {
+  background: rgba(0, 174, 190, 0.1);
+}
+
+.adminInquiry strong,
+.adminInquiry span,
+.adminInquiry em,
+.adminInquiry small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminInquiry strong {
+  grid-column: 2;
+  grid-row: 1;
+  color: #12212b;
+  font-size: 16px;
+}
+
+.adminInquiry > span:not(.inquiryStatus) {
+  grid-column: 2 / 4;
+  grid-row: 2;
+}
+
+.adminInquiry em,
+.adminInquiry small {
+  color: #60707a;
+  font-size: 13px;
+  font-style: normal;
+}
+
+.adminInquiry em {
+  grid-column: 2 / 4;
+  grid-row: 3;
+}
+
+.adminInquiry small {
+  grid-column: 3;
+  grid-row: 1 / span 3;
+  align-self: center;
+  justify-self: end;
+  color: #12212b;
+  font-size: 14px;
+}
+
+.inquiryStatus {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  align-self: start;
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.status-new {
+  background: #e8f7ff;
+  color: #17627f;
+}
+
+.status-contacted {
+  background: #ecf8e9;
+  color: #246b2c;
+}
+
+.statusPublic,
+.statusPrivate {
+  min-width: 52px;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.statusPublic {
+  color: #116b42;
+}
+
+.statusPrivate {
+  color: #9a3b18;
+}

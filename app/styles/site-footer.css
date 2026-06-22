@@ -1,0 +1,57 @@
+.landingFooter {
+  background: #030303;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.footerInner {
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) minmax(360px, 1fr);
+  gap: 56px;
+  align-items: end;
+  width: min(1500px, calc(100% - 96px));
+  margin: 0 auto;
+  padding: 68px 0 64px;
+}
+
+.footerBrand {
+  margin-bottom: 34px;
+  color: #fff;
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.footerCompany p,
+.footerLinks p {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+.footerLinks {
+  display: grid;
+  gap: 38px;
+  justify-items: end;
+  text-align: right;
+}
+
+.footerLinks nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 16px 0;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.footerLinks a {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+}
+
+.footerLinks a + a::before {
+  margin: 0 14px;
+  color: rgba(255, 255, 255, 0.42);
+  content: "|";
+}

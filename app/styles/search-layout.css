@@ -1,0 +1,42 @@
+.resultsMode {
+  overflow: hidden;
+}
+
+.resultsHeader {
+  height: 78px;
+  padding: 0 28px;
+  border-bottom: 1px solid #dde4e8;
+}
+
+.resultsHeader .brand {
+  width: 210px;
+  font-size: 25px;
+}
+
+.searchForm.compact {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(480px, calc(100% - 240px));
+}
+
+.searchForm.compact .searchInputWrap {
+  min-height: 50px;
+  flex: 1;
+  border: 0;
+  box-shadow: none;
+}
+
+.searchForm.compact .searchInputWrap button {
+  width: 32px;
+}
+
+.workspaceBody {
+  position: relative;
+  display: block;
+  height: calc(100vh - 78px);
+}
+
+.workspaceBody.mapOnly {
+  display: block;
+}

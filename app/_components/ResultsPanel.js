@@ -1,4 +1,38 @@
+import { useEffect, useRef, useState } from "react";
+
 import { BuildingCard } from "./BuildingCard";
+
+const MOBILE_QUERY = "(max-width: 760px)";
+const HEADER_HEIGHT = 64;
+const SHEET_MIN_HEIGHT = 76;
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function getSheetSnapPoints() {
+  if (typeof window === "undefined") {
+    return {
+      collapsed: SHEET_MIN_HEIGHT,
+      half: 360,
+      expanded: 640,
+    };
+  }
+
+  const availableHeight = Math.max(SHEET_MIN_HEIGHT, window.innerHeight - HEADER_HEIGHT);
+  return {
+    collapsed: SHEET_MIN_HEIGHT,
+    half: clamp(Math.round(window.innerHeight * 0.46), 260, availableHeight),
+    expanded: availableHeight,
+  };
+}
+
+function closestSnapState(height, snapPoints) {
+  return Object.entries(snapPoints).reduce((closest, [state, snapHeight]) => {
+    const distance = Math.abs(height - snapHeight);
+    return distance < closest.distance ? { state, distance } : closest;
+  }, { state: "half", distance: Infinity }).state;
+}
 
 function isActiveBuilding(building, selectedId) {
   return (
@@ -19,6 +53,23 @@ export function ResultsPanel({
   onLoadMore,
   onClose,
 }) {
+  const dragRef = useRef(null);
+  const [sheetState, setSheetState] = useState("half");
+  const [sheetHeight, setSheetHeight] = useState(() => getSheetSnapPoints().half);
+  const [dragging, setDragging] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      const nextSnapPoints = getSheetSnapPoints();
+      setSheetHeight(nextSnapPoints[sheetState]);
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [sheetState]);
+
   function handleScroll(event) {
     const element = event.currentTarget;
     const distanceFromBottom =
@@ -28,9 +79,70 @@ export function ResultsPanel({
     }
   }
 
+  function handleDragStart(event) {
+    if (!window.matchMedia(MOBILE_QUERY).matches || event.target.closest("button, a")) {
+      return;
+    }
+
+    const nextSnapPoints = getSheetSnapPoints();
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startY: event.clientY,
+      startHeight: sheetHeight,
+      currentHeight: sheetHeight,
+      snapPoints: nextSnapPoints,
+    };
+    setDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handleDragMove(event) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) {
+      return;
+    }
+
+    const nextHeight = clamp(
+      drag.startHeight + drag.startY - event.clientY,
+      drag.snapPoints.collapsed,
+      drag.snapPoints.expanded,
+    );
+    drag.currentHeight = nextHeight;
+    setSheetHeight(nextHeight);
+  }
+
+  function handleDragEnd(event) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) {
+      return;
+    }
+
+    const nextState = closestSnapState(drag.currentHeight, drag.snapPoints);
+    setSheetState(nextState);
+    setSheetHeight(drag.snapPoints[nextState]);
+    setDragging(false);
+    dragRef.current = null;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
+
   return (
-    <aside className="resultsPanel" onScroll={handleScroll}>
-      <div className="panelHeader">
+    <aside
+      className={dragging ? "resultsPanel dragging" : "resultsPanel"}
+      data-sheet-state={sheetState}
+      style={{ "--sheet-height": `${sheetHeight}px` }}
+      onScroll={handleScroll}
+    >
+      <div
+        className="panelHeader"
+        onPointerDown={handleDragStart}
+        onPointerMove={handleDragMove}
+        onPointerUp={handleDragEnd}
+        onPointerCancel={handleDragEnd}
+      >
+        <span className="panelDragHandle" aria-hidden="true" />
         <div>
           <h2>
             빌딩목록{resultCount === null ? "" : ` ${resultCount}`}
@@ -46,7 +158,7 @@ export function ResultsPanel({
         </button>
       </div>
       {error && <p className="errorText">{error}</p>}
-      <div className="buildingList">
+      <div className="buildingList" onScroll={handleScroll}>
         {displayedBuildings.map((building) => (
           <BuildingCard
             key={building.id}

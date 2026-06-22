@@ -1,0 +1,66 @@
+.siteHeader {
+  position: relative;
+  height: 76px;
+  padding: 0 56px;
+  border-bottom: 1px solid #e3e8eb;
+}
+
+.siteHeader nav {
+  display: flex;
+  gap: 30px;
+  color: #28343a;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.siteHeader a,
+.headerMenuButton {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+}
+
+.headerMenuButton {
+  cursor: pointer;
+}
+
+.mobileMenuToggle,
+.mobileHeaderMenu {
+  display: none;
+}
+
+.inquiryMenu {
+  position: absolute;
+  top: calc(100% - 8px);
+  right: 48px;
+  z-index: 10;
+  display: grid;
+  min-width: 180px;
+  overflow: hidden;
+  border: 1px solid #dfe7ef;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
+}
+
+.inquiryMenu button {
+  border: 0;
+  padding: 16px 18px;
+  background: #fff;
+  color: #172026;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.inquiryMenu button + button {
+  border-top: 1px solid #edf1f3;
+}
+
+.inquiryMenu button:hover {
+  background: #f5f8f9;
+}

@@ -1,0 +1,52 @@
+@media (max-width: 900px) {
+  .adminLoginPage {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 28px 18px;
+  }
+
+  .adminLoginIntro h1 {
+    font-size: 38px;
+  }
+
+  .adminLoginPanel {
+    justify-self: stretch;
+  }
+
+  .adminPage {
+    padding: 16px;
+  }
+
+  .adminHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .adminFooter {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .adminFooter nav {
+    justify-content: flex-start;
+  }
+
+  .adminFooter > div:last-child {
+    text-align: left;
+  }
+
+  .adminSearch,
+  .inquirySearch,
+  .adminWorkspace {
+    grid-template-columns: 1fr;
+  }
+
+  .adminFilterDropdown {
+    left: auto;
+    right: 0;
+  }
+
+  .adminEditor {
+    position: static;
+  }
+}

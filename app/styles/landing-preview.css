@@ -1,0 +1,161 @@
+.heroPreview {
+  overflow: hidden;
+  border: 1px solid rgba(218, 226, 224, 0.96);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 28px 80px rgba(24, 35, 41, 0.2);
+}
+
+.previewToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  border-bottom: 1px solid #e2e9e7;
+  padding: 0 18px 0 22px;
+}
+
+.previewToolbar span {
+  color: #1e2a30;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.previewToolbar a {
+  display: inline-grid;
+  place-items: center;
+  min-height: 34px;
+  border-radius: 999px;
+  padding: 0 14px;
+  background: #173239;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.previewMap {
+  position: relative;
+  height: 310px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(37, 71, 79, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 71, 79, 0.07) 1px, transparent 1px),
+    #eaf1ef;
+  background-size: 38px 38px;
+}
+
+.previewMap::before,
+.previewMap::after {
+  position: absolute;
+  content: "";
+  border-radius: 999px;
+}
+
+.previewMap::before {
+  top: 48px;
+  left: 52px;
+  width: 340px;
+  height: 180px;
+  border: 20px solid rgba(111, 145, 132, 0.18);
+  transform: rotate(-18deg);
+}
+
+.previewMap::after {
+  right: 58px;
+  bottom: 28px;
+  width: 180px;
+  height: 110px;
+  border: 18px solid rgba(210, 153, 87, 0.18);
+  transform: rotate(18deg);
+}
+
+.previewRoute {
+  position: absolute;
+  top: 42px;
+  right: 122px;
+  width: 5px;
+  height: 270px;
+  border-radius: 999px;
+  background: rgba(63, 94, 103, 0.22);
+  transform: rotate(34deg);
+}
+
+.previewMarker {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: rgba(0, 174, 190, 0.84);
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 0 12px 26px rgba(38, 61, 66, 0.24);
+}
+
+.markerA {
+  top: 82px;
+  left: 108px;
+  width: 68px;
+  height: 68px;
+  font-size: 15px;
+}
+
+.markerB {
+  top: 150px;
+  right: 130px;
+  width: 54px;
+  height: 54px;
+  background: rgba(210, 121, 60, 0.9);
+  font-size: 13px;
+}
+
+.markerC {
+  right: 72px;
+  bottom: 68px;
+  width: 42px;
+  height: 42px;
+  background: rgba(89, 116, 107, 0.9);
+  font-size: 12px;
+}
+
+.previewList {
+  display: grid;
+  gap: 0;
+  padding: 4px 0;
+  background: #fff;
+}
+
+.previewList div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 70px;
+  padding: 0 22px;
+}
+
+.previewList div + div {
+  border-top: 1px solid #edf2f0;
+}
+
+.previewList span {
+  display: grid;
+  gap: 5px;
+}
+
+.previewList strong {
+  color: #19262c;
+  font-size: 15px;
+}
+
+.previewList small {
+  color: #718087;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.previewList b {
+  color: #2a564e;
+  font-size: 18px;
+}

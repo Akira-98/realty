@@ -1,0 +1,243 @@
+.detailHeroCard,
+.detailSection {
+  border: 1px solid #e3e7ea;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 24, 32, 0.08);
+}
+
+.detailHeroCard {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1fr);
+  gap: 58px;
+  align-items: center;
+  padding: 56px;
+}
+
+.detailPhoto {
+  display: grid;
+  place-items: end start;
+  min-height: 430px;
+  overflow: hidden;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(11, 20, 28, 0), rgba(11, 20, 28, 0.74)),
+    linear-gradient(135deg, #d8dde0 0%, #f7f8f4 38%, #8f9a9d 100%);
+}
+
+.detailPhoto div {
+  padding: 28px;
+  color: #fff;
+}
+
+.detailPhoto strong,
+.detailPhoto span {
+  display: block;
+}
+
+.detailPhoto strong {
+  margin-bottom: 8px;
+  font-size: 28px;
+}
+
+.detailPhoto span {
+  color: rgba(255, 255, 255, 0.84);
+  font-weight: 800;
+}
+
+.detailHeroInfo {
+  min-width: 0;
+}
+
+.detailHeroInfo h1 {
+  margin: 14px 0 10px;
+  color: #070b0f;
+  font-size: 42px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.detailHeroInfo p {
+  margin: 0;
+  color: #66757c;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.detailHeroInfo .detailHeroMeta {
+  margin: 4px 0 0;
+  color: #1668f2;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.detailHeroStats,
+.detailPriceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  border-top: 1px solid #edf1f3;
+}
+
+.detailHeroStats {
+  margin-top: 32px;
+  padding-top: 28px;
+}
+
+.detailPriceGrid {
+  margin-top: 30px;
+  padding-top: 30px;
+}
+
+.detailItem {
+  min-width: 0;
+}
+
+.detailItem.hasIcon {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.detailItemContent {
+  min-width: 0;
+}
+
+.detailItemLabel {
+  display: block;
+  margin-bottom: 8px;
+  color: #7b8790;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.detailItemIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  color: #4d5a62;
+}
+
+.detailItemIcon svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.75;
+}
+
+.detailItem strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #101820;
+  font-size: 22px;
+  line-height: 1.35;
+}
+
+.detailPriceGrid .detailItem strong {
+  color: #1668f2;
+  font-size: 25px;
+}
+
+.detailActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 36px;
+}
+
+.detailActions a,
+.detailActions button {
+  display: grid;
+  place-items: center;
+  min-height: 52px;
+  border: 1px solid #dfe7ef;
+  border-radius: 8px;
+  background: #fff;
+  color: #101820;
+  font-weight: 900;
+  text-align: center;
+  text-decoration: none;
+}
+
+.detailActions .detailPrimaryAction {
+  border-color: #101820;
+  background: #101820;
+  color: #fff;
+}
+
+.detailSectionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.detailSection {
+  min-height: 280px;
+  padding: 34px;
+}
+
+.detailSection h2 {
+  margin: 0 0 32px;
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.detailInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 42px;
+}
+
+.detailInfoGrid .detailItem strong {
+  font-size: 19px;
+}
+
+.detailAddress {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.detailAddress strong {
+  font-size: 19px;
+}
+
+.detailMapShell,
+.detailMapFallback {
+  min-height: 330px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.detailMapCanvas {
+  width: 100%;
+  height: 330px;
+}
+
+.detailMapFallback {
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  color: #43555d;
+  text-align: center;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.68) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.68) 1px, transparent 1px),
+    #dce6e8;
+  background-size: 36px 36px;
+}
+
+.detailMapFallback strong {
+  color: #172026;
+  font-size: 24px;
+}

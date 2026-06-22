@@ -1,0 +1,162 @@
+.mapFilters {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: calc(100% - 36px);
+}
+
+.mapFilters.withResultsPanel {
+  right: 454px;
+}
+
+.mapFilterPopover {
+  position: relative;
+}
+
+.mapFilterPopover summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 84px;
+  height: 40px;
+  border: 1px solid #d6dfe3;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 3px 10px rgba(9, 25, 40, 0.12);
+  cursor: pointer;
+  list-style: none;
+}
+
+.mapFilterPopover summary::-webkit-details-marker {
+  display: none;
+}
+
+.mapFilterPopover summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid #172026;
+  border-bottom: 2px solid #172026;
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.mapFilterPopover[open] summary::after {
+  transform: rotate(225deg) translate(-2px, -1px);
+}
+
+.mapFilterPopover summary span {
+  color: #172026;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.mapFilterPopover.active summary {
+  border-color: #00aebe;
+  box-shadow: 0 0 0 2px rgba(0, 174, 190, 0.12), 0 3px 10px rgba(9, 25, 40, 0.12);
+}
+
+.mapFilterDropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 4;
+  display: grid;
+  gap: 12px;
+  width: 260px;
+  padding: 14px;
+  border: 1px solid #d8e4e8;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 14px 34px rgba(9, 25, 40, 0.18);
+}
+
+.mapFilterDropdown strong {
+  color: #172026;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.mapFilterInputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mapFilterInputs label {
+  display: grid;
+  gap: 6px;
+  color: #52636b;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.mapFilterInputs input {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  border: 1px solid #d8e4e8;
+  border-radius: 8px;
+  padding: 0 10px;
+  color: #172026;
+  background: #fff;
+  outline: none;
+}
+
+.mapFilterInputs input:focus {
+  border-color: #00aebe;
+  box-shadow: 0 0 0 3px rgba(0, 174, 190, 0.16);
+}
+
+.mapFilterChoices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mapFilterChoices button {
+  height: 34px;
+  border: 1px solid #d8e4e8;
+  border-radius: 8px;
+  background: #fff;
+  color: #172026;
+  font-weight: 500;
+}
+
+.mapFilterChoices button.active {
+  border-color: #00aebe;
+  background: rgba(0, 174, 190, 0.1);
+  color: #007f8a;
+}
+
+.mapFilterDropdown > span {
+  color: #7c8c93;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.mapFilterActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.mapFilterActions button {
+  height: 34px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #091928;
+  color: #fff;
+  font-weight: 500;
+}
+
+.mapFilterActions .ghostButton {
+  border: 1px solid #d8e4e8;
+  background: #fff;
+  color: #52636b;
+}

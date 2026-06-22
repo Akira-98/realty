@@ -1,0 +1,196 @@
+@media (max-width: 1100px) {
+    .workspaceBody {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 48vh minmax(0, 1fr);
+    }
+
+    .resultsPanel {
+      position: relative;
+      top: auto;
+      right: auto;
+      bottom: auto;
+      z-index: auto;
+      width: auto;
+      height: 100%;
+      border-radius: 0;
+      border-left: 0;
+      border-top: 1px solid #dde4e8;
+      box-shadow: none;
+    }
+}
+
+@media (max-width: 760px) {
+    .resultsHeader {
+      display: flex;
+      height: 64px;
+      gap: 12px;
+      padding: 0 14px;
+    }
+
+    .resultsHeader .brand {
+      width: auto;
+      flex: 0 0 auto;
+      font-size: 18px;
+      white-space: nowrap;
+    }
+
+    .searchForm.compact {
+      display: flex;
+      min-width: 0;
+      flex: 1;
+      width: auto;
+    }
+
+    .searchForm.compact .searchInputWrap {
+      min-height: 42px;
+      width: 100%;
+    }
+
+    .searchForm.compact .searchInputWrap input {
+      padding-right: 14px;
+      padding-left: 52px;
+      font-size: 14px;
+    }
+
+    .searchForm.compact .searchInputWrap button {
+      left: 14px;
+      transform: translateY(-50%) scale(0.78);
+      transform-origin: center;
+    }
+
+    .workspaceBody {
+      display: block;
+      height: calc(100vh - 64px);
+    }
+
+    .mapFilters {
+      top: 10px;
+      right: auto;
+      left: 10px;
+      width: calc(100% - 20px);
+      max-width: none;
+      overflow-x: auto;
+      overflow-y: visible;
+      gap: 8px;
+      padding-bottom: 4px;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .mapFilters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mapFilters.withResultsPanel {
+      right: auto;
+    }
+
+    .mapFilterPopover {
+      flex: 0 0 auto;
+    }
+
+    .mapFilterPopover summary {
+      min-width: 78px;
+      height: 38px;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .mapFilterPopover summary span {
+      font-size: 15px;
+    }
+
+    .mapFilterPopover summary::after {
+      width: 7px;
+      height: 7px;
+      border-width: 2px;
+    }
+
+    .mapFilterDropdown {
+      right: auto;
+      left: 0;
+      width: 236px;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .mapFilterInputs input,
+    .mapFilterActions button {
+      height: 34px;
+    }
+
+    .resultsPanel {
+      position: absolute;
+      top: auto;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 12;
+      width: auto;
+      height: var(--sheet-height, 46vh);
+      max-height: calc(100vh - 64px);
+      min-height: 76px;
+      overflow: hidden;
+      border-right: 0;
+      border-bottom: 0;
+      border-left: 0;
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 -12px 34px rgba(9, 25, 40, 0.18);
+      transition: height 0.22s ease;
+    }
+
+    .resultsPanel.dragging {
+      transition: none;
+    }
+
+    .panelHeader {
+      position: relative;
+      flex: 0 0 auto;
+      align-items: center;
+      margin: 0;
+      padding: 24px 16px 12px;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .resultsPanel.dragging .panelHeader {
+      cursor: grabbing;
+    }
+
+    .panelDragHandle {
+      position: absolute;
+      top: 9px;
+      left: 50%;
+      display: block;
+      width: 42px;
+      height: 5px;
+      border-radius: 999px;
+      background: #ccd7dc;
+      transform: translateX(-50%);
+    }
+
+    .panelHeader h2 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .buildingList {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 8px 16px 86px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .buildingCard {
+      grid-template-columns: 92px minmax(0, 1fr);
+    }
+
+    .photoSlot {
+      width: 92px;
+    }
+}

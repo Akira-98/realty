@@ -1,0 +1,67 @@
+@media (max-width: 1100px) {
+    .detailHeader {
+      padding: 0 28px;
+    }
+
+    .detailHeroCard,
+    .detailSectionsGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .detailHeroCard {
+      gap: 32px;
+      padding: 34px;
+    }
+}
+
+@media (max-width: 760px) {
+    .detailHeader {
+      height: auto;
+      min-height: 64px;
+      padding: 14px 20px;
+    }
+
+    .detailPanel {
+      bottom: 0;
+      right: 0;
+      top: 0;
+      width: min(100vw, 430px);
+      border-radius: 0;
+    }
+
+    .detailHeader nav {
+      display: none;
+    }
+
+    .detailBrand {
+      font-size: 22px;
+    }
+
+    .detailContainer {
+      width: min(100% - 32px, 640px);
+      padding: 28px 0 42px;
+    }
+
+    .detailHeroCard {
+      padding: 20px;
+    }
+
+    .detailPhoto {
+      min-height: 260px;
+    }
+
+    .detailHeroInfo h1 {
+      font-size: 30px;
+    }
+
+    .detailHeroStats,
+    .detailPriceGrid,
+    .detailActions,
+    .detailInfoGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .detailSection {
+      padding: 24px;
+    }
+}

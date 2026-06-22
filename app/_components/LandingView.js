@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { SearchForm } from "./SearchForm";
 import { SiteFooter } from "./SiteFooter";
@@ -39,13 +39,36 @@ const PREVIEW_BUILDINGS = [
 ];
 
 export function LandingView({ query, setQuery, onSearch, loading }) {
+  const headerRef = useRef(null);
   const [inquiryOpen, setInquiryOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!inquiryOpen && !mobileMenuOpen) {
+      return;
+    }
+
+    function handlePointerDown(event) {
+      if (headerRef.current?.contains(event.target)) {
+        return;
+      }
+
+      setInquiryOpen(false);
+      setMobileMenuOpen(false);
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, [inquiryOpen, mobileMenuOpen]);
 
   return (
     <section className="landing">
-      <header className="siteHeader">
+      <header className="siteHeader" ref={headerRef}>
         <div className="brand">REALTY FIND</div>
-        <nav aria-label="메뉴">
+        <nav className="desktopHeaderNav" aria-label="메뉴">
           <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
           <a>빌딩정보(List)</a>
           <button
@@ -57,11 +80,33 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
             문의하기
           </button>
         </nav>
+        <button
+          type="button"
+          className="mobileMenuToggle"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-header-menu"
+          onClick={() => setMobileMenuOpen((open) => !open)}
+        >
+          빌딩정보
+          <span aria-hidden="true">⌄</span>
+        </button>
         {inquiryOpen && (
           <div className="inquiryMenu" role="dialog" aria-label="문의 유형">
             <button type="button">임대</button>
             <button type="button">임차</button>
             <button type="button">매입</button>
+          </div>
+        )}
+        {mobileMenuOpen && (
+          <div
+            id="mobile-header-menu"
+            className="mobileHeaderMenu"
+            role="dialog"
+            aria-label="모바일 메뉴"
+          >
+            <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
+            <a>빌딩정보(List)</a>
+            <button type="button">문의하기</button>
           </div>
         )}
       </header>

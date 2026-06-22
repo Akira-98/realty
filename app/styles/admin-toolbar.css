@@ -1,0 +1,149 @@
+.adminToolbar {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(220, 228, 232, 0.96);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 14px 38px rgba(20, 34, 43, 0.08);
+}
+
+.adminSearch {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 130px 96px;
+  gap: 10px;
+}
+
+.adminRangeFilters {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.adminFilterPopover {
+  position: relative;
+}
+
+.adminFilterPopover summary {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  border: 1px solid #cfd9de;
+  border-radius: 6px;
+  padding: 0 12px;
+  background: #fff;
+  color: #263842;
+  font-size: 12px;
+  font-weight: 400;
+  list-style: none;
+  cursor: pointer;
+}
+
+.adminFilterPopover summary::-webkit-details-marker {
+  display: none;
+}
+
+.adminFilterPopover.active summary {
+  border-color: #1c6f8f;
+  background: #edf7fa;
+  color: #17627f;
+}
+
+.adminFilterDropdown {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 280px;
+  border: 1px solid #dce4e8;
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+  box-shadow: 0 16px 36px rgba(20, 34, 43, 0.14);
+}
+
+.adminFilterDropdown strong {
+  display: block;
+  color: #12212b;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.adminFilterDropdown > span {
+  display: block;
+  margin-top: 8px;
+  color: #6b7b84;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.adminFilterInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.adminFilterInputs label {
+  display: grid;
+  gap: 6px;
+  color: #53636d;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.adminFilterInputs input {
+  width: 100%;
+}
+
+.adminFilterChoices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.adminFilterChoices button {
+  height: 32px;
+  border: 1px solid #cfd9de;
+  border-radius: 6px;
+  background: #fff;
+  color: #263842;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.adminFilterChoices button.active {
+  border-color: #1c6f8f;
+  background: #edf7fa;
+  color: #17627f;
+}
+
+.adminFilterActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.adminGhostButton {
+  background: #eef3f5 !important;
+  color: #263842 !important;
+}
+
+.adminIconButton {
+  width: 34px;
+  padding: 0 !important;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.inquirySearch {
+  grid-template-columns: 160px 110px;
+  justify-content: start;
+}
+
+.adminToolbar .adminError {
+  margin-top: 12px;
+}

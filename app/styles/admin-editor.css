@@ -1,0 +1,91 @@
+.adminEditor {
+  position: sticky;
+  top: 18px;
+  align-self: start;
+  padding: 22px;
+}
+
+.adminEditorTitle span {
+  color: #1c6f8f;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.adminEditorTitle h2 {
+  margin: 8px 0 6px;
+  color: #12212b;
+  font-size: 22px;
+  letter-spacing: 0;
+}
+
+.adminEditorTitle p {
+  margin: 0;
+  color: #60707a;
+}
+
+.adminEditGrid {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.inquiryDetailList {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0 0;
+}
+
+.inquiryDetailList div {
+  display: grid;
+  gap: 6px;
+}
+
+.inquiryDetailList dt {
+  color: #60707a;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.inquiryDetailList dd {
+  margin: 0;
+  color: #14232c;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.inquiryStatusActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.inquiryStatusActions button {
+  height: 38px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 13px;
+  background: #102332;
+  color: #fff;
+  font-weight: 800;
+}
+
+.inquiryStatusActions button:disabled {
+  opacity: 0.45;
+}
+
+.adminEditorActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 22px;
+}
+
+.adminEmpty {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  padding: 24px;
+  color: #657681;
+  font-weight: 800;
+}

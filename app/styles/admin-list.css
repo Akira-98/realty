@@ -1,0 +1,142 @@
+.adminList,
+.adminEditor {
+  min-height: 560px;
+  border: 1px solid rgba(220, 228, 232, 0.96);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 48px rgba(20, 34, 43, 0.08);
+}
+
+.adminList {
+  overflow: hidden;
+}
+
+.adminListMeta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 52px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #dce4e8;
+  background: #f8fbfb;
+  color: #5a6a74;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.adminPagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 0 18px;
+  border-top: 1px solid #e7edf0;
+}
+
+.adminPagination button {
+  min-width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 4px;
+  padding: 0 8px;
+  background: transparent;
+  color: #1e303b;
+  font-weight: 900;
+}
+
+.adminPagination button.active {
+  background: #102332;
+  color: #fff;
+}
+
+.adminPagination button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.adminPagination button.active:disabled {
+  opacity: 1;
+}
+
+.adminPagination span {
+  color: #7b8990;
+  font-weight: 900;
+}
+
+.adminBuilding {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e7edf0;
+}
+
+.adminBuilding.active {
+  background: rgba(0, 174, 190, 0.1);
+}
+
+.adminBuilding.private {
+  background: rgba(18, 33, 43, 0.08);
+}
+
+.adminBuilding.private.active {
+  background: rgba(18, 33, 43, 0.16);
+}
+
+.adminBuilding.private strong,
+.adminBuilding.private span,
+.adminBuilding.private em {
+  color: #66737a;
+}
+
+.adminBuilding > button {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.adminBuilding strong,
+.adminBuilding span,
+.adminBuilding em {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminBuilding strong {
+  color: #12212b;
+  font-size: 16px;
+}
+
+.adminBuilding span {
+  margin-top: 4px;
+  color: #60707a;
+  font-size: 13px;
+}
+
+.adminBuilding em {
+  margin-top: 7px;
+  color: #253640;
+  font-size: 13px;
+  font-style: normal;
+}
+
+.adminBuildingActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminBuildingActions button {
+  height: 32px;
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #eef3f5;
+  color: #263842;
+  font-size: 12px;
+  font-weight: 800;
+}
