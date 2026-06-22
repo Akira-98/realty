@@ -10,7 +10,7 @@
   align-items: end;
   width: min(1500px, calc(100% - 96px));
   margin: 0 auto;
-  padding: 68px 0 64px;
+  padding: 68px 0 calc(64px + env(safe-area-inset-bottom));
 }
 
 .footerBrand {
