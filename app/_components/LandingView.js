@@ -80,16 +80,31 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
             문의하기
           </button>
         </nav>
-        <button
-          type="button"
-          className="mobileMenuToggle"
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-header-menu"
-          onClick={() => setMobileMenuOpen((open) => !open)}
-        >
-          빌딩정보
-          <span aria-hidden="true">⌄</span>
-        </button>
+        <nav className="mobileHeaderNav" aria-label="모바일 메뉴">
+          <button
+            type="button"
+            className="headerMenuButton"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-header-menu"
+            onClick={() => {
+              setMobileMenuOpen((open) => !open);
+              setInquiryOpen(false);
+            }}
+          >
+            빌딩정보
+          </button>
+          <button
+            type="button"
+            className="headerMenuButton"
+            aria-expanded={inquiryOpen}
+            onClick={() => {
+              setInquiryOpen((open) => !open);
+              setMobileMenuOpen(false);
+            }}
+          >
+            문의하기
+          </button>
+        </nav>
         {inquiryOpen && (
           <div className="inquiryMenu" role="dialog" aria-label="문의 유형">
             <button type="button">임대</button>
@@ -106,7 +121,6 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
           >
             <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
             <a>빌딩정보(List)</a>
-            <button type="button">문의하기</button>
           </div>
         )}
       </header>

@@ -31,28 +31,13 @@
       display: none;
     }
 
-    .mobileMenuToggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      min-height: 40px;
-      border: 0;
-      padding: 0 2px 0 12px;
-      background: transparent;
+    .siteHeader .mobileHeaderNav {
+      display: flex;
+      gap: 18px;
       color: #28343a;
       font-size: 14px;
       font-weight: 800;
       white-space: nowrap;
-    }
-
-    .mobileMenuToggle span {
-      font-size: 18px;
-      line-height: 1;
-      transition: transform 0.18s ease;
-    }
-
-    .mobileMenuToggle[aria-expanded="true"] span {
-      transform: rotate(180deg);
     }
 
     .mobileHeaderMenu {
@@ -118,7 +103,10 @@
     }
 
     .inquiryMenu {
-      display: none;
+      top: 100%;
+      right: 16px;
+      z-index: 20;
+      min-width: 160px;
     }
 
     .heroPreview {

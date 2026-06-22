@@ -30,6 +30,10 @@ export const metadata = {
   description: "Location-based building search",
 };
 
+export const viewport = {
+  themeColor: "#ffffff",
+};
+
 export default function RootLayout({ children, detail }) {
   return (
     <html lang="ko">

@@ -28,7 +28,7 @@
   cursor: pointer;
 }
 
-.mobileMenuToggle,
+.mobileHeaderNav,
 .mobileHeaderMenu {
   display: none;
 }

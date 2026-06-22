@@ -5,6 +5,9 @@ import { BuildingCard } from "./BuildingCard";
 const MOBILE_QUERY = "(max-width: 760px)";
 const HEADER_HEIGHT = 64;
 const SHEET_MIN_HEIGHT = 76;
+const STEP_DRAG_THRESHOLD = 80;
+
+const SHEET_STATES = ["collapsed", "half", "expanded"];
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -27,11 +30,14 @@ function getSheetSnapPoints() {
   };
 }
 
-function closestSnapState(height, snapPoints) {
-  return Object.entries(snapPoints).reduce((closest, [state, snapHeight]) => {
-    const distance = Math.abs(height - snapHeight);
-    return distance < closest.distance ? { state, distance } : closest;
-  }, { state: "half", distance: Infinity }).state;
+function nextSnapState(currentState, dragDistance) {
+  if (Math.abs(dragDistance) < STEP_DRAG_THRESHOLD) {
+    return currentState;
+  }
+
+  const currentIndex = SHEET_STATES.indexOf(currentState);
+  const direction = dragDistance > 0 ? 1 : -1;
+  return SHEET_STATES[clamp(currentIndex + direction, 0, SHEET_STATES.length - 1)];
 }
 
 function isActiveBuilding(building, selectedId) {
@@ -117,7 +123,8 @@ export function ResultsPanel({
       return;
     }
 
-    const nextState = closestSnapState(drag.currentHeight, drag.snapPoints);
+    const dragDistance = drag.currentHeight - drag.startHeight;
+    const nextState = nextSnapState(sheetState, dragDistance);
     setSheetState(nextState);
     setSheetHeight(drag.snapPoints[nextState]);
     setDragging(false);
