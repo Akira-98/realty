@@ -1,9 +1,9 @@
 import { DetailMap } from "./DetailMap";
+import { DetailPriceGrid } from "./DetailPriceGrid";
 import { SiteFooter } from "../SiteFooter";
 import { InquiryForm } from "../inquiries/InquiryForm";
 import {
   field,
-  formatPriceNumber,
   getBuildingDetailModel,
 } from "../../_lib/building-detail";
 
@@ -106,15 +106,6 @@ export function DetailItem({ icon, label, value }) {
   );
 }
 
-export function PriceItem({ label, unitPrice }) {
-  return (
-    <div className="detailItem">
-      <span className="detailItemLabel">{label}</span>
-      <strong>{field(unitPrice)}</strong>
-    </div>
-  );
-}
-
 export function InfoSection({ title, items, children }) {
   return (
     <section className="detailSection">
@@ -160,11 +151,11 @@ export function BuildingDetailView({ building, panel = false }) {
           {heroMeta.length > 0 && (
             <p className="detailHeroMeta">{heroMeta.join(" · ")}</p>
           )}
-          <div className="detailPriceGrid">
-            <PriceItem label="보증금" unitPrice={formatPriceNumber(building.deposit_num)} />
-            <PriceItem label="월 임대료" unitPrice={formatPriceNumber(building.rent_num)} />
-            <PriceItem label="관리비" unitPrice={formatPriceNumber(building.maintenance_num)} />
-          </div>
+          <DetailPriceGrid
+            deposit={building.deposit_num}
+            rent={building.rent_num}
+            maintenance={building.maintenance_num}
+          />
           {!panel && (
             <div className="detailActions">
               <a className="detailPrimaryAction">전화 문의</a>

@@ -1,5 +1,5 @@
 import { requiredEnv } from "../../lib/http";
-import { formatBuildingAge, formatNumber, formatWithUnit } from "./formatters";
+import { formatBuildingAge, formatWithUnit } from "./formatters";
 import { businessDistrictLabel } from "./search-filters";
 
 export const BUILDING_DETAIL_SELECT = [
@@ -37,14 +37,6 @@ export function withSquareMeterUnit(value) {
 
 export function joinValues(...values) {
   return values.filter(Boolean).join(" ");
-}
-
-export function formatPriceNumber(value) {
-  if (value === null || value === undefined || value === "") {
-    return "별도문의";
-  }
-
-  return `${formatNumber(value)}원 / 3.3㎡`;
 }
 
 export function formatApprovalDate(value) {

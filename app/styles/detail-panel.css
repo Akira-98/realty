@@ -184,8 +184,17 @@
 }
 
 .detailPanel .detailPriceGrid {
+  margin-top: 0;
+  padding-right: 40px;
+}
+
+.detailPanel .detailPriceBlock {
   margin-top: 18px;
   padding-top: 18px;
+}
+
+.detailPanel .detailUnitIconButton {
+  top: 18px;
 }
 
 .detailPanel .detailItemLabel {
