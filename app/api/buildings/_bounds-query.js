@@ -4,6 +4,10 @@ import {
   minApprovalYearFromFilters,
   readListingFilters,
 } from "../../_lib/listing-filters";
+import {
+  withBoundsPayloadImageUrls,
+  withBuildingImageUrls,
+} from "../../_lib/building-images";
 
 export const BOUNDS_CACHE_HEADERS = {
   "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
@@ -23,6 +27,7 @@ export const LIST_SELECT = [
   "subway_walk_min",
   "lat",
   "lng",
+  "thumbnail_path",
 ].join(",");
 
 export const MARKER_SELECT = [
@@ -145,7 +150,7 @@ export async function fetchBoundsRpc({ functionName, body, errorMessage }) {
   }
 
   return {
-    payload: await response.json(),
+    payload: withBoundsPayloadImageUrls(await response.json()),
   };
 }
 
@@ -217,7 +222,7 @@ export async function fetchBoundsRows({
   const total = Number(contentRange.split("/")[1]);
 
   return {
-    rows,
+    rows: withBuildingImageUrls(rows),
     total: Number.isFinite(total) ? total : rows.length,
   };
 }

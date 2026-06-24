@@ -1,4 +1,8 @@
 import { requiredEnv } from "../../lib/http";
+import {
+  withBuildingImageUrl,
+  withBuildingImageUrlsForRows,
+} from "./building-images";
 import { formatBuildingAge, formatWithUnit } from "./formatters";
 import { businessDistrictLabel } from "./search-filters";
 
@@ -25,6 +29,7 @@ export const BUILDING_DETAIL_SELECT = [
   "lat",
   "lng",
   "is_public",
+  "thumbnail_path",
 ].join(",");
 
 export function field(value, fallback = "-") {
@@ -76,7 +81,44 @@ export async function fetchBuildingDetail(id) {
   }
 
   const buildings = await response.json();
-  return buildings[0] ?? null;
+  const building = withBuildingImageUrl(buildings[0] ?? null);
+
+  if (!building) {
+    return null;
+  }
+
+  const imageParams = new URLSearchParams();
+  imageParams.set("select", "image_path,image_order");
+  imageParams.set("building_id", `eq.${building.id}`);
+  imageParams.set("order", "image_order.asc");
+
+  const imageResponse = await fetch(`${supabaseUrl}/rest/v1/building_images?${imageParams}`, {
+    headers: {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    },
+    next: { revalidate: 60 },
+  });
+
+  if (!imageResponse.ok) {
+    throw new Error("Supabase building images failed.");
+  }
+
+  const images = withBuildingImageUrlsForRows(await imageResponse.json());
+
+  return {
+    ...building,
+    images:
+      images.length > 0
+        ? images
+        : [
+            {
+              image_path: building.thumbnail_path,
+              image_order: 1,
+              image_url: building.thumbnail_url,
+            },
+          ].filter((image) => image.image_url),
+  };
 }
 
 export function getBuildingDetailModel(building) {

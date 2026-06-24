@@ -16,7 +16,13 @@ export function BuildingCard({ building, active }) {
       href={href}
       replace
     >
-      <div className="photoSlot" aria-label="건물 사진 자리" />
+      <div className={building.thumbnail_url ? "photoSlot hasPhoto" : "photoSlot"}>
+        {building.thumbnail_url ? (
+          <img src={building.thumbnail_url} alt={`${building.building_name} 사진`} />
+        ) : (
+          <span aria-label="건물 사진 없음" />
+        )}
+      </div>
       <div className="buildingInfo">
         <div className="buildingTopline">
           <strong>{building.building_name}</strong>

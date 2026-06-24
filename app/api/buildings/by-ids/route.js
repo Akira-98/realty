@@ -5,6 +5,7 @@ import {
   appendListingFilterParams,
   readListingFilters,
 } from "../../../_lib/listing-filters";
+import { withBuildingImageUrls } from "../../../_lib/building-images";
 import {
   LIST_SELECT,
   requiredSupabasePublicConfig,
@@ -74,6 +75,6 @@ export async function GET(request) {
 
   return NextResponse.json({
     count: buildings.length,
-    buildings,
+    buildings: withBuildingImageUrls(buildings),
   });
 }

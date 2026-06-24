@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { jsonError, requiredEnv } from "../../../../lib/http";
+import { withBuildingImageUrls } from "../../../_lib/building-images";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ const LIST_SELECT = [
   "gross_floor_area",
   "lat",
   "lng",
+  "thumbnail_path",
 ].join(",");
 
 function escapeLike(value) {
@@ -73,6 +75,6 @@ export async function GET(request) {
   return NextResponse.json({
     query,
     count: buildings.length,
-    buildings,
+    buildings: withBuildingImageUrls(buildings),
   });
 }

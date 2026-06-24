@@ -1,5 +1,6 @@
 import { DetailMap } from "./DetailMap";
 import { DetailPriceGrid } from "./DetailPriceGrid";
+import { BuildingImageGallery } from "./BuildingImageGallery";
 import { SiteFooter } from "../SiteFooter";
 import { InquiryForm } from "../inquiries/InquiryForm";
 import {
@@ -139,12 +140,7 @@ export function BuildingDetailView({ building, panel = false }) {
   return (
     <>
       <section className="detailHeroCard">
-        <div className="detailPhoto">
-          <div>
-            <strong>사진 준비 중</strong>
-            <span>{title}</span>
-          </div>
-        </div>
+        <BuildingImageGallery images={building.images} title={title} />
         <div className="detailHeroInfo">
           <h1>{title}</h1>
           <p>{field(building.address)}</p>
