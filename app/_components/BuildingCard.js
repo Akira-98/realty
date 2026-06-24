@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 
 import { buildSummary } from "../_lib/buildings";
 
-export function BuildingCard({ building, active }) {
+export function BuildingCard({ building, active, priorityImage = false }) {
   const searchParams = useSearchParams();
   const currentSearch = searchParams.toString();
   const href = `/buildings/${building.id}${currentSearch ? `?${currentSearch}` : ""}`;
@@ -18,7 +18,13 @@ export function BuildingCard({ building, active }) {
     >
       <div className={building.thumbnail_url ? "photoSlot hasPhoto" : "photoSlot"}>
         {building.thumbnail_url ? (
-          <img src={building.thumbnail_url} alt={`${building.building_name} 사진`} />
+          <img
+            src={building.thumbnail_url}
+            alt={`${building.building_name} 사진`}
+            loading={priorityImage ? "eager" : "lazy"}
+            fetchPriority={priorityImage ? "high" : "auto"}
+            decoding="async"
+          />
         ) : (
           <span aria-label="건물 사진 없음" />
         )}

@@ -166,11 +166,12 @@ export function ResultsPanel({
       </div>
       {error && <p className="errorText">{error}</p>}
       <div className="buildingList" onScroll={handleScroll}>
-        {displayedBuildings.map((building) => (
+        {displayedBuildings.map((building, index) => (
           <BuildingCard
             key={building.id}
             building={building}
             active={isActiveBuilding(building, selectedId)}
+            priorityImage={index < 6}
           />
         ))}
         {displayedBuildings.length === 0 && resultCount === 0 && !listLoading && (

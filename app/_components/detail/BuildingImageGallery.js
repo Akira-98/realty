@@ -95,10 +95,11 @@ export function BuildingImageGallery({ images, title }) {
           </span>
         </>
       )}
-      <div>
-        <strong>{hasImages ? title : "사진 준비 중"}</strong>
-        <span>{title}</span>
-      </div>
+      {!hasImages && (
+        <div>
+          <strong>사진 준비 중</strong>
+        </div>
+      )}
       {lightboxOpen && activeImage && createPortal(
         <div
           className="imageLightbox"
