@@ -35,6 +35,22 @@ export function BuildingImageGallery({ images, title }) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [hasMultipleImages, lightboxOpen]);
 
+  useEffect(() => {
+    const preloadTargets = galleryImages.slice(1, 3);
+    if (preloadTargets.length === 0) {
+      return undefined;
+    }
+
+    const timeout = window.setTimeout(() => {
+      preloadTargets.forEach((image) => {
+        const preload = new Image();
+        preload.src = image.image_url;
+      });
+    }, 300);
+
+    return () => window.clearTimeout(timeout);
+  }, [galleryImages]);
+
   function showPrevious() {
     setActiveIndex((current) =>
       current === 0 ? galleryImages.length - 1 : current - 1,
