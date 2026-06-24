@@ -13,29 +13,49 @@ const DISTRICT_LINKS = [
   {
     label: "GBD",
     name: "강남 · 서초 · 송파",
+    image: "/images/gbd.jpg",
     href: "/?q=GBD&label=GBD&lat=37.4979&lng=127.0276&level=6&source=default&mode=bounds",
   },
   {
     label: "YBD",
     name: "여의도 · 영등포",
+    image: "/images/ybd.jpg",
     href: "/?q=YBD&label=YBD&lat=37.5263&lng=126.9259&level=6&source=default&mode=bounds",
   },
   {
     label: "CBD",
     name: "종로 · 중구",
+    image: "/images/cbd.jpg",
     href: "/?q=CBD&label=CBD&lat=37.5663&lng=126.9782&level=6&source=default&mode=bounds",
   },
   {
     label: "BBD",
     name: "분당",
+    image: "/images/bbd.png",
     href: "/?q=BBD&label=BBD&lat=37.3827&lng=127.1189&level=6&source=default&mode=bounds",
   },
 ];
 
-const PREVIEW_BUILDINGS = [
-  { name: "테헤란로 업무시설", meta: "GBD · 12년차", value: "1,240" },
-  { name: "여의도역 인근 빌딩", meta: "YBD · 역세권", value: "860" },
-  { name: "종로 프라임 오피스", meta: "CBD · 대형", value: "2,180" },
+const SERVICE_ITEMS = [
+  {
+    title: "사무실 이전 컨설팅",
+    description: "인원 계획, 예산, 출퇴근 동선, 입주 시점을 기준으로 후보지를 좁힙니다.",
+  },
+  {
+    title: "오피스 임대차 중개",
+    description: "권역별 공실과 조건을 비교하고 임대인 협의까지 한 흐름으로 진행합니다.",
+  },
+  {
+    title: "빌딩 데이터 탐색",
+    description: "지도와 필터로 규모, 연차, 위치, 임대료 정보를 빠르게 확인합니다.",
+  },
+];
+
+const PROCESS_STEPS = [
+  "요구 조건 정리",
+  "후보 빌딩 선별",
+  "투어 및 조건 협의",
+  "계약·입주 일정 관리",
 ];
 
 export function LandingView({ query, setQuery, onSearch, loading }) {
@@ -128,61 +148,64 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
         <div className="heroBackdrop" />
         <div className="heroContent">
           <div className="heroCopy">
-            <span>OFFICE BUILDING SEARCH</span>
-            <h1>전국 오피스 매물 찾기는 REALTY FIND</h1>
-            <p>지역, 지하철역, 주소를 입력해 원하는 오피스 매물을 지도에서 바로 확인하세요.</p>
+            <span>COMMERCIAL OFFICE ADVISORY</span>
+            <h1>새로운 사무공간이 필요할 땐 REALTY FIND</h1>
+            <p>
+              보증금, 면적, 위치까지 원하는 조건이라면 전국 어디든 딱 맞는 오피스를 찾아드려요.
+            </p>
             <SearchForm
               query={query}
               setQuery={setQuery}
               onSearch={onSearch}
               loading={loading}
             />
-            <div className="districtShortcuts" aria-label="주요 권역">
-              {DISTRICT_LINKS.map((district) => (
-                <Link key={district.label} href={district.href}>
-                  <strong>{district.label}</strong>
-                  <span>{district.name}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div className="heroPreview" aria-label="지도 검색 미리보기">
-            <div className="previewToolbar">
-              <span>Seoul Office Map</span>
-              <Link href={GANGNAM_MAP_URL}>MAP 열기</Link>
-            </div>
-            <div className="previewMap">
-              <span className="previewMarker markerA">248</span>
-              <span className="previewMarker markerB">86</span>
-              <span className="previewMarker markerC">32</span>
-              <span className="previewRoute" />
-            </div>
-            <div className="previewList">
-              {PREVIEW_BUILDINGS.map((building) => (
-                <div key={building.name}>
-                  <span>
-                    <strong>{building.name}</strong>
-                    <small>{building.meta}</small>
-                  </span>
-                  <b>{building.value}</b>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
-      <section className="stats">
-        <div>
-          <strong>MAP</strong>
-          <span>권역별 지도 탐색</span>
+      <section className="landingSection areaSection">
+        <div className="sectionHeading">
+          <span>LOCATION</span>
+          <h2>주요 업무권역을 바로 확인하세요</h2>
         </div>
-        <div>
-          <strong>FILTER</strong>
-          <span>규모 · 임대료 · 연차 필터</span>
+        <div className="areaLinks">
+          {DISTRICT_LINKS.map((district) => (
+            <Link key={district.label} href={district.href}>
+              <img src={district.image} alt="" aria-hidden="true" />
+              <span className="areaLinkOverlay" aria-hidden="true" />
+              <span className="areaLinkText">
+                <strong>{district.label}</strong>
+              </span>
+            </Link>
+          ))}
         </div>
-        <div>
-          <strong>DB</strong>
-          <span>오피스 빌딩 데이터</span>
+      </section>
+      <section className="landingSection processSection">
+        <div className="sectionHeading">
+          <span>PROCESS</span>
+          <h2>조건 정리부터 계약 검토까지 한 번에</h2>
+        </div>
+        <ol className="processList">
+          {PROCESS_STEPS.map((step, index) => (
+            <li key={step}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{step}</strong>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <section className="landingSection serviceSection">
+        <div className="sectionHeading">
+          <span>WHAT WE DO</span>
+          <h2>검색에서 끝나지 않는 오피스 찾기</h2>
+          <p>필요 면적과 예산이 정해진 팀도, 이전 후보지를 처음 검토하는 팀도 같은 흐름으로 비교할 수 있습니다.</p>
+        </div>
+        <div className="serviceGrid">
+          {SERVICE_ITEMS.map((item) => (
+            <article key={item.title} className="serviceCard">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </article>
+          ))}
         </div>
       </section>
       <SiteFooter />

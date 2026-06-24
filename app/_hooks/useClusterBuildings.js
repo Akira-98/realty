@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
+import { uniqueBuildingsById } from "../_lib/building-list";
 import { appendFilters } from "../_lib/search-filters";
 
 const CLUSTER_LIST_PAGE_SIZE = 30;
@@ -77,7 +78,9 @@ export function useClusterBuildings({
           throw new Error(payload.error || "선택한 클러스터의 매물 목록을 불러오지 못했습니다.");
         }
         setListBuildings((currentBuildings) =>
-          append ? [...currentBuildings, ...payload.buildings] : payload.buildings,
+          uniqueBuildingsById(
+            append ? [...currentBuildings, ...payload.buildings] : payload.buildings,
+          ),
         );
         setResultCount(total ?? payload.total ?? payload.count ?? payload.buildings.length);
         return payload.nextOffset;

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { boundsFromClusterMarker, useClusterBuildings } from "./useClusterBuildings";
+import { uniqueBuildingsById } from "../_lib/building-list";
 import { appendFilters } from "../_lib/search-filters";
 
 export function useResultsPanel({ filters, filtersKey, setError, setMode }) {
@@ -76,8 +77,9 @@ export function useResultsPanel({ filters, filtersKey, setError, setMode }) {
         if (!response.ok) {
           throw new Error(payload.error || "선택한 매물 목록을 불러오지 못했습니다.");
         }
-        setListBuildings(payload.buildings);
-        setResultCount(payload.count ?? markerIds.length);
+        const uniqueBuildings = uniqueBuildingsById(payload.buildings);
+        setListBuildings(uniqueBuildings);
+        setResultCount(payload.count ?? uniqueBuildings.length);
       } catch (markerError) {
         if (markerError.name !== "AbortError") {
           setError(markerError.message);
@@ -126,7 +128,7 @@ export function useResultsPanel({ filters, filtersKey, setError, setMode }) {
       const markerBuildings = Array.isArray(markerGroup)
         ? markerGroup
         : markerGroup?.buildings ?? [];
-      const markerIds = markerBuildings.map((building) => building.id);
+      const markerIds = [...new Set(markerBuildings.map((building) => building.id))];
       setSelectedId(markerIds[0] ?? null);
       setResultCount(markerIds.length);
 

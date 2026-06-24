@@ -5,6 +5,16 @@
       padding: 56px 0;
     }
 
+    .processSection {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .serviceGrid,
+    .areaLinks {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .footerInner {
       grid-template-columns: 1fr;
       gap: 42px;
@@ -90,7 +100,7 @@
     }
 
     .heroCopy h1 {
-      font-size: 38px;
+      font-size: 36px;
       line-height: 1.14;
     }
 
@@ -117,6 +127,10 @@
       height: 240px;
     }
 
+    .previewPhoto {
+      height: 240px;
+    }
+
     .previewList div {
       min-height: 62px;
       padding: 0 16px;
@@ -125,11 +139,43 @@
     .stats {
       grid-template-columns: 1fr;
       width: min(100% - 32px, 640px);
-      padding: 48px 0 54px;
+      margin-top: 0;
+      padding: 44px 0 54px;
     }
 
     .stats strong {
-      font-size: 42px;
+      font-size: 28px;
+    }
+
+    .landingSection {
+      padding: 62px 16px;
+    }
+
+    .sectionHeading h2 {
+      font-size: 30px;
+    }
+
+    .serviceGrid,
+    .areaLinks {
+      grid-template-columns: 1fr;
+    }
+
+    .serviceCard {
+      min-height: auto;
+      padding: 24px;
+    }
+
+    .processList li {
+      grid-template-columns: 54px 1fr;
+      min-height: 78px;
+    }
+
+    .processList strong {
+      font-size: 18px;
+    }
+
+    .areaLinks a {
+      min-height: 210px;
     }
 
     .footerInner {
