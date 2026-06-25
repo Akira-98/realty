@@ -1,8 +1,23 @@
 @media (max-width: 1100px) {
     .heroContent {
-      grid-template-columns: 1fr;
+      flex-direction: column;
+      align-items: start;
       gap: 32px;
       padding: 56px 0;
+    }
+
+    .featuredBuildings {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .featuredTrack {
+      --featured-card-width: min(300px, 54vw);
+    }
+
+    .featuredCard {
+      flex-basis: var(--featured-card-width);
+      min-height: 230px;
     }
 
     .processSection {
@@ -106,6 +121,31 @@
 
     .heroCopy p {
       font-size: 16px;
+    }
+
+    .featuredBuildings {
+      gap: 12px;
+    }
+
+    .featuredTrack {
+      --featured-card-width: min(270px, 78vw);
+      width: calc(100% + 32px);
+      margin-right: -16px;
+      padding-right: 16px;
+    }
+
+    .featuredCard {
+      flex-basis: var(--featured-card-width);
+      min-height: 210px;
+    }
+
+    .featuredCardText {
+      padding: 20px;
+    }
+
+    .featuredCardText strong {
+      font-size: 24px;
+      line-height: 1.08;
     }
 
     .districtShortcuts {

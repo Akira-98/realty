@@ -25,6 +25,8 @@
   z-index: 1;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 52px;
   width: min(1320px, calc(100% - 112px));
   min-height: calc(100vh - 76px);
   margin: 0 auto;
@@ -32,8 +34,9 @@
 }
 
 .heroCopy {
-  width: min(760px, 100%);
+  width: min(680px, 100%);
   color: #fff;
+  flex: 0 1 680px;
 }
 
 .heroCopy span {
@@ -104,4 +107,99 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0;
+}
+
+.featuredBuildings {
+  display: grid;
+  gap: 16px;
+  width: min(470px, 38vw);
+  min-width: 360px;
+  color: #fff;
+}
+
+.featuredTrack {
+  --featured-card-width: min(320px, 72%);
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: calc((100% - var(--featured-card-width)) / 2);
+  scrollbar-width: none;
+  cursor: grab;
+  perspective: 900px;
+  perspective-origin: center;
+  padding: 18px calc((100% - var(--featured-card-width)) / 2) 24px;
+  touch-action: pan-x;
+  user-select: none;
+}
+
+.featuredTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.featuredTrack.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+}
+
+.featuredCard {
+  position: relative;
+  display: grid;
+  align-content: end;
+  flex: 0 0 var(--featured-card-width);
+  min-height: 230px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  color: #fff;
+  text-decoration: none;
+  scroll-snap-align: center;
+  box-shadow: 0 26px 76px rgba(0, 0, 0, 0.28);
+  opacity: calc(1 - (var(--featured-distance) * 0.13));
+  transform:
+    translateX(calc(var(--featured-offset) * -10px))
+    rotateY(calc(var(--featured-offset) * -18deg))
+    scale(calc(1 - (var(--featured-distance) * 0.08)));
+  transform-style: preserve-3d;
+  transition:
+    opacity 180ms ease,
+    transform 220ms ease;
+}
+
+.featuredCard img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  transition: transform 0.32s ease;
+}
+
+.featuredCard:hover img {
+  transform: scale(1.04);
+}
+
+.featuredCardOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(6, 12, 15, 0.06) 18%, rgba(5, 13, 17, 0.78) 100%),
+    linear-gradient(90deg, rgba(5, 13, 17, 0.32) 0%, rgba(5, 13, 17, 0.04) 100%);
+}
+
+.featuredCardText {
+  position: relative;
+  display: grid;
+  z-index: 1;
+  padding: 24px;
+}
+
+.featuredCardText strong {
+  display: block;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: 0;
+  word-break: keep-all;
 }

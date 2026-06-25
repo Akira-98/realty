@@ -36,6 +36,34 @@ const DISTRICT_LINKS = [
   },
 ];
 
+const FEATURED_BUILDINGS = [
+  {
+    id: 253,
+    name: "디지털큐브",
+    image: "/images/featured/digital-cube.png",
+  },
+  {
+    id: 3066,
+    name: "덕승빌딩",
+    image: "/images/featured/deokseung-building.jpg",
+  },
+  {
+    id: 57,
+    name: "한덕빌딩",
+    image: "/images/featured/handeok-building.jpg",
+  },
+  {
+    id: 3813,
+    name: "서울파이낸스센터 SFC",
+    image: "/images/featured/seoul-finance-center.png",
+  },
+  {
+    id: 2094,
+    name: "FKI타워(구.전경련회관)",
+    image: "/images/featured/fki-tower.png",
+  },
+];
+
 const SERVICE_ITEMS = [
   {
     title: "사무실 이전 컨설팅",
@@ -58,10 +86,19 @@ const PROCESS_STEPS = [
   "계약·입주 일정 관리",
 ];
 
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
 export function LandingView({ query, setQuery, onSearch, loading }) {
   const headerRef = useRef(null);
+  const featuredTrackRef = useRef(null);
+  const featuredDragRef = useRef(null);
+  const suppressFeaturedClickRef = useRef(false);
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [featuredDragging, setFeaturedDragging] = useState(false);
+  const [activeFeaturedIndex, setActiveFeaturedIndex] = useState(0);
 
   useEffect(() => {
     if (!inquiryOpen && !mobileMenuOpen) {
@@ -83,6 +120,83 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
       document.removeEventListener("pointerdown", handlePointerDown);
     };
   }, [inquiryOpen, mobileMenuOpen]);
+
+  function updateActiveFeaturedCard() {
+    const track = featuredTrackRef.current;
+    const firstCard = track?.querySelector(".featuredCard");
+    if (!track || !firstCard) {
+      return;
+    }
+
+    const styles = window.getComputedStyle(track);
+    const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0;
+    const cardWidth = firstCard.getBoundingClientRect().width;
+    const cardStep = cardWidth + gap;
+    const centeredScroll = track.scrollLeft + (track.clientWidth - cardWidth) / 2;
+    const nextIndex = clamp(
+      Math.round(centeredScroll / cardStep),
+      0,
+      FEATURED_BUILDINGS.length - 1,
+    );
+    setActiveFeaturedIndex(nextIndex);
+  }
+
+  function handleFeaturedDragStart(event) {
+    const track = featuredTrackRef.current;
+    if (!track) {
+      return;
+    }
+
+    featuredDragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startScrollLeft: track.scrollLeft,
+      moved: false,
+    };
+    setFeaturedDragging(false);
+    track.setPointerCapture(event.pointerId);
+  }
+
+  function handleFeaturedDragMove(event) {
+    const track = featuredTrackRef.current;
+    const drag = featuredDragRef.current;
+    if (!track || !drag || drag.pointerId !== event.pointerId) {
+      return;
+    }
+
+    const deltaX = event.clientX - drag.startX;
+    if (Math.abs(deltaX) > 6) {
+      drag.moved = true;
+      suppressFeaturedClickRef.current = true;
+      setFeaturedDragging(true);
+    }
+    track.scrollLeft = drag.startScrollLeft - deltaX;
+    updateActiveFeaturedCard();
+  }
+
+  function handleFeaturedDragEnd(event) {
+    const track = featuredTrackRef.current;
+    const drag = featuredDragRef.current;
+    if (!track || !drag || drag.pointerId !== event.pointerId) {
+      return;
+    }
+
+    if (track.hasPointerCapture(event.pointerId)) {
+      track.releasePointerCapture(event.pointerId);
+    }
+
+    window.setTimeout(() => {
+      setFeaturedDragging(false);
+      suppressFeaturedClickRef.current = false;
+    }, 120);
+    featuredDragRef.current = null;
+  }
+
+  function handleFeaturedClick(event) {
+    if (suppressFeaturedClickRef.current) {
+      event.preventDefault();
+    }
+  }
 
   return (
     <section className="landing">
@@ -160,6 +274,47 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
               loading={loading}
             />
           </div>
+          <aside className="featuredBuildings" aria-label="대표매물">
+            <div
+              ref={featuredTrackRef}
+              className={featuredDragging ? "featuredTrack dragging" : "featuredTrack"}
+              onPointerDown={handleFeaturedDragStart}
+              onPointerMove={handleFeaturedDragMove}
+              onPointerUp={handleFeaturedDragEnd}
+              onPointerCancel={handleFeaturedDragEnd}
+              onScroll={updateActiveFeaturedCard}
+            >
+              {FEATURED_BUILDINGS.map((building, index) => {
+                const offset = index - activeFeaturedIndex;
+                const distance = Math.min(Math.abs(offset), 2);
+
+                return (
+                  <Link
+                    key={building.id}
+                    className="featuredCard"
+                    href={`/buildings/${building.id}`}
+                    draggable={false}
+                    onClick={handleFeaturedClick}
+                    style={{
+                      "--featured-offset": offset,
+                      "--featured-distance": distance,
+                      zIndex: FEATURED_BUILDINGS.length - distance,
+                    }}
+                  >
+                    <img
+                      src={building.image}
+                      alt={`${building.name} 사진`}
+                      draggable={false}
+                    />
+                    <span className="featuredCardOverlay" aria-hidden="true" />
+                    <span className="featuredCardText">
+                      <strong>{building.name}</strong>
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </aside>
         </div>
       </div>
       <section className="landingSection areaSection">
