@@ -44,27 +44,27 @@ export const BUILDING_AGE_OPTIONS = ["3", "5", "10", "20"];
 export const BUSINESS_DISTRICT_OPTIONS = [
   {
     value: "GBD",
-    label: "GBD",
+    label: "강남권역",
     description: "강남구 · 서초구 · 송파구",
-    center: { label: "GBD", lat: 37.4979, lng: 127.0276, level: 6 },
+    center: { label: "강남권역", lat: 37.4979, lng: 127.0276, level: 6 },
   },
   {
     value: "YBD",
-    label: "YBD",
+    label: "여의도권역",
     description: "영등포구",
-    center: { label: "YBD", lat: 37.5263, lng: 126.9259, level: 6 },
+    center: { label: "여의도권역", lat: 37.5263, lng: 126.9259, level: 6 },
   },
   {
     value: "CBD",
-    label: "CBD",
+    label: "도심권역",
     description: "종로구 · 중구",
-    center: { label: "CBD", lat: 37.5663, lng: 126.9782, level: 6 },
+    center: { label: "도심권역", lat: 37.5663, lng: 126.9782, level: 6 },
   },
   {
     value: "BBD",
-    label: "BBD",
+    label: "분당권역",
     description: "분당구",
-    center: { label: "BBD", lat: 37.3827, lng: 127.1189, level: 6 },
+    center: { label: "분당권역", lat: 37.3827, lng: 127.1189, level: 6 },
   },
 ];
 

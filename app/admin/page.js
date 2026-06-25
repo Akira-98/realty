@@ -8,6 +8,7 @@ import { AdminFooter } from "./_components/AdminFooter";
 import { AdminToolbar } from "./_components/AdminToolbar";
 import { BuildingEditor } from "./_components/BuildingEditor";
 import { BuildingList } from "./_components/BuildingList";
+import { useBuildingImages } from "./_hooks/useBuildingImages";
 import {
   EMPTY_FILTERS,
   appendFilters,
@@ -75,6 +76,11 @@ function AdminPageContent() {
   const redirectToLogin = useCallback(() => {
     router.replace("/admin/login");
   }, [router]);
+  const imageManager = useBuildingImages({
+    buildingId: editingId,
+    onError: setError,
+    onUnauthorized: redirectToLogin,
+  });
 
   const updateAdminUrl = useCallback(
     ({
@@ -297,6 +303,7 @@ function AdminPageContent() {
         <BuildingEditor
           building={editingBuilding}
           draft={draft}
+          imageManager={imageManager}
           saving={savingId === editingBuilding?.id}
           onChange={updateDraft}
           onSave={() => saveBuilding(editingBuilding, draft)}

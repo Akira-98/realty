@@ -1,4 +1,5 @@
 import { EDIT_FIELDS } from "../_lib/admin-buildings";
+import { BuildingImageManager } from "./BuildingImageManager";
 
 function cleanNumericInput(value) {
   const [integer = "", ...decimalParts] = value.replaceAll(",", "").split(".");
@@ -21,7 +22,14 @@ function formatNumericInput(value) {
   return text.includes(".") ? `${formattedInteger}.${decimal ?? ""}` : formattedInteger;
 }
 
-export function BuildingEditor({ building, draft, saving, onChange, onSave }) {
+export function BuildingEditor({
+  building,
+  draft,
+  imageManager,
+  saving,
+  onChange,
+  onSave,
+}) {
   if (!building) {
     return (
       <aside className="adminEditor">
@@ -63,6 +71,17 @@ export function BuildingEditor({ building, draft, saving, onChange, onSave }) {
           </button>
         </div>
       </form>
+      <BuildingImageManager
+        buildingName={building.building_name}
+        deletingId={imageManager.deletingId}
+        images={imageManager.images}
+        loading={imageManager.loading}
+        ordering={imageManager.ordering}
+        uploading={imageManager.uploading}
+        onDelete={imageManager.deleteImage}
+        onReorder={imageManager.reorderImages}
+        onUpload={imageManager.uploadImage}
+      />
     </aside>
   );
 }

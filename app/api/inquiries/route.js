@@ -11,6 +11,13 @@ const MAX_TEXT_LENGTHS = {
   company: 120,
   message: 2000,
   building_name: 200,
+  desired_area: 120,
+  desired_deposit: 120,
+  desired_rent: 120,
+  preferred_region: 200,
+  parking: 120,
+  business_type: 120,
+  room_count: 120,
 };
 
 function cleanText(value, maxLength) {
@@ -23,24 +30,66 @@ function cleanOptionalText(value, maxLength) {
   return text || null;
 }
 
-function cleanOptionalUuid(value) {
-  const text = cleanOptionalText(value, 80);
+function cleanOptionalBuildingId(value) {
+  const text = cleanOptionalText(value, 40);
   if (!text) {
     return null;
   }
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(text)
-    ? text
-    : null;
+
+  const id = Number(text);
+  return Number.isSafeInteger(id) && id > 0 ? id : null;
+}
+
+function cleanOptionalBoolean(value) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+  if (typeof value === "boolean") {
+    return value;
+  }
+  if (value === "true") {
+    return true;
+  }
+  if (value === "false") {
+    return false;
+  }
+  return null;
+}
+
+function cleanRequiredDate(value) {
+  const text = String(value ?? "").trim();
+  if (!text) {
+    return "";
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+    return "";
+  }
+
+  const date = new Date(`${text}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== text
+    ? ""
+    : text;
 }
 
 function cleanPayload(body) {
   const payload = {
-    building_id: cleanOptionalUuid(body?.building_id),
+    building_id: cleanOptionalBuildingId(body?.building_id),
     building_name: cleanOptionalText(body?.building_name, MAX_TEXT_LENGTHS.building_name),
     name: cleanText(body?.name, MAX_TEXT_LENGTHS.name),
     phone: cleanText(body?.phone, MAX_TEXT_LENGTHS.phone),
     company: cleanOptionalText(body?.company, MAX_TEXT_LENGTHS.company),
-    message: cleanText(body?.message, MAX_TEXT_LENGTHS.message),
+    message: cleanOptionalText(body?.message, MAX_TEXT_LENGTHS.message),
+    desired_area: cleanText(body?.desired_area, MAX_TEXT_LENGTHS.desired_area),
+    move_in_date: cleanRequiredDate(body?.move_in_date),
+    desired_deposit: cleanText(body?.desired_deposit, MAX_TEXT_LENGTHS.desired_deposit),
+    desired_rent: cleanText(body?.desired_rent, MAX_TEXT_LENGTHS.desired_rent),
+    preferred_region: cleanText(body?.preferred_region, MAX_TEXT_LENGTHS.preferred_region),
+    parking: cleanOptionalText(body?.parking, MAX_TEXT_LENGTHS.parking),
+    overtime: cleanOptionalBoolean(body?.overtime),
+    business_type: cleanOptionalText(body?.business_type, MAX_TEXT_LENGTHS.business_type),
+    has_visitors: cleanOptionalBoolean(body?.has_visitors),
+    has_interior: cleanOptionalBoolean(body?.has_interior),
+    room_count: cleanOptionalText(body?.room_count, MAX_TEXT_LENGTHS.room_count),
     status: "new",
     source: "web",
   };
@@ -51,8 +100,20 @@ function cleanPayload(body) {
   if (!payload.phone) {
     throw new Error("연락처를 입력해 주세요.");
   }
-  if (!payload.message) {
-    throw new Error("문의 내용을 입력해 주세요.");
+  if (!payload.desired_area) {
+    throw new Error("희망 면적을 입력해 주세요.");
+  }
+  if (!payload.move_in_date) {
+    throw new Error("입주 희망일을 입력해 주세요.");
+  }
+  if (!payload.desired_deposit) {
+    throw new Error("희망 보증금을 입력해 주세요.");
+  }
+  if (!payload.desired_rent) {
+    throw new Error("희망 임대료를 입력해 주세요.");
+  }
+  if (!payload.preferred_region) {
+    throw new Error("희망 지역을 입력해 주세요.");
   }
 
   return payload;

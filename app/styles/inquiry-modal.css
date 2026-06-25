@@ -54,15 +54,57 @@
 
 .inquiryForm {
   display: grid;
-  gap: 14px;
+  gap: 18px;
   padding: 22px 24px 24px;
 }
 
 .inquiryForm label {
   display: grid;
   gap: 7px;
+}
+
+.inquiryFieldLabel {
   color: #53636d;
   font-size: 13px;
+  font-weight: 800;
+}
+
+.inquiryRequiredHint {
+  margin: 0;
+  color: #53636d;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.inquiryFormSection {
+  display: grid;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid #e6edf1;
+}
+
+.inquiryRequiredHint + .inquiryFormSection {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.inquiryFormSection h3 {
+  margin: 0 0 2px;
+  color: #101820;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.inquiryFieldLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inquiryFieldLabel em {
+  color: #d92d20;
+  font-style: normal;
   font-weight: 800;
 }
 
@@ -73,8 +115,82 @@
   border: 1px solid #cfd9de;
   border-radius: 6px;
   padding: 0 12px;
+  background: #fff;
   color: #14232c;
   outline: none;
+}
+
+.inquiryForm input:placeholder-shown,
+.inquiryForm textarea:placeholder-shown {
+  background: #f6f8f9;
+}
+
+.inquiryForm input::placeholder,
+.inquiryForm textarea::placeholder {
+  color: #a3b0b8;
+}
+
+.inquiryChoiceGroup {
+  min-width: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.inquiryChoiceGroup legend {
+  margin: 0 0 7px;
+  color: #53636d;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.inquiryChoiceGroup > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.inquiryChoiceGroup label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 28px;
+  color: #263640;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.inquiryChoiceGroup input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.inquiryChoiceGroup label span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.inquiryChoiceGroup label span::before {
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #9dadb5;
+  border-radius: 3px;
+  background: #fff;
+  content: "";
+}
+
+.inquiryChoiceGroup label:has(input:checked) span::before {
+  border-color: #00aebe;
+  background: #00aebe;
+  color: #fff;
+  content: "✓";
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .inquiryForm input {
@@ -110,18 +226,22 @@
 
 .inquiryActions {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: center;
 }
 
 .inquiryActions button {
-  height: 42px;
+  min-width: 180px;
+  height: 46px;
   border: 0;
-  border-radius: 6px;
-  padding: 0 16px;
-  background: #102332;
+  border-radius: 999px;
+  padding: 0 24px;
+  background: #00aebe;
   color: #fff;
   font-weight: 800;
+}
+
+.inquiryActions button:hover {
+  background: #05bdce;
 }
 
 .inquiryActions button:disabled {

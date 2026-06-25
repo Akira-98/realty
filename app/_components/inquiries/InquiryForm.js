@@ -8,6 +8,16 @@ const EMPTY_FORM = {
   name: "",
   phone: "",
   company: "",
+  desired_area: "",
+  move_in_date: "",
+  desired_deposit: "",
+  desired_rent: "",
+  preferred_region: "",
+  parking: "",
+  overtime: "",
+  has_visitors: "",
+  has_interior: "",
+  room_count: "",
   message: "",
 };
 
