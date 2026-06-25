@@ -148,6 +148,7 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
     }
 
     featuredDragRef.current = {
+      href: event.target.closest(".featuredCard")?.getAttribute("href") ?? null,
       pointerId: event.pointerId,
       startX: event.clientX,
       startScrollLeft: track.scrollLeft,
@@ -183,6 +184,11 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
 
     if (track.hasPointerCapture(event.pointerId)) {
       track.releasePointerCapture(event.pointerId);
+    }
+
+    if (!drag.moved && drag.href) {
+      suppressFeaturedClickRef.current = true;
+      window.location.assign(drag.href);
     }
 
     window.setTimeout(() => {
@@ -289,7 +295,7 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
                 const distance = Math.min(Math.abs(offset), 2);
 
                 return (
-                  <Link
+                  <a
                     key={building.id}
                     className="featuredCard"
                     href={`/buildings/${building.id}`}
@@ -310,7 +316,7 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
                     <span className="featuredCardText">
                       <strong>{building.name}</strong>
                     </span>
-                  </Link>
+                  </a>
                 );
               })}
             </div>
