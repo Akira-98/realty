@@ -44,12 +44,13 @@ export default function AdminInquiriesPage() {
           onPage={inquiries.setCurrentPage}
           onSelect={inquiries.setSelectedId}
         />
-        <InquiryDetail
-          inquiry={inquiries.selectedInquiry}
-          savingId={inquiries.savingId}
-          onStatusChange={inquiries.updateStatus}
-        />
       </section>
+      <InquiryDetail
+        inquiry={inquiries.selectedInquiry}
+        savingId={inquiries.savingId}
+        onClose={() => inquiries.setSelectedId(null)}
+        onStatusChange={inquiries.updateStatus}
+      />
       <AdminFooter />
     </main>
   );

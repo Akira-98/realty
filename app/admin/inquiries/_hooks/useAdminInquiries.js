@@ -57,7 +57,7 @@ export function useAdminInquiries(router) {
       setSelectedId((currentId) =>
         payload.inquiries.some((inquiry) => inquiry.id === currentId)
           ? currentId
-          : payload.inquiries[0]?.id ?? null,
+          : null,
       );
     } catch (listError) {
       setError(listError.message);

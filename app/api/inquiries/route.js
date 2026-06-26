@@ -136,9 +136,11 @@ export async function POST(request) {
 
   let supabaseUrl;
   let serviceKey;
+  let appsScriptUrl;
   try {
     supabaseUrl = supabaseBaseUrl();
     serviceKey = requiredEnv("SUPABASE_SERVICE_ROLE_KEY");
+    appsScriptUrl = requiredEnv("GOOGLE_APPS_SCRIPT_INQUIRY_URL");
   } catch (error) {
     return jsonError(error.message, 500);
   }
@@ -172,7 +174,41 @@ export async function POST(request) {
   }
 
   const inquiries = await response.json();
+  const inquiry = inquiries[0] ?? null;
+  let sheetSync = false;
+  let sheetSyncError = null;
+
+  try {
+    const sheetResponse = await fetch(appsScriptUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...payload,
+        id: inquiry?.id ?? null,
+        created_at: inquiry?.created_at ?? null,
+        action: "create",
+      }),
+      cache: "no-store",
+    });
+
+    sheetSync = sheetResponse.ok;
+    if (!sheetResponse.ok) {
+      sheetSyncError = await sheetResponse.text();
+      console.error("Google Apps Script inquiry sync failed.", {
+        status: sheetResponse.status,
+        body: sheetSyncError,
+      });
+    }
+  } catch (error) {
+    sheetSyncError = error.message;
+    console.error("Google Apps Script inquiry sync failed.", error);
+  }
+
   return NextResponse.json({
-    inquiry: inquiries[0] ?? null,
+    inquiry,
+    sheetSync,
+    sheetSyncError,
   });
 }

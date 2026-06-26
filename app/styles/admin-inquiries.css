@@ -11,6 +11,10 @@
   margin-top: auto;
 }
 
+.inquiryWorkspace {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .adminInquiry {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr) max-content;
@@ -21,6 +25,7 @@
   background: transparent;
   color: inherit;
   text-align: left;
+  cursor: pointer;
 }
 
 .adminInquiry.active {
@@ -89,6 +94,184 @@
 .status-contacted {
   background: #ecf8e9;
   color: #246b2c;
+}
+
+.inquiryDetailBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(12, 25, 34, 0.42);
+}
+
+.inquiryDetailModal {
+  width: min(720px, 100%);
+  max-height: min(820px, calc(100vh - 48px));
+  overflow: auto;
+  border: 1px solid #d8e4e9;
+  border-radius: 10px;
+  padding: 24px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(15, 32, 44, 0.24);
+}
+
+.inquiryDetailHeader {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+}
+
+.inquiryDetailHeader .inquiryStatus {
+  grid-column: auto;
+  grid-row: auto;
+}
+
+.inquiryDetailHeader h2 {
+  margin: 0 0 6px;
+  color: #12212b;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.inquiryDetailHeader p {
+  margin: 0;
+  color: #465a64;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.inquiryDetailHeader button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #d9e3e8;
+  border-radius: 999px;
+  padding: 0;
+  background: #fff;
+  color: #344852;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.inquiryDetailModal .inquiryStatusActions {
+  margin-top: 18px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e3ebef;
+}
+
+.inquiryDetailSection {
+  padding: 20px 0;
+  border-bottom: 1px solid #edf2f4;
+}
+
+.inquiryDetailSection:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.inquiryDetailSection h3 {
+  margin: 0 0 12px;
+  color: #243741;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.inquiryDetailList.compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.inquiryDetailList.compact div {
+  gap: 4px;
+  min-width: 0;
+}
+
+.inquiryDetailList.compact div:nth-child(3),
+.inquiryDetailList.compact div:nth-child(5) {
+  grid-column: 1 / -1;
+}
+
+.inquiryDetailList.compact dt {
+  color: #7b8a91;
+  font-size: 12px;
+}
+
+.inquiryDetailList.compact dd {
+  overflow-wrap: anywhere;
+  color: #13242d;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.inquiryBuildingSummary {
+  display: grid;
+  gap: 6px;
+}
+
+.inquiryBuildingSummary strong {
+  color: #12212b;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.inquiryBuildingSummary span,
+.inquiryBuildingSummary em {
+  color: #60707a;
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.inquiryConditionChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.inquiryConditionChips span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  border: 1px solid #dce7eb;
+  border-radius: 6px;
+  padding: 6px 9px;
+  background: #f8fbfc;
+  color: #273a44;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.inquiryConditionChips b {
+  color: #728189;
+  font-size: 12px;
+}
+
+.inquiryConditionChips em {
+  color: #7a8990;
+  font-size: 13px;
+  font-style: normal;
+}
+
+.inquiryMessage {
+  min-height: 54px;
+  margin: 0;
+  border: 1px solid #e1e9ed;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fbfcfd;
+  color: #14232c;
+  font-size: 14px;
+  line-height: 1.65;
+  white-space: pre-wrap;
 }
 
 .statusPublic,
