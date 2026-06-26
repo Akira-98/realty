@@ -213,7 +213,7 @@ export function MapFilters({ filters, onApply, resultsPanelOpen = false }) {
         }}
       >
         <strong>{draft.businessDistrict || "전체"}</strong>
-        <div className="mapFilterChoices">
+        <div className="mapFilterChoices businessDistrictChoices">
           {BUSINESS_DISTRICT_OPTIONS.map((district) => {
             const isActive = draft.businessDistrict === district.value;
             return (
@@ -237,7 +237,6 @@ export function MapFilters({ filters, onApply, resultsPanelOpen = false }) {
             );
           })}
         </div>
-        <span>강남권역 · 여의도권역 · 도심권역 · 분당권역</span>
         <div className="mapFilterActions">
           {resetButton("권역", { businessDistrict: "" })}
         </div>

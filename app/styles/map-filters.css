@@ -124,7 +124,13 @@
   border-radius: 8px;
   background: #fff;
   color: #172026;
+  font-size: 14px;
   font-weight: 500;
+  white-space: nowrap;
+}
+
+.businessDistrictChoices {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .mapFilterChoices button.active {
@@ -137,6 +143,8 @@
   color: #7c8c93;
   font-size: 12px;
   font-weight: 400;
+  line-height: 1.5;
+  word-break: keep-all;
 }
 
 .mapFilterActions {
