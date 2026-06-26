@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import {
   BOUNDS_CACHE_HEADERS,
   createBoundsRpcPayload,
+  createSearchRadiusRpcPayload,
   fetchBoundsRpc,
   readBoundsRequest,
 } from "../../_bounds-query";
@@ -21,7 +22,7 @@ export async function GET(request) {
     return requestState.error;
   }
 
-  const { bounds, filters, limit, offset } = requestState;
+  const { bounds, filters, limit, offset, searchRadius } = requestState;
   const result = await fetchBoundsRpc({
     functionName: "search_buildings_list",
     errorMessage: "Supabase bounds list failed.",
@@ -30,6 +31,7 @@ export async function GET(request) {
       filters,
       limit,
       offset,
+      extra: createSearchRadiusRpcPayload(searchRadius),
     }),
   });
   if (result.error) {

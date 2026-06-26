@@ -44,6 +44,7 @@ export function useSearchWorkspace() {
   const [markerBuildings, setMarkerBuildings] = useState([]);
   const [mode, setMode] = useState("bounds");
   const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [searchRadius, setSearchRadius] = useState(null);
   const [boundsRefreshKey, setBoundsRefreshKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -57,6 +58,7 @@ export function useSearchWorkspace() {
   const resultsPanel = useResultsPanel({
     filters,
     filtersKey: activeFiltersKey,
+    searchRadius,
     setError,
     setMode,
   });
@@ -89,6 +91,7 @@ export function useSearchWorkspace() {
     router.push("/");
     setMode("bounds");
     setCenter(null);
+    setSearchRadius(null);
     setMarkerBuildings([]);
     latestBoundsKeyRef.current = "";
   }, [resultsPanel, router]);
@@ -106,10 +109,14 @@ export function useSearchWorkspace() {
     const lat = numberParam(searchParams, "lat");
     const lng = numberParam(searchParams, "lng");
     const level = numberParam(searchParams, "level");
+    const searchLat = numberParam(searchParams, "searchLat");
+    const searchLng = numberParam(searchParams, "searchLng");
+    const radius = numberParam(searchParams, "radius");
 
     if (!urlQuery || lat === null || lng === null) {
       setQuery(urlQuery);
       setCenter(null);
+      setSearchRadius(null);
       setMarkerBuildings([]);
       setMode("bounds");
       resultsPanel.resetResultsPanel();
@@ -128,6 +135,15 @@ export function useSearchWorkspace() {
       source,
       level,
     });
+    setSearchRadius(
+      searchLat !== null && searchLng !== null && radius !== null
+        ? {
+            searchLat,
+            searchLng,
+            radius,
+          }
+        : null,
+    );
     setMarkerBuildings([]);
     setMode("bounds");
     resultsPanel.resetResultsPanel();
@@ -155,6 +171,7 @@ export function useSearchWorkspace() {
     filters,
     latestBoundsKeyRef,
     mode,
+    searchRadius,
     setMarkerBuildings,
     setError,
   });

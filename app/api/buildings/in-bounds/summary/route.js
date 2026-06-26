@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import {
   BOUNDS_CACHE_HEADERS,
   createBoundsRpcPayload,
+  createSearchRadiusRpcPayload,
   fetchBoundsRpc,
   numberParam,
   readBoundsRequest,
@@ -23,7 +24,7 @@ export async function GET(request) {
     return requestState.error;
   }
 
-  const { bounds, filters, limit, offset } = requestState;
+  const { bounds, filters, limit, offset, searchRadius } = requestState;
   const mapLevel =
     numberParam(searchParams, "mapLevel") ??
     numberParam(searchParams, "map_level") ??
@@ -39,6 +40,7 @@ export async function GET(request) {
       offset,
       extra: {
         map_level: Math.round(mapLevel),
+        ...createSearchRadiusRpcPayload(searchRadius),
       },
     }),
   });

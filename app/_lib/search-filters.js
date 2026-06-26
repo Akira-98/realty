@@ -39,7 +39,13 @@ export const SCALE_OPTIONS = ["소형", "중형", "중대형", "대형", "초대
 
 export const SUBWAY_WALK_OPTIONS = ["2", "5", "10"];
 
-export const BUILDING_AGE_OPTIONS = ["3", "5", "10", "20"];
+export const BUILDING_AGE_OPTIONS = [
+  { value: "3", label: "~3년" },
+  { value: "5", label: "~5년" },
+  { value: "10", label: "~10년" },
+  { value: "20", label: "~20년" },
+  { value: "20+", label: "20년~" },
+];
 
 export const BUSINESS_DISTRICT_OPTIONS = [
   {
@@ -84,8 +90,19 @@ function normalizeFilterValue(value, key) {
   ) {
     return value;
   }
+  if (
+    typeof value === "string" &&
+    key === "buildingAgeMax" &&
+    BUILDING_AGE_OPTIONS.some((option) => option.value === value)
+  ) {
+    return value;
+  }
   const number = Number(value);
   return Number.isFinite(number) && value !== "" ? String(number) : "";
+}
+
+export function buildingAgeFilterLabel(value) {
+  return BUILDING_AGE_OPTIONS.find((option) => option.value === value)?.label || "";
 }
 
 export function normalizeFilters(filters) {

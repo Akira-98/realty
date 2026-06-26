@@ -23,10 +23,24 @@ function filterParam(searchParams, name) {
   return Number.isFinite(value) ? value : null;
 }
 
+function buildingAgeParam(searchParams) {
+  const rawValue = searchParams.get("buildingAgeMax");
+  if (rawValue === null || rawValue === "") {
+    return null;
+  }
+  if (rawValue === "20+") {
+    return rawValue;
+  }
+
+  const value = Number(rawValue);
+  return Number.isFinite(value) ? value : null;
+}
+
 export function readListingFilters(searchParams) {
   const filters = Object.fromEntries(
     FILTER_KEYS.map((key) => [key, filterParam(searchParams, key)]),
   );
+  filters.buildingAgeMax = buildingAgeParam(searchParams);
   filters.scale = searchParams.get("scale")?.trim() || null;
   const businessDistrict = searchParams.get("businessDistrict")?.trim().toUpperCase() || null;
   filters.businessDistrict = BUSINESS_DISTRICT_CODES.has(businessDistrict)
@@ -45,11 +59,21 @@ export function minApprovalYearFromFilters(filters, currentYear = new Date().get
   if (filters.buildingAgeMax === null || filters.buildingAgeMax === "") {
     return null;
   }
+  if (filters.buildingAgeMax === "20+") {
+    return null;
+  }
   const ageMax = Number(filters.buildingAgeMax);
   if (!Number.isFinite(ageMax)) {
     return null;
   }
   return currentYear - ageMax;
+}
+
+export function maxApprovalYearFromFilters(filters, currentYear = new Date().getFullYear()) {
+  if (filters.buildingAgeMax !== "20+") {
+    return null;
+  }
+  return currentYear - 20;
 }
 
 function appendRangeFilter(params, column, min, max) {
@@ -87,6 +111,10 @@ export function appendListingFilterParams(params, filters) {
   const minApprovalYear = minApprovalYearFromFilters(filters);
   if (minApprovalYear !== null) {
     params.set("approval_date_parsed", `gte.${minApprovalYear}`);
+  }
+  const maxApprovalYear = maxApprovalYearFromFilters(filters);
+  if (maxApprovalYear !== null) {
+    params.set("approval_date_parsed", `lte.${maxApprovalYear}`);
   }
   if (filters.businessDistrict !== null) {
     params.set("business_district", `eq.${filters.businessDistrict}`);

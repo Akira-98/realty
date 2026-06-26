@@ -1,6 +1,7 @@
 import { jsonError, requiredEnv } from "../../../lib/http";
 import {
   appendListingFilterParams,
+  maxApprovalYearFromFilters,
   minApprovalYearFromFilters,
   readListingFilters,
 } from "../../_lib/listing-filters";
@@ -79,6 +80,17 @@ export function readBoundsRequest(searchParams, options = {}) {
   const offset = includeOffset
     ? Math.max(numberParam(searchParams, "offset") ?? 0, 0)
     : 0;
+  const searchLat = numberParam(searchParams, "searchLat");
+  const searchLng = numberParam(searchParams, "searchLng");
+  const radius = numberParam(searchParams, "radius");
+  const searchRadius =
+    searchLat !== null && searchLng !== null && radius !== null
+      ? {
+          searchLat,
+          searchLng,
+          radius: clamp(radius, 1, 10000),
+        }
+      : null;
 
   return {
     bounds: {
@@ -90,6 +102,7 @@ export function readBoundsRequest(searchParams, options = {}) {
     filters: readListingFilters(searchParams),
     limit: Math.round(limit),
     offset: Math.round(offset),
+    searchRadius,
   };
 }
 
@@ -101,6 +114,8 @@ export function requiredSupabasePublicConfig() {
 }
 
 export function createBoundsRpcPayload({ bounds, filters, limit, offset, extra = {} }) {
+  const maxApprovalYear = maxApprovalYearFromFilters(filters);
+
   return {
     sw_lat: bounds.swLat,
     sw_lng: bounds.swLng,
@@ -115,10 +130,27 @@ export function createBoundsRpcPayload({ bounds, filters, limit, offset, extra =
     scale: filters.scale,
     subway_walk_max: filters.subwayWalkMax,
     min_approval_year: minApprovalYearFromFilters(filters),
+    max_approval_year: maxApprovalYear,
     business_district_filter: filters.businessDistrict,
     list_limit: limit,
     list_offset: offset,
     ...extra,
+  };
+}
+
+export function createSearchRadiusRpcPayload(searchRadius) {
+  if (!searchRadius) {
+    return {
+      search_lat: null,
+      search_lng: null,
+      radius_m: null,
+    };
+  }
+
+  return {
+    search_lat: searchRadius.searchLat,
+    search_lng: searchRadius.searchLng,
+    radius_m: Math.round(searchRadius.radius),
   };
 }
 

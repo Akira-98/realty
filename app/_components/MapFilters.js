@@ -8,6 +8,7 @@ import {
   FILTER_GROUPS,
   SCALE_OPTIONS,
   SUBWAY_WALK_OPTIONS,
+  buildingAgeFilterLabel,
   filterSummary,
 } from "../_lib/search-filters";
 
@@ -252,22 +253,22 @@ export function MapFilters({ filters, onApply, resultsPanelOpen = false }) {
         }}
       >
         <strong>
-          {draft.buildingAgeMax ? `${draft.buildingAgeMax}년 이하` : "전체"}
+          {draft.buildingAgeMax ? buildingAgeFilterLabel(draft.buildingAgeMax) : "전체"}
         </strong>
         <div className="mapFilterChoices">
-          {BUILDING_AGE_OPTIONS.map((years) => (
+          {BUILDING_AGE_OPTIONS.map((option) => (
             <button
-              key={years}
+              key={option.value}
               type="button"
-              className={draft.buildingAgeMax === years ? "active" : ""}
+              className={draft.buildingAgeMax === option.value ? "active" : ""}
               onClick={() => {
                 applyDraft({
                   ...draft,
-                  buildingAgeMax: draft.buildingAgeMax === years ? "" : years,
+                  buildingAgeMax: draft.buildingAgeMax === option.value ? "" : option.value,
                 });
               }}
             >
-              {years}년
+              {option.label}
             </button>
           ))}
         </div>

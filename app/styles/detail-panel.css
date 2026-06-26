@@ -116,16 +116,39 @@
   background: transparent;
 }
 
+.detailPanelActions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.detailPanelDetailLink,
 .detailPanelActionBar .detailSecondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  min-height: 64px;
+  min-height: 58px;
   border: 0;
-  border-radius: 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.detailPanelDetailLink {
+  background: #101820;
+  color: #fff;
+}
+
+.detailPanelActionBar .detailSecondaryAction {
   background: #00aebe;
   color: #fff;
-  font-size: 22px;
-  font-weight: 900;
   box-shadow: 0 12px 24px rgba(0, 174, 190, 0.24);
+}
+
+.detailPanelDetailLink:hover {
+  background: #263640;
 }
 
 .detailPanelActionBar .detailSecondaryAction:hover {

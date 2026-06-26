@@ -8,6 +8,7 @@ import {
   FILTER_GROUPS,
   SCALE_OPTIONS,
   SUBWAY_WALK_OPTIONS,
+  buildingAgeFilterLabel,
   filterSummary,
 } from "../../_lib/search-filters";
 
@@ -88,10 +89,10 @@ export function AdminToolbar({
       key: "buildingAge",
       label: "준공연차",
       valueKey: "buildingAgeMax",
-      summary: filters.buildingAgeMax ? `${filters.buildingAgeMax}년 이하` : "전체",
-      options: BUILDING_AGE_OPTIONS.map((years) => ({
-        label: `${years}년`,
-        value: years,
+      summary: filters.buildingAgeMax ? buildingAgeFilterLabel(filters.buildingAgeMax) : "전체",
+      options: BUILDING_AGE_OPTIONS.map((option) => ({
+        label: option.label,
+        value: option.value,
       })),
     },
     {

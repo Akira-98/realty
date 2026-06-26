@@ -7,6 +7,17 @@ import { fetchBuildingDetail } from "../../../_lib/building-detail";
 
 export const revalidate = 60;
 
+function DetailPanelActions({ building }) {
+  return (
+    <div className="detailPanelActions">
+      <a className="detailPanelDetailLink" href={`/buildings/${building.id}`}>
+        상세보기
+      </a>
+      <InquiryForm building={building} buttonLabel="문의하기" />
+    </div>
+  );
+}
+
 export default async function InterceptedBuildingDetailPage({ params }) {
   const { id } = await params;
   const building = await fetchBuildingDetail(id);
@@ -16,7 +27,7 @@ export default async function InterceptedBuildingDetailPage({ params }) {
   }
 
   return (
-    <DetailPanelShell action={<InquiryForm building={building} buttonLabel="문의하기" />}>
+    <DetailPanelShell action={<DetailPanelActions building={building} />}>
       <BuildingDetailView building={building} panel />
     </DetailPanelShell>
   );

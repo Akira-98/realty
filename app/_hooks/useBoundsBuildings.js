@@ -4,13 +4,16 @@ import { useCallback, useEffect, useRef } from "react";
 
 import { appendFilters, filtersKey } from "../_lib/search-filters";
 
-function boundsCacheKey(bounds, filters) {
+function boundsCacheKey(bounds, filters, searchRadius) {
   const boundsKey = [
     bounds.swLat.toFixed(5),
     bounds.swLng.toFixed(5),
     bounds.neLat.toFixed(5),
     bounds.neLng.toFixed(5),
     bounds.mapLevel ?? "",
+    searchRadius?.searchLat?.toFixed(5) ?? "",
+    searchRadius?.searchLng?.toFixed(5) ?? "",
+    searchRadius?.radius ?? "",
   ].join(",");
 
   return `${boundsKey}|${filtersKey(filters)}`;
@@ -40,6 +43,7 @@ export function useBoundsBuildings({
   filters,
   latestBoundsKeyRef,
   mode,
+  searchRadius,
   setMarkerBuildings,
   setError,
 }) {
@@ -54,7 +58,7 @@ export function useBoundsBuildings({
 
   const fetchBuildingsInBounds = useCallback(
     async (bounds) => {
-      const cacheKey = boundsCacheKey(bounds, filters);
+      const cacheKey = boundsCacheKey(bounds, filters, searchRadius);
 
       if (latestBoundsKeyRef.current === cacheKey || mode !== "bounds") {
         return;
@@ -78,7 +82,13 @@ export function useBoundsBuildings({
         if (bounds.mapLevel) {
           params.set("mapLevel", String(bounds.mapLevel));
         }
+        if (searchRadius) {
+          params.set("searchLat", String(searchRadius.searchLat));
+          params.set("searchLng", String(searchRadius.searchLng));
+          params.set("radius", String(searchRadius.radius));
+        }
         const response = await fetch(`/api/buildings/in-bounds/summary?${params}`, {
+          cache: "no-store",
           signal: controller.signal,
         });
         const payload = await response.json();
@@ -88,6 +98,7 @@ export function useBoundsBuildings({
         if (latestBoundsKeyRef.current !== cacheKey) {
           return;
         }
+        setError("");
         summaryCacheRef.current.set(cacheKey, {
           markers: payload.markers,
         });
@@ -108,6 +119,7 @@ export function useBoundsBuildings({
       filters,
       latestBoundsKeyRef,
       mode,
+      searchRadius,
       setError,
       setMarkerBuildings,
     ],

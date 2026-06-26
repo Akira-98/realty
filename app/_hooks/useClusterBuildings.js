@@ -21,6 +21,7 @@ export function boundsFromClusterMarker(marker) {
 export function useClusterBuildings({
   filters,
   listMode,
+  searchRadius,
   setError,
   setListBuildings,
   setListLoading,
@@ -69,14 +70,21 @@ export function useClusterBuildings({
           limit: String(CLUSTER_LIST_PAGE_SIZE),
           offset: String(offset),
         });
+        if (searchRadius) {
+          params.set("searchLat", String(searchRadius.searchLat));
+          params.set("searchLng", String(searchRadius.searchLng));
+          params.set("radius", String(searchRadius.radius));
+        }
         appendFilters(params, filtersOverride);
         const response = await fetch(`/api/buildings/in-bounds/list?${params}`, {
+          cache: "no-store",
           signal: controller.signal,
         });
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload.error || "선택한 클러스터의 매물 목록을 불러오지 못했습니다.");
         }
+        setError("");
         setListBuildings((currentBuildings) =>
           uniqueBuildingsById(
             append ? [...currentBuildings, ...payload.buildings] : payload.buildings,
@@ -97,7 +105,7 @@ export function useClusterBuildings({
         setListLoading(false);
       }
     },
-    [filters, setError, setListBuildings, setListLoading, setResultCount],
+    [filters, searchRadius, setError, setListBuildings, setListLoading, setResultCount],
   );
 
   const selectCluster = useCallback(
@@ -106,6 +114,7 @@ export function useClusterBuildings({
       const clusterListState = {
         bounds,
         filters: filtersOverride,
+        searchRadius,
         nextOffset: null,
         total,
       };
@@ -119,7 +128,7 @@ export function useClusterBuildings({
         };
       }
     },
-    [fetchClusterListPage, filters],
+    [fetchClusterListPage, filters, searchRadius],
   );
 
   const fetchNextClusterListPage = useCallback(async () => {

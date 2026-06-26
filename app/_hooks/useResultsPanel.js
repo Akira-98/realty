@@ -6,7 +6,7 @@ import { boundsFromClusterMarker, useClusterBuildings } from "./useClusterBuildi
 import { uniqueBuildingsById } from "../_lib/building-list";
 import { appendFilters } from "../_lib/search-filters";
 
-export function useResultsPanel({ filters, filtersKey, setError, setMode }) {
+export function useResultsPanel({ filters, filtersKey, searchRadius, setError, setMode }) {
   const [listBuildings, setListBuildings] = useState([]);
   const [resultCount, setResultCount] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
@@ -29,6 +29,7 @@ export function useResultsPanel({ filters, filtersKey, setError, setMode }) {
   const clusterBuildings = useClusterBuildings({
     filters,
     listMode,
+    searchRadius,
     setError,
     setListBuildings,
     setListLoading,
@@ -71,6 +72,7 @@ export function useResultsPanel({ filters, filtersKey, setError, setMode }) {
         markerIds.forEach((id) => params.append("id", id));
         appendFilters(params, filtersOverride);
         const response = await fetch(`/api/buildings/by-ids?${params}`, {
+          cache: "no-store",
           signal: controller.signal,
         });
         const payload = await response.json();
@@ -78,6 +80,7 @@ export function useResultsPanel({ filters, filtersKey, setError, setMode }) {
           throw new Error(payload.error || "선택한 매물 목록을 불러오지 못했습니다.");
         }
         const uniqueBuildings = uniqueBuildingsById(payload.buildings);
+        setError("");
         setListBuildings(uniqueBuildings);
         setResultCount(payload.count ?? uniqueBuildings.length);
       } catch (markerError) {
