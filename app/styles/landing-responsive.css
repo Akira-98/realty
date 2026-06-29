@@ -6,18 +6,22 @@
       padding: 56px 0;
     }
 
-    .featuredBuildings {
+    .heroFeature,
+    .heroSearchPanel {
       width: 100%;
-      min-width: 0;
     }
 
-    .featuredTrack {
-      --featured-card-width: min(300px, 54vw);
+    .heroFeature {
+      margin-left: 0;
     }
 
-    .featuredCard {
-      flex-basis: var(--featured-card-width);
-      min-height: 230px;
+    .heroSearchPanel {
+      max-width: 680px;
+    }
+
+    .heroSearchCopy {
+      justify-items: start;
+      text-align: left;
     }
 
     .processSection {
@@ -114,38 +118,61 @@
       padding: 52px 0;
     }
 
-    .heroCopy h1 {
+    .heroFeature h1 {
+      font-size: 40px;
+      line-height: 1.08;
+    }
+
+    .heroTags {
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .heroTags span {
+      font-size: 14px;
+    }
+
+    .heroDetailLink {
+      min-width: 138px;
+      min-height: 50px;
+      margin-top: 28px;
+      font-size: 14px;
+    }
+
+    .heroSearchPanel {
+      width: 100%;
+      gap: 24px;
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .heroSearchPanelPlain {
+      border-radius: 0;
+      padding: 0;
+    }
+
+    .heroSearchCopy strong {
+      font-size: 24px;
+      line-height: 1.36;
+    }
+
+    .heroSearchPanelPlain .heroSearchCopy strong {
       font-size: 36px;
       line-height: 1.14;
     }
 
-    .heroCopy p {
-      font-size: 16px;
+    .heroSearchCopy span {
+      font-size: 11px;
     }
 
-    .featuredBuildings {
-      gap: 12px;
+    .featuredControls {
+      margin-top: 18px;
     }
 
-    .featuredTrack {
-      --featured-card-width: min(270px, 78vw);
-      width: calc(100% + 32px);
-      margin-right: -16px;
-      padding-right: 16px;
-    }
-
-    .featuredCard {
-      flex-basis: var(--featured-card-width);
-      min-height: 210px;
-    }
-
-    .featuredCardText {
-      padding: 20px;
-    }
-
-    .featuredCardText strong {
-      font-size: 24px;
-      line-height: 1.08;
+    .featuredControls button {
+      width: 38px;
+      height: 38px;
+      font-size: 20px;
     }
 
     .districtShortcuts {
