@@ -54,6 +54,7 @@ button {
 }
 
 .searchForm {
+  position: relative;
   display: grid;
   gap: 16px;
 }
@@ -124,6 +125,61 @@ button {
 
 .searchInputWrap button:disabled {
   opacity: 0.62;
+}
+
+.searchSuggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 40;
+  display: grid;
+  width: min(100%, 520px);
+  overflow: hidden;
+  border: 1px solid #dde4e8;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(13, 28, 39, 0.16);
+}
+
+.searchSuggestions button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border: 0;
+  border-bottom: 1px solid #edf1f3;
+  padding: 13px 16px;
+  color: #172026;
+  background: #fff;
+  text-align: left;
+}
+
+.searchSuggestions button:last-child {
+  border-bottom: 0;
+}
+
+.searchSuggestions button:hover,
+.searchSuggestions button:focus-visible {
+  background: #f5f8fa;
+  outline: none;
+}
+
+.searchSuggestions span {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchSuggestions strong,
+.searchSuggestionStatus {
+  color: #6c7780;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.searchSuggestionStatus {
+  padding: 13px 16px;
 }
 
 .errorText {

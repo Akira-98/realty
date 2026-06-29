@@ -4,6 +4,18 @@ import { useCallback } from "react";
 
 import { buildSearchUrl } from "../_lib/search-url";
 
+async function fetchFirstSuggestion(query) {
+  const response = await fetch(
+    `/api/search-suggestions?q=${encodeURIComponent(query)}&limit=1`,
+    { cache: "no-store" },
+  );
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload.error || "검색 후보를 불러오지 못했습니다.");
+  }
+  return payload.suggestions?.[0] ?? null;
+}
+
 export function useSearchSubmit({
   latestBoundsKeyRef,
   query,
@@ -12,8 +24,8 @@ export function useSearchSubmit({
   setLoading,
 }) {
   return useCallback(
-    async (event) => {
-      event.preventDefault();
+    async (event, selectedSuggestion = null) => {
+      event?.preventDefault?.();
       const nextQuery = query.trim();
       if (!nextQuery) {
         setError("검색어를 입력해 주세요.");
@@ -24,19 +36,16 @@ export function useSearchSubmit({
       setError("");
 
       try {
-        const locationResponse = await fetch(
-          `/api/search-location?q=${encodeURIComponent(nextQuery)}`,
-        );
-        const locationPayload = await locationResponse.json();
-        if (!locationResponse.ok) {
-          throw new Error(locationPayload.error || "위치를 찾지 못했습니다.");
+        const suggestion = selectedSuggestion ?? (await fetchFirstSuggestion(nextQuery));
+        if (!suggestion) {
+          throw new Error("검색할 지역 또는 지하철역을 선택해 주세요.");
         }
 
         latestBoundsKeyRef.current = "";
         router.push(
           buildSearchUrl({
-            query: nextQuery,
-            center: locationPayload.result,
+            query: suggestion.label || nextQuery,
+            location: suggestion,
             mode: "bounds",
           }),
         );

@@ -3,17 +3,26 @@
 import { useCallback, useEffect, useRef } from "react";
 
 import { appendFilters, filtersKey } from "../_lib/search-filters";
+import { appendLocationFilter } from "../_lib/search-url";
 
-function boundsCacheKey(bounds, filters, searchRadius) {
+function locationFilterKey(locationFilter) {
+  return [
+    locationFilter?.city ?? "",
+    locationFilter?.district ?? "",
+    locationFilter?.nearLat?.toFixed?.(5) ?? "",
+    locationFilter?.nearLng?.toFixed?.(5) ?? "",
+    locationFilter?.nearRadius ?? "",
+  ].join(",");
+}
+
+function boundsCacheKey(bounds, filters, locationFilter) {
   const boundsKey = [
     bounds.swLat.toFixed(5),
     bounds.swLng.toFixed(5),
     bounds.neLat.toFixed(5),
     bounds.neLng.toFixed(5),
     bounds.mapLevel ?? "",
-    searchRadius?.searchLat?.toFixed(5) ?? "",
-    searchRadius?.searchLng?.toFixed(5) ?? "",
-    searchRadius?.radius ?? "",
+    locationFilterKey(locationFilter),
   ].join(",");
 
   return `${boundsKey}|${filtersKey(filters)}`;
@@ -42,8 +51,8 @@ function trimCache(cache) {
 export function useBoundsBuildings({
   filters,
   latestBoundsKeyRef,
+  locationFilter,
   mode,
-  searchRadius,
   setMarkerBuildings,
   setError,
 }) {
@@ -58,7 +67,7 @@ export function useBoundsBuildings({
 
   const fetchBuildingsInBounds = useCallback(
     async (bounds) => {
-      const cacheKey = boundsCacheKey(bounds, filters, searchRadius);
+      const cacheKey = boundsCacheKey(bounds, filters, locationFilter);
 
       if (latestBoundsKeyRef.current === cacheKey || mode !== "bounds") {
         return;
@@ -82,11 +91,7 @@ export function useBoundsBuildings({
         if (bounds.mapLevel) {
           params.set("mapLevel", String(bounds.mapLevel));
         }
-        if (searchRadius) {
-          params.set("searchLat", String(searchRadius.searchLat));
-          params.set("searchLng", String(searchRadius.searchLng));
-          params.set("radius", String(searchRadius.radius));
-        }
+        appendLocationFilter(params, locationFilter);
         const response = await fetch(`/api/buildings/in-bounds/summary?${params}`, {
           cache: "no-store",
           signal: controller.signal,
@@ -118,8 +123,8 @@ export function useBoundsBuildings({
     [
       filters,
       latestBoundsKeyRef,
+      locationFilter,
       mode,
-      searchRadius,
       setError,
       setMarkerBuildings,
     ],

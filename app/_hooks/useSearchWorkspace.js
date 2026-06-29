@@ -34,6 +34,38 @@ function replaceSearchViewUrl(view) {
   window.history.replaceState(window.history.state, "", nextUrl);
 }
 
+function readLocationFilter(searchParams) {
+  const city = searchParams.get("city")?.trim() || "";
+  const district = searchParams.get("district")?.trim() || "";
+  const nearLat = numberParam(searchParams, "nearLat");
+  const nearLng = numberParam(searchParams, "nearLng");
+  const nearRadius = numberParam(searchParams, "nearRadius");
+  const hasNearFilter = nearLat !== null && nearLng !== null && nearRadius !== null;
+
+  if (!city && !district && !hasNearFilter) {
+    return null;
+  }
+
+  return {
+    city,
+    district,
+    nearLat: hasNearFilter ? nearLat : null,
+    nearLng: hasNearFilter ? nearLng : null,
+    nearRadius: hasNearFilter ? nearRadius : null,
+  };
+}
+
+function readFilters(searchParams) {
+  return normalizeFilters(
+    Object.fromEntries(
+      Object.keys(EMPTY_FILTERS).map((key) => [
+        key,
+        searchParams.get(key) ?? "",
+      ]),
+    ),
+  );
+}
+
 export function useSearchWorkspace() {
   const pathname = usePathname();
   const router = useRouter();
@@ -44,7 +76,7 @@ export function useSearchWorkspace() {
   const [markerBuildings, setMarkerBuildings] = useState([]);
   const [mode, setMode] = useState("bounds");
   const [filters, setFilters] = useState(EMPTY_FILTERS);
-  const [searchRadius, setSearchRadius] = useState(null);
+  const [locationFilter, setLocationFilter] = useState(null);
   const [boundsRefreshKey, setBoundsRefreshKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -58,7 +90,7 @@ export function useSearchWorkspace() {
   const resultsPanel = useResultsPanel({
     filters,
     filtersKey: activeFiltersKey,
-    searchRadius,
+    locationFilter,
     setError,
     setMode,
   });
@@ -82,16 +114,12 @@ export function useSearchWorkspace() {
     setBoundsRefreshKey((key) => key + 1);
   }, [resultsPanel]);
 
-  const resetListingFilters = useCallback(() => {
-    applyFilters(EMPTY_FILTERS);
-  }, [applyFilters]);
-
   const resetToLanding = useCallback(() => {
     resultsPanel.resetResultsPanel();
     router.push("/");
     setMode("bounds");
     setCenter(null);
-    setSearchRadius(null);
+    setLocationFilter(null);
     setMarkerBuildings([]);
     latestBoundsKeyRef.current = "";
   }, [resultsPanel, router]);
@@ -109,14 +137,14 @@ export function useSearchWorkspace() {
     const lat = numberParam(searchParams, "lat");
     const lng = numberParam(searchParams, "lng");
     const level = numberParam(searchParams, "level");
-    const searchLat = numberParam(searchParams, "searchLat");
-    const searchLng = numberParam(searchParams, "searchLng");
-    const radius = numberParam(searchParams, "radius");
+    const nextLocationFilter = readLocationFilter(searchParams);
+    const nextFilters = readFilters(searchParams);
 
     if (!urlQuery || lat === null || lng === null) {
       setQuery(urlQuery);
       setCenter(null);
-      setSearchRadius(null);
+      setLocationFilter(null);
+      setFilters(nextFilters);
       setMarkerBuildings([]);
       setMode("bounds");
       resultsPanel.resetResultsPanel();
@@ -135,15 +163,8 @@ export function useSearchWorkspace() {
       source,
       level,
     });
-    setSearchRadius(
-      searchLat !== null && searchLng !== null && radius !== null
-        ? {
-            searchLat,
-            searchLng,
-            radius,
-          }
-        : null,
-    );
+    setLocationFilter(nextLocationFilter);
+    setFilters(nextFilters);
     setMarkerBuildings([]);
     setMode("bounds");
     resultsPanel.resetResultsPanel();
@@ -170,8 +191,8 @@ export function useSearchWorkspace() {
   const boundsBuildings = useBoundsBuildings({
     filters,
     latestBoundsKeyRef,
+    locationFilter,
     mode,
-    searchRadius,
     setMarkerBuildings,
     setError,
   });
@@ -207,7 +228,6 @@ export function useSearchWorkspace() {
     markerBuildings,
     query,
     resetToLanding,
-    resetListingFilters,
     resultCount: resultsPanel.resultCount,
     selectedId: resultsPanel.selectedId,
     setQuery,

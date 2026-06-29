@@ -6,7 +6,7 @@ import { boundsFromClusterMarker, useClusterBuildings } from "./useClusterBuildi
 import { uniqueBuildingsById } from "../_lib/building-list";
 import { appendFilters } from "../_lib/search-filters";
 
-export function useResultsPanel({ filters, filtersKey, searchRadius, setError, setMode }) {
+export function useResultsPanel({ filters, filtersKey, locationFilter, setError, setMode }) {
   const [listBuildings, setListBuildings] = useState([]);
   const [resultCount, setResultCount] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
@@ -28,8 +28,8 @@ export function useResultsPanel({ filters, filtersKey, searchRadius, setError, s
 
   const clusterBuildings = useClusterBuildings({
     filters,
+    locationFilter,
     listMode,
-    searchRadius,
     setError,
     setListBuildings,
     setListLoading,

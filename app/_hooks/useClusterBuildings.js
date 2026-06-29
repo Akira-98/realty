@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { uniqueBuildingsById } from "../_lib/building-list";
 import { appendFilters } from "../_lib/search-filters";
+import { appendLocationFilter } from "../_lib/search-url";
 
 const CLUSTER_LIST_PAGE_SIZE = 30;
 
@@ -20,8 +21,8 @@ export function boundsFromClusterMarker(marker) {
 
 export function useClusterBuildings({
   filters,
+  locationFilter,
   listMode,
-  searchRadius,
   setError,
   setListBuildings,
   setListLoading,
@@ -70,11 +71,7 @@ export function useClusterBuildings({
           limit: String(CLUSTER_LIST_PAGE_SIZE),
           offset: String(offset),
         });
-        if (searchRadius) {
-          params.set("searchLat", String(searchRadius.searchLat));
-          params.set("searchLng", String(searchRadius.searchLng));
-          params.set("radius", String(searchRadius.radius));
-        }
+        appendLocationFilter(params, locationFilter);
         appendFilters(params, filtersOverride);
         const response = await fetch(`/api/buildings/in-bounds/list?${params}`, {
           cache: "no-store",
@@ -105,7 +102,7 @@ export function useClusterBuildings({
         setListLoading(false);
       }
     },
-    [filters, searchRadius, setError, setListBuildings, setListLoading, setResultCount],
+    [filters, locationFilter, setError, setListBuildings, setListLoading, setResultCount],
   );
 
   const selectCluster = useCallback(
@@ -114,7 +111,7 @@ export function useClusterBuildings({
       const clusterListState = {
         bounds,
         filters: filtersOverride,
-        searchRadius,
+        locationFilter,
         nextOffset: null,
         total,
       };
@@ -128,7 +125,7 @@ export function useClusterBuildings({
         };
       }
     },
-    [fetchClusterListPage, filters, searchRadius],
+    [fetchClusterListPage, filters, locationFilter],
   );
 
   const fetchNextClusterListPage = useCallback(async () => {

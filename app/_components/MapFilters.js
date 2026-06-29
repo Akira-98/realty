@@ -9,31 +9,45 @@ import {
   SCALE_OPTIONS,
   SUBWAY_WALK_OPTIONS,
   buildingAgeFilterLabel,
-  filterSummary,
 } from "../_lib/search-filters";
+import {
+  ChoiceFilterPopover,
+  RangeFilterPopover,
+} from "./map-filters/FilterPopovers";
 
-function FilterPopover({
-  active,
-  children,
-  label,
-  open,
-  onToggle,
-}) {
+function businessDistrictFilterLabel(value) {
+  return BUSINESS_DISTRICT_OPTIONS.find((district) => district.value === value)?.label || "권역";
+}
+
+const SCALE_HELP_ROWS = [
+  ["소형", "9,917㎡ 미만", "3,000평 미만"],
+  ["중형", "9,917 ~ 16,529㎡", "3,000 ~ 5,000평"],
+  ["중대형", "16,529 ~ 33,058㎡", "5,000 ~ 10,000평"],
+  ["대형", "33,058 ~ 66,116㎡", "10,000 ~ 20,000평"],
+  ["초대형", "66,116㎡ 이상", "20,000평 이상"],
+];
+
+function ScaleHelp() {
   return (
-    <details
-      open={open}
-      className={active ? "mapFilterPopover active" : "mapFilterPopover"}
-    >
-      <summary
-        onClick={(event) => {
-          event.preventDefault();
-          onToggle();
-        }}
-      >
-        <span>{label}</span>
-      </summary>
-      <div className="mapFilterDropdown">{children}</div>
-    </details>
+    <div className="mapFilterHelp">
+      <button type="button" className="mapFilterHelpButton" aria-label="규모 기준 보기">
+        i
+      </button>
+      <div className="mapFilterHelpPopover" role="tooltip">
+        <p>면적 기준 (3.3㎡ = 1평)</p>
+        <table>
+          <tbody>
+            {SCALE_HELP_ROWS.map(([label, squareMeters, pyeong]) => (
+              <tr key={label}>
+                <th scope="row">{label}</th>
+                <td>{squareMeters}</td>
+                <td>({pyeong})</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 
@@ -76,17 +90,11 @@ export function MapFilters({ filters, onApply, resultsPanelOpen = false }) {
     });
   };
 
-  const resetButton = (label, values) => (
-    <button
-      type="button"
-      className="ghostButton"
-      aria-label={`${label} 초기화`}
-      title={`${label} 초기화`}
-      onClick={() => resetDraftValues(values)}
-    >
-      ↺
-    </button>
-  );
+  const toggleFilter = (filterKey) => {
+    setOpenFilter((currentFilter) =>
+      currentFilter === filterKey ? "" : filterKey,
+    );
+  };
 
   return (
     <form
@@ -99,215 +107,104 @@ export function MapFilters({ filters, onApply, resultsPanelOpen = false }) {
       }}
     >
       {FILTER_GROUPS.map((group) => {
-        const isActive = Boolean(filters[group.minKey] || filters[group.maxKey]);
         return (
           <Fragment key={group.label}>
-            <FilterPopover
-              active={isActive}
-              label={group.label}
+            <RangeFilterPopover
+              draft={draft}
+              filters={filters}
+              group={group}
               open={openFilter === group.label}
-              onToggle={() => {
-                setOpenFilter((currentFilter) =>
-                  currentFilter === group.label ? "" : group.label,
-                );
+              onDraftChange={setDraft}
+              onReset={() => {
+                resetDraftValues({
+                  [group.minKey]: "",
+                  [group.maxKey]: "",
+                });
               }}
-            >
-              <strong>{filterSummary(draft, group)}</strong>
-              <div className="mapFilterInputs">
-                <label>
-                  최소
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    min="0"
-                    placeholder="0"
-                    value={draft[group.minKey] ?? ""}
-                    onChange={(event) =>
-                      setDraft((currentDraft) => ({
-                        ...currentDraft,
-                        [group.minKey]: event.target.value,
-                      }))
-                    }
-                  />
-                </label>
-                <label>
-                  최대
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    min="0"
-                    placeholder="제한 없음"
-                    value={draft[group.maxKey] ?? ""}
-                    onChange={(event) =>
-                      setDraft((currentDraft) => ({
-                        ...currentDraft,
-                        [group.maxKey]: event.target.value,
-                      }))
-                    }
-                  />
-                </label>
-              </div>
-              <span>{group.basisLabel || `${group.unit} 기준`}</span>
-              <div className="mapFilterActions">
-                <button
-                  type="button"
-                  className="ghostButton"
-                  aria-label={`${group.label} 초기화`}
-                  title={`${group.label} 초기화`}
-                  onClick={() => {
-                    resetDraftValues({
-                      [group.minKey]: "",
-                      [group.maxKey]: "",
-                    });
-                  }}
-                >
-                  ↺
-                </button>
-                <button type="submit">적용</button>
-              </div>
-            </FilterPopover>
+              onToggle={() => toggleFilter(group.label)}
+            />
             {group.minKey === "areaMin" && (
-              <FilterPopover
+              <ChoiceFilterPopover
                 active={Boolean(filters.scale)}
-                label="규모"
+                choices={SCALE_OPTIONS.map((scale) => ({ label: scale, value: scale }))}
+                help={<ScaleHelp />}
+                label={filters.scale || "규모"}
                 open={openFilter === "scale"}
-                onToggle={() => {
-                  setOpenFilter((currentFilter) =>
-                    currentFilter === "scale" ? "" : "scale",
-                  );
+                resetLabel="규모"
+                value={draft.scale}
+                onReset={() => resetDraftValues({ scale: "" })}
+                onSelect={(choice, isActive) => {
+                  applyDraft({
+                    ...draft,
+                    scale: isActive ? "" : choice.value,
+                  });
                 }}
-              >
-                <strong>{draft.scale || "전체"}</strong>
-                <div className="mapFilterChoices">
-                  {SCALE_OPTIONS.map((scale) => (
-                    <button
-                      key={scale}
-                      type="button"
-                      className={draft.scale === scale ? "active" : ""}
-                      onClick={() => {
-                        applyDraft({
-                          ...draft,
-                          scale: draft.scale === scale ? "" : scale,
-                        });
-                      }}
-                    >
-                      {scale}
-                    </button>
-                  ))}
-                </div>
-                <div className="mapFilterActions">
-                  {resetButton("규모", { scale: "" })}
-                </div>
-              </FilterPopover>
+                onToggle={() => toggleFilter("scale")}
+              />
             )}
           </Fragment>
         );
       })}
-      <FilterPopover
+      <ChoiceFilterPopover
         active={Boolean(filters.businessDistrict)}
-        label="권역"
+        choices={BUSINESS_DISTRICT_OPTIONS.map((district) => ({
+          label: district.label,
+          title: district.description,
+          value: district.value,
+          center: district.center,
+        }))}
+        className="businessDistrictChoices"
+        label={businessDistrictFilterLabel(filters.businessDistrict)}
         open={openFilter === "businessDistrict"}
-        onToggle={() => {
-          setOpenFilter((currentFilter) =>
-            currentFilter === "businessDistrict" ? "" : "businessDistrict",
+        resetLabel="권역"
+        value={draft.businessDistrict}
+        onReset={() => resetDraftValues({ businessDistrict: "" })}
+        onSelect={(choice, isActive) => {
+          applyDraft(
+            {
+              ...draft,
+              businessDistrict: isActive ? "" : choice.value,
+            },
+            isActive ? {} : { center: choice.center },
           );
         }}
-      >
-        <strong>{draft.businessDistrict || "전체"}</strong>
-        <div className="mapFilterChoices businessDistrictChoices">
-          {BUSINESS_DISTRICT_OPTIONS.map((district) => {
-            const isActive = draft.businessDistrict === district.value;
-            return (
-              <button
-                key={district.value}
-                type="button"
-                className={isActive ? "active" : ""}
-                title={district.description}
-                onClick={() => {
-                  applyDraft(
-                    {
-                      ...draft,
-                      businessDistrict: isActive ? "" : district.value,
-                    },
-                    isActive ? {} : { center: district.center },
-                  );
-                }}
-              >
-                {district.label}
-              </button>
-            );
-          })}
-        </div>
-        <div className="mapFilterActions">
-          {resetButton("권역", { businessDistrict: "" })}
-        </div>
-      </FilterPopover>
-      <FilterPopover
+        onToggle={() => toggleFilter("businessDistrict")}
+      />
+      <ChoiceFilterPopover
         active={Boolean(filters.buildingAgeMax)}
-        label="준공연차"
+        choices={BUILDING_AGE_OPTIONS}
+        label={filters.buildingAgeMax ? buildingAgeFilterLabel(filters.buildingAgeMax) : "준공연차"}
         open={openFilter === "buildingAge"}
-        onToggle={() => {
-          setOpenFilter((currentFilter) =>
-            currentFilter === "buildingAge" ? "" : "buildingAge",
-          );
+        resetLabel="준공연차"
+        value={draft.buildingAgeMax}
+        onReset={() => resetDraftValues({ buildingAgeMax: "" })}
+        onSelect={(choice, isActive) => {
+          applyDraft({
+            ...draft,
+            buildingAgeMax: isActive ? "" : choice.value,
+          });
         }}
-      >
-        <strong>
-          {draft.buildingAgeMax ? buildingAgeFilterLabel(draft.buildingAgeMax) : "전체"}
-        </strong>
-        <div className="mapFilterChoices">
-          {BUILDING_AGE_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              className={draft.buildingAgeMax === option.value ? "active" : ""}
-              onClick={() => {
-                applyDraft({
-                  ...draft,
-                  buildingAgeMax: draft.buildingAgeMax === option.value ? "" : option.value,
-                });
-              }}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-        <div className="mapFilterActions">
-          {resetButton("준공연차", { buildingAgeMax: "" })}
-        </div>
-      </FilterPopover>
-      <FilterPopover
+        onToggle={() => toggleFilter("buildingAge")}
+      />
+      <ChoiceFilterPopover
         active={Boolean(filters.subwayWalkMax)}
-        label="지하철"
+        choices={SUBWAY_WALK_OPTIONS.map((minutes) => ({
+          label: `${minutes}분`,
+          value: minutes,
+        }))}
+        label={filters.subwayWalkMax ? `~${filters.subwayWalkMax}분` : "지하철"}
         open={openFilter === "subwayWalk"}
-        onToggle={() => {
-          setOpenFilter((currentFilter) =>
-            currentFilter === "subwayWalk" ? "" : "subwayWalk",
-          );
+        resetLabel="지하철"
+        value={draft.subwayWalkMax}
+        onReset={() => resetDraftValues({ subwayWalkMax: "" })}
+        onSelect={(choice, isActive) => {
+          applyDraft({
+            ...draft,
+            subwayWalkMax: isActive ? "" : choice.value,
+          });
         }}
-      >
-        <strong>지하철역과의 거리</strong>
-        <div className="mapFilterChoices">
-          {SUBWAY_WALK_OPTIONS.map((minutes) => (
-            <button
-              key={minutes}
-              type="button"
-              className={draft.subwayWalkMax === minutes ? "active" : ""}
-              onClick={() => {
-                applyDraft({
-                  ...draft,
-                  subwayWalkMax: draft.subwayWalkMax === minutes ? "" : minutes,
-                });
-              }}
-            >
-              {minutes}분
-            </button>
-          ))}
-        </div>
-        <div className="mapFilterActions">
-          {resetButton("지하철", { subwayWalkMax: "" })}
-        </div>
-      </FilterPopover>
+        onToggle={() => toggleFilter("subwayWalk")}
+      />
     </form>
   );
 }

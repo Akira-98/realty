@@ -14,25 +14,25 @@ const DISTRICT_LINKS = [
     label: "강남권역",
     name: "강남 · 서초 · 송파",
     image: "/images/gbd.jpg",
-    href: "/?q=GBD&label=%EA%B0%95%EB%82%A8%EA%B6%8C%EC%97%AD&lat=37.4979&lng=127.0276&level=6&source=default&mode=bounds",
+    href: "/?q=GBD&label=%EA%B0%95%EB%82%A8%EA%B6%8C%EC%97%AD&lat=37.4979&lng=127.0276&level=6&source=default&mode=bounds&businessDistrict=GBD",
   },
   {
     label: "여의도권역",
     name: "여의도 · 영등포",
     image: "/images/ybd.jpg",
-    href: "/?q=YBD&label=%EC%97%AC%EC%9D%98%EB%8F%84%EA%B6%8C%EC%97%AD&lat=37.5263&lng=126.9259&level=6&source=default&mode=bounds",
+    href: "/?q=YBD&label=%EC%97%AC%EC%9D%98%EB%8F%84%EA%B6%8C%EC%97%AD&lat=37.5263&lng=126.9259&level=6&source=default&mode=bounds&businessDistrict=YBD",
   },
   {
     label: "도심권역",
     name: "종로 · 중구",
     image: "/images/cbd.jpg",
-    href: "/?q=CBD&label=%EB%8F%84%EC%8B%AC%EA%B6%8C%EC%97%AD&lat=37.5663&lng=126.9782&level=6&source=default&mode=bounds",
+    href: "/?q=CBD&label=%EB%8F%84%EC%8B%AC%EA%B6%8C%EC%97%AD&lat=37.5663&lng=126.9782&level=6&source=default&mode=bounds&businessDistrict=CBD",
   },
   {
     label: "분당권역",
     name: "분당",
     image: "/images/bbd.png",
-    href: "/?q=BBD&label=%EB%B6%84%EB%8B%B9%EA%B6%8C%EC%97%AD&lat=37.3827&lng=127.1189&level=6&source=default&mode=bounds",
+    href: "/?q=BBD&label=%EB%B6%84%EB%8B%B9%EA%B6%8C%EC%97%AD&lat=37.3827&lng=127.1189&level=6&source=default&mode=bounds&businessDistrict=BBD",
   },
 ];
 

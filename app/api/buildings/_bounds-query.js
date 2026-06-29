@@ -1,14 +1,10 @@
 import { jsonError, requiredEnv } from "../../../lib/http";
 import {
-  appendListingFilterParams,
   maxApprovalYearFromFilters,
   minApprovalYearFromFilters,
   readListingFilters,
 } from "../../_lib/listing-filters";
-import {
-  withBoundsPayloadImageUrls,
-  withBuildingImageUrls,
-} from "../../_lib/building-images";
+import { withBoundsPayloadImageUrls } from "../../_lib/building-images";
 
 export const BOUNDS_CACHE_HEADERS = {
   "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
@@ -31,13 +27,6 @@ export const LIST_SELECT = [
   "thumbnail_path",
 ].join(",");
 
-export const MARKER_SELECT = [
-  "id",
-  "building_name",
-  "lat",
-  "lng",
-].join(",");
-
 export function numberParam(searchParams, name) {
   const rawValue = searchParams.get(name);
   if (rawValue === null || rawValue === "") {
@@ -50,13 +39,6 @@ export function numberParam(searchParams, name) {
 
 export function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
-}
-
-export function compareBuildingName(a, b) {
-  if (a.building_name === b.building_name) {
-    return 0;
-  }
-  return a.building_name > b.building_name ? 1 : -1;
 }
 
 export function readBoundsRequest(searchParams, options = {}) {
@@ -80,17 +62,13 @@ export function readBoundsRequest(searchParams, options = {}) {
   const offset = includeOffset
     ? Math.max(numberParam(searchParams, "offset") ?? 0, 0)
     : 0;
-  const searchLat = numberParam(searchParams, "searchLat");
-  const searchLng = numberParam(searchParams, "searchLng");
-  const radius = numberParam(searchParams, "radius");
-  const searchRadius =
-    searchLat !== null && searchLng !== null && radius !== null
-      ? {
-          searchLat,
-          searchLng,
-          radius: clamp(radius, 1, 10000),
-        }
-      : null;
+  const locationFilters = {
+    city: searchParams.get("city")?.trim() || null,
+    district: searchParams.get("district")?.trim() || null,
+    nearLat: numberParam(searchParams, "nearLat"),
+    nearLng: numberParam(searchParams, "nearLng"),
+    nearRadius: numberParam(searchParams, "nearRadius"),
+  };
 
   return {
     bounds: {
@@ -102,7 +80,7 @@ export function readBoundsRequest(searchParams, options = {}) {
     filters: readListingFilters(searchParams),
     limit: Math.round(limit),
     offset: Math.round(offset),
-    searchRadius,
+    locationFilters,
   };
 }
 
@@ -138,19 +116,16 @@ export function createBoundsRpcPayload({ bounds, filters, limit, offset, extra =
   };
 }
 
-export function createSearchRadiusRpcPayload(searchRadius) {
-  if (!searchRadius) {
-    return {
-      search_lat: null,
-      search_lng: null,
-      radius_m: null,
-    };
-  }
-
+export function createLocationFilterRpcPayload(locationFilters) {
   return {
-    search_lat: searchRadius.searchLat,
-    search_lng: searchRadius.searchLng,
-    radius_m: Math.round(searchRadius.radius),
+    city_filter: locationFilters?.city ?? null,
+    district_filter: locationFilters?.district ?? null,
+    near_lat: locationFilters?.nearLat ?? null,
+    near_lng: locationFilters?.nearLng ?? null,
+    near_radius_m:
+      locationFilters?.nearRadius === null || locationFilters?.nearRadius === undefined
+        ? null
+        : Math.round(clamp(locationFilters.nearRadius, 1, 10000)),
   };
 }
 
@@ -183,78 +158,5 @@ export async function fetchBoundsRpc({ functionName, body, errorMessage }) {
 
   return {
     payload: withBoundsPayloadImageUrls(await response.json()),
-  };
-}
-
-export function createBoundsQueryParams({
-  bounds,
-  filters,
-  limit,
-  offset,
-  select,
-}) {
-  const params = new URLSearchParams();
-  params.set("select", select);
-  params.set("is_public", "eq.true");
-  params.set("lat", `gte.${bounds.swLat}`);
-  params.append("lat", `lte.${bounds.neLat}`);
-  params.set("lng", `gte.${bounds.swLng}`);
-  params.append("lng", `lte.${bounds.neLng}`);
-  params.set("order", "building_name.asc,id.asc");
-  params.set("limit", String(limit));
-  if (offset) {
-    params.set("offset", String(offset));
-  }
-  appendListingFilterParams(params, filters);
-  return params;
-}
-
-export async function fetchBoundsRows({
-  select,
-  bounds,
-  filters,
-  limit,
-  offset = 0,
-  errorMessage,
-}) {
-  let supabaseUrl;
-  let supabaseKey;
-  try {
-    ({ supabaseUrl, supabaseKey } = requiredSupabasePublicConfig());
-  } catch (error) {
-    return { error: jsonError(error.message, 500) };
-  }
-
-  const params = createBoundsQueryParams({
-    bounds,
-    filters,
-    limit,
-    offset,
-    select,
-  });
-
-  const response = await fetch(`${supabaseUrl}/rest/v1/buildings?${params}`, {
-    headers: {
-      apikey: supabaseKey,
-      Authorization: `Bearer ${supabaseKey}`,
-      Prefer: "count=exact",
-    },
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    return {
-      error: jsonError(errorMessage, response.status, { body }),
-    };
-  }
-
-  const rows = await response.json();
-  const contentRange = response.headers.get("content-range") || "";
-  const total = Number(contentRange.split("/")[1]);
-
-  return {
-    rows: withBuildingImageUrls(rows),
-    total: Number.isFinite(total) ? total : rows.length,
   };
 }

@@ -75,10 +75,77 @@
   box-shadow: 0 14px 34px rgba(9, 25, 40, 0.18);
 }
 
-.mapFilterDropdown strong {
+.mapFilterHelp {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 22px;
+  z-index: 6;
+}
+
+.mapFilterHelpButton {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #cbd7dc;
+  border-radius: 999px;
+  background: #fff;
+  color: #52636b;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.mapFilterHelpPopover {
+  position: absolute;
+  top: 0;
+  left: 30px;
+  display: none;
+  width: 360px;
+  border: 1px solid #d8e4e8;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  box-shadow: 0 16px 38px rgba(9, 25, 40, 0.2);
+}
+
+.mapFilterHelp:hover .mapFilterHelpPopover,
+.mapFilterHelp:focus-within .mapFilterHelpPopover {
+  display: grid;
+  gap: 8px;
+}
+
+.mapFilterHelpPopover p {
+  margin: 0;
   color: #172026;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.mapFilterHelpPopover table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mapFilterHelpPopover th,
+.mapFilterHelpPopover td {
+  padding: 4px 0;
+  color: #172026;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.mapFilterHelpPopover th {
+  width: 58px;
+  font-weight: 800;
+}
+
+.mapFilterHelpPopover td:last-child {
+  color: #6c7780;
 }
 
 .mapFilterInputs {
