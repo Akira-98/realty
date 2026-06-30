@@ -36,8 +36,7 @@
   cursor: pointer;
 }
 
-.mobileHeaderNav,
-.mobileHeaderMenu {
+.mobileHeaderNav {
   display: none;
 }
 

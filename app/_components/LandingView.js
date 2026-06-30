@@ -95,12 +95,11 @@ const PROCESS_STEPS = [
 export function LandingView({ query, setQuery, onSearch, loading }) {
   const headerRef = useRef(null);
   const [inquiryOpen, setInquiryOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFeaturedIndex, setActiveFeaturedIndex] = useState(0);
   const featuredBuilding = FEATURED_BUILDINGS[activeFeaturedIndex];
 
   useEffect(() => {
-    if (!inquiryOpen && !mobileMenuOpen) {
+    if (!inquiryOpen) {
       return;
     }
 
@@ -110,7 +109,6 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
       }
 
       setInquiryOpen(false);
-      setMobileMenuOpen(false);
     }
 
     document.addEventListener("pointerdown", handlePointerDown);
@@ -118,7 +116,7 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
     return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
     };
-  }, [inquiryOpen, mobileMenuOpen]);
+  }, [inquiryOpen]);
 
   function showPreviousFeaturedBuilding() {
     setActiveFeaturedIndex((index) =>
@@ -138,7 +136,6 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
         <div className="brand">REALTY FIND</div>
         <nav className="desktopHeaderNav" aria-label="메뉴">
           <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
-          <a>빌딩정보(List)</a>
           <button
             type="button"
             className="headerMenuButton"
@@ -149,26 +146,12 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
           </button>
         </nav>
         <nav className="mobileHeaderNav" aria-label="모바일 메뉴">
-          <button
-            type="button"
-            className="headerMenuButton"
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-header-menu"
-            onClick={() => {
-              setMobileMenuOpen((open) => !open);
-              setInquiryOpen(false);
-            }}
-          >
-            빌딩정보
-          </button>
+          <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
           <button
             type="button"
             className="headerMenuButton"
             aria-expanded={inquiryOpen}
-            onClick={() => {
-              setInquiryOpen((open) => !open);
-              setMobileMenuOpen(false);
-            }}
+            onClick={() => setInquiryOpen((open) => !open)}
           >
             문의하기
           </button>
@@ -180,24 +163,12 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
             <button type="button">매입</button>
           </div>
         )}
-        {mobileMenuOpen && (
-          <div
-            id="mobile-header-menu"
-            className="mobileHeaderMenu"
-            role="dialog"
-            aria-label="모바일 메뉴"
-          >
-            <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
-            <a>빌딩정보(List)</a>
-          </div>
-        )}
       </header>
       <div className="hero">
         <div className="heroBackdrop" />
         <div className="heroContent">
           <aside className="heroSearchPanel heroSearchPanelPlain" aria-label="오피스 검색">
             <div className="heroSearchCopy">
-              <span className="heroSearchEyebrow">COMMERCIAL OFFICE ADVISORY</span>
               <h1>
                 <span className="heroSearchLine">새로운 사무공간이 필요할 땐</span>
                 <span>REALTY FIND</span>

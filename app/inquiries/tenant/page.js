@@ -19,11 +19,9 @@ export default function TenantInquiryPage() {
         </Link>
         <nav className="desktopHeaderNav" aria-label="메뉴">
           <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
-          <a>빌딩정보(List)</a>
         </nav>
         <nav className="mobileHeaderNav" aria-label="모바일 메뉴">
           <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
-          <a>빌딩정보(List)</a>
         </nav>
       </header>
       <TenantInquiryPageClient />

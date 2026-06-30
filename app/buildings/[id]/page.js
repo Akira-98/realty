@@ -11,6 +11,9 @@ import {
   buildBuildingSeoDescription,
 } from "../../_lib/seo";
 
+const GANGNAM_MAP_URL =
+  "/?q=%EA%B0%95%EB%82%A8&label=%EA%B0%95%EB%82%A8&lat=37.4979&lng=127.0276&level=6&source=default&mode=bounds";
+
 export const revalidate = 60;
 
 export async function generateMetadata({ params }) {
@@ -76,9 +79,8 @@ export default async function BuildingDetailPage({ params }) {
           REALTY FIND
         </Link>
         <nav aria-label="상세 메뉴">
-          <Link href="/">검색</Link>
-          <a>임대</a>
-          <a>문의</a>
+          <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
+          <Link href="/inquiries/tenant">문의</Link>
         </nav>
       </header>
 
