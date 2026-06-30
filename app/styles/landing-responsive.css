@@ -111,17 +111,35 @@
 
     .hero {
       min-height: auto;
+      background: #073b4c;
+    }
+
+    .heroBackdrop {
+      inset: 0 0 auto;
+      height: 430px;
+      background:
+        linear-gradient(180deg, rgba(7, 16, 20, 0.22) 0%, rgba(7, 16, 20, 0.58) 100%),
+        url("/images/landing-office-hero.png");
+      background-position: center top;
+      background-size: cover;
     }
 
     .heroContent {
-      width: min(100% - 32px, 640px);
+      display: grid;
+      align-content: start;
+      width: 100%;
       min-height: auto;
-      gap: 28px;
-      padding: 40px 0;
+      gap: 0;
+      padding: 0;
     }
 
     .heroFeature {
       order: 1;
+      width: min(100% - 32px, 640px);
+      min-height: 430px;
+      margin: 0 auto;
+      padding: 74px 0 40px;
+      align-content: start;
     }
 
     .heroSearchPanel {
@@ -157,8 +175,12 @@
     }
 
     .heroSearchPanelPlain {
+      width: 100%;
+      max-width: none;
+      gap: 24px;
       border-radius: 0;
-      padding: 0;
+      padding: 40px 16px 52px;
+      background: #073b4c;
     }
 
     .heroSearchCopy h1 {
@@ -169,6 +191,12 @@
     .heroSearchPanelPlain .heroSearchCopy h1 {
       font-size: 36px;
       line-height: 1.14;
+    }
+
+    .heroSearchPanelPlain .heroSearchCopy,
+    .heroSearchPanelPlain .searchForm {
+      width: min(100%, 640px);
+      margin: 0 auto;
     }
 
     .heroSearchCopy span {
