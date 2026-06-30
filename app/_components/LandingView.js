@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { SearchForm } from "./SearchForm";
 import { SiteFooter } from "./SiteFooter";
+import { buildingDetailPath } from "../_lib/building-url";
 
 const GANGNAM_MAP_URL =
   "/?q=%EA%B0%95%EB%82%A8&label=%EA%B0%95%EB%82%A8&lat=37.4979&lng=127.0276&level=6&source=default&mode=bounds";
@@ -175,7 +176,7 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
         {inquiryOpen && (
           <div className="inquiryMenu" role="dialog" aria-label="문의 유형">
             <button type="button">임대</button>
-            <button type="button">임차</button>
+            <Link href="/inquiries/tenant">임차</Link>
             <button type="button">매입</button>
           </div>
         )}
@@ -216,7 +217,13 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
               ))}
             </div>
             <h1>{featuredBuilding.name}</h1>
-            <a className="heroDetailLink" href={`/buildings/${featuredBuilding.id}`}>
+            <a
+              className="heroDetailLink"
+              href={buildingDetailPath({
+                id: featuredBuilding.id,
+                building_name: featuredBuilding.name,
+              })}
+            >
               자세히 보기
             </a>
             <div className="featuredControls" aria-label="대표매물 이동">

@@ -25,9 +25,40 @@ import "./styles/landing-responsive.css";
 import "./styles/search-responsive.css";
 import "./styles/detail-responsive.css";
 
+import { DEFAULT_SEO_DESCRIPTION, SITE_NAME, absoluteUrl, siteUrl } from "./_lib/seo";
+
 export const metadata = {
-  title: "Realt Search",
-  description: "Location-based building search",
+  metadataBase: new URL(siteUrl()),
+  title: {
+    default: `${SITE_NAME} | 서울 오피스·사무실 임대 빌딩 검색`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: DEFAULT_SEO_DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} | 서울 오피스·사무실 임대 빌딩 검색`,
+    description: DEFAULT_SEO_DESCRIPTION,
+    url: "/",
+    images: [
+      {
+        url: absoluteUrl("/images/landing-office-hero.png"),
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} 오피스 빌딩 검색`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} | 서울 오피스·사무실 임대 빌딩 검색`,
+    description: DEFAULT_SEO_DESCRIPTION,
+    images: [absoluteUrl("/images/landing-office-hero.png")],
+  },
 };
 
 export const viewport = {

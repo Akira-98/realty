@@ -4,6 +4,7 @@ import {
   withBuildingImageUrlsForRows,
 } from "./building-images";
 import { formatBuildingAge, formatWithUnit } from "./formatters";
+import { parseBuildingIdParam } from "./building-url";
 import { businessDistrictLabel } from "./search-filters";
 
 export const BUILDING_DETAIL_SELECT = [
@@ -32,7 +33,15 @@ export const BUILDING_DETAIL_SELECT = [
   "thumbnail_path",
 ].join(",");
 
-export function field(value, fallback = "-") {
+export const BUILDING_SITEMAP_SELECT = [
+  "id",
+  "building_name",
+  "updated_at",
+].join(",");
+
+const DETAIL_EMPTY_VALUE = "별도문의";
+
+export function field(value, fallback = DETAIL_EMPTY_VALUE) {
   return value || fallback;
 }
 
@@ -46,7 +55,7 @@ export function joinValues(...values) {
 
 export function formatApprovalDate(value) {
   if (!value) {
-    return "-";
+    return DETAIL_EMPTY_VALUE;
   }
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
@@ -60,11 +69,16 @@ export function formatApprovalDate(value) {
 }
 
 export async function fetchBuildingDetail(id) {
+  const buildingId = parseBuildingIdParam(id);
+  if (!buildingId) {
+    return null;
+  }
+
   const supabaseUrl = requiredEnv("SUPABASE_URL").replace(/\/$/, "");
   const supabaseKey = requiredEnv("SUPABASE_ANON_KEY");
   const params = new URLSearchParams();
   params.set("select", BUILDING_DETAIL_SELECT);
-  params.set("id", `eq.${id}`);
+  params.set("id", `eq.${buildingId}`);
   params.set("is_public", "eq.true");
   params.set("limit", "1");
 
@@ -119,6 +133,30 @@ export async function fetchBuildingDetail(id) {
             },
           ].filter((image) => image.image_url),
   };
+}
+
+export async function fetchPublicBuildingSitemapRows() {
+  const supabaseUrl = requiredEnv("SUPABASE_URL").replace(/\/$/, "");
+  const supabaseKey = requiredEnv("SUPABASE_ANON_KEY");
+  const params = new URLSearchParams();
+  params.set("select", BUILDING_SITEMAP_SELECT);
+  params.set("is_public", "eq.true");
+  params.set("order", "updated_at.desc.nullslast,building_name.asc");
+  params.set("limit", "50000");
+
+  const response = await fetch(`${supabaseUrl}/rest/v1/buildings?${params}`, {
+    headers: {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    },
+    next: { revalidate: 3600 },
+  });
+
+  if (!response.ok) {
+    throw new Error("Supabase building sitemap failed.");
+  }
+
+  return response.json();
 }
 
 export function getBuildingDetailModel(building) {

@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
+import { buildingDetailPath } from "../_lib/building-url";
 import { buildSummary } from "../_lib/buildings";
 
 export function BuildingCard({ building, active, priorityImage = false }) {
   const searchParams = useSearchParams();
   const currentSearch = searchParams.toString();
-  const href = `/buildings/${building.id}${currentSearch ? `?${currentSearch}` : ""}`;
+  const detailPath = buildingDetailPath(building);
+  const href = `${detailPath}${currentSearch ? `?${currentSearch}` : ""}`;
 
   return (
     <Link

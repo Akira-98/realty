@@ -24,6 +24,14 @@
   text-decoration: none;
 }
 
+.siteHeader .brand {
+  color: #0c1216;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+
 .headerMenuButton {
   cursor: pointer;
 }
@@ -47,7 +55,9 @@
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
 }
 
-.inquiryMenu button {
+.inquiryMenu button,
+.inquiryMenu a {
+  display: block;
   border: 0;
   padding: 16px 18px;
   background: #fff;
@@ -55,12 +65,17 @@
   font-size: 15px;
   font-weight: 800;
   text-align: left;
+  text-decoration: none;
 }
 
-.inquiryMenu button + button {
+.inquiryMenu button + button,
+.inquiryMenu button + a,
+.inquiryMenu a + button,
+.inquiryMenu a + a {
   border-top: 1px solid #edf1f3;
 }
 
-.inquiryMenu button:hover {
+.inquiryMenu button:hover,
+.inquiryMenu a:hover {
   background: #f5f8f9;
 }

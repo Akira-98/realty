@@ -109,9 +109,12 @@
     }
 
     .mapFilterDropdown {
-      right: auto;
-      left: 0;
-      width: 236px;
+      position: fixed;
+      top: 118px;
+      right: 10px;
+      left: 10px;
+      z-index: 30;
+      width: auto;
       gap: 8px;
       padding: 12px;
     }

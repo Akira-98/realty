@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export function DetailPanelShell({ action, children }) {
+export function DetailPanelShell({ action, children, copyHref = "" }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [copyState, setCopyState] = useState("idle");
@@ -12,7 +12,10 @@ export function DetailPanelShell({ action, children }) {
 
   async function copyCurrentUrl() {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      const copyUrl = copyHref
+        ? new URL(copyHref, window.location.origin).toString()
+        : `${window.location.origin}${window.location.pathname}`;
+      await navigator.clipboard.writeText(copyUrl);
       setCopyState("copied");
       window.setTimeout(() => setCopyState("idle"), 1600);
     } catch {

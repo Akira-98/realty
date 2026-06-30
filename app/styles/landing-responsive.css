@@ -118,6 +118,14 @@
       padding: 52px 0;
     }
 
+    .heroFeature {
+      order: 1;
+    }
+
+    .heroSearchPanel {
+      order: 2;
+    }
+
     .heroFeature h1 {
       font-size: 40px;
       line-height: 1.08;

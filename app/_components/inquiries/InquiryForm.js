@@ -3,80 +3,19 @@
 import { useState } from "react";
 
 import { InquiryModal } from "./_components/InquiryModal";
-
-const EMPTY_FORM = {
-  name: "",
-  phone: "",
-  company: "",
-  desired_area: "",
-  move_in_date: "",
-  desired_deposit: "",
-  desired_rent: "",
-  preferred_region: "",
-  parking: "",
-  overtime: "",
-  has_visitors: "",
-  has_interior: "",
-  room_count: "",
-  message: "",
-};
+import { useInquiryForm } from "./useInquiryForm";
 
 export function InquiryForm({ building, buttonLabel = "온라인 문의" }) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-
-  function updateField(key, value) {
-    setForm((current) => ({
-      ...current,
-      [key]: value,
-    }));
-  }
+  const inquiry = useInquiryForm({ building });
 
   function openForm() {
     setOpen(true);
-    setError("");
-    setSuccess("");
+    inquiry.resetStatus();
   }
 
   function closeForm() {
     setOpen(false);
-  }
-
-  async function submitInquiry(event) {
-    event.preventDefault();
-    setSubmitting(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      const response = await fetch("/api/inquiries", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...form,
-          building_id: building?.id ?? null,
-          building_name: building?.building_name ?? null,
-        }),
-      });
-      const payload = await response.json();
-      if (!response.ok) {
-        throw new Error(
-          payload.details?.message || payload.error || "문의 접수에 실패했습니다.",
-        );
-      }
-
-      setSuccess("문의가 접수되었습니다.");
-      setForm(EMPTY_FORM);
-    } catch (submitError) {
-      setError(submitError.message);
-    } finally {
-      setSubmitting(false);
-    }
   }
 
   return (
@@ -92,13 +31,13 @@ export function InquiryForm({ building, buttonLabel = "온라인 문의" }) {
       {open && (
         <InquiryModal
           building={building}
-          error={error}
-          form={form}
+          error={inquiry.error}
+          form={inquiry.form}
           onClose={closeForm}
-          onSubmit={submitInquiry}
-          onUpdate={updateField}
-          submitting={submitting}
-          success={success}
+          onSubmit={inquiry.submitInquiry}
+          onUpdate={inquiry.updateField}
+          submitting={inquiry.submitting}
+          success={inquiry.success}
         />
       )}
     </>

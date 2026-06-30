@@ -22,8 +22,9 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
-  padding: 24px 24px 18px;
+  padding: 26px 24px 20px;
   border-bottom: 1px solid #e6edf1;
+  background: #f7fafb;
 }
 
 .inquiryModalHeader span {
@@ -33,10 +34,23 @@
 }
 
 .inquiryModalHeader h2 {
-  margin: 6px 0 0;
+  position: relative;
+  margin: 0;
+  padding-left: 14px;
   color: #101820;
   font-size: 24px;
   letter-spacing: 0;
+}
+
+.inquiryModalHeader h2::before {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 4px;
+  border-radius: 999px;
+  background: #00aebe;
+  content: "";
 }
 
 .inquiryModalHeader button {
@@ -246,4 +260,30 @@
 
 .inquiryActions button:disabled {
   opacity: 0.58;
+}
+
+.inquiryPage {
+  background: #fff;
+  padding: 58px 24px 72px;
+}
+
+.inquiryPageShell {
+  width: min(720px, 100%);
+  margin: 0 auto;
+}
+
+.inquiryPageHeader {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.inquiryPageHeader h1 {
+  margin: 0;
+  color: #101820;
+  font-size: 34px;
+  letter-spacing: 0;
+}
+
+.inquiryPage .inquiryForm {
+  padding: 0;
 }
