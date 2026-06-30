@@ -68,6 +68,7 @@
       top: 10px;
       right: auto;
       left: 10px;
+      z-index: 40;
       width: calc(100% - 20px);
       max-width: none;
       overflow-x: auto;
@@ -77,6 +78,10 @@
       overscroll-behavior-x: contain;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+    }
+
+    .mapFilters.hasOpenFilter {
+      overflow: visible;
     }
 
     .mapFilters::-webkit-scrollbar {
@@ -113,7 +118,7 @@
       top: 118px;
       right: 10px;
       left: 10px;
-      z-index: 30;
+      z-index: 50;
       width: auto;
       gap: 8px;
       padding: 12px;

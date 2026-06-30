@@ -57,6 +57,7 @@ export function MapFilters({ filters, onApply, resultsPanelOpen = false }) {
   const [openFilter, setOpenFilter] = useState("");
   const className = [
     "mapFilters",
+    openFilter && "hasOpenFilter",
     resultsPanelOpen && "withResultsPanel",
   ].filter(Boolean).join(" ");
 

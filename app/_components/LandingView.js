@@ -198,10 +198,10 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
           <aside className="heroSearchPanel heroSearchPanelPlain" aria-label="오피스 검색">
             <div className="heroSearchCopy">
               <span className="heroSearchEyebrow">COMMERCIAL OFFICE ADVISORY</span>
-              <strong>
+              <h1>
                 <span className="heroSearchLine">새로운 사무공간이 필요할 땐</span>
                 <span>REALTY FIND</span>
-              </strong>
+              </h1>
             </div>
             <SearchForm
               query={query}
@@ -216,7 +216,7 @@ export function LandingView({ query, setQuery, onSearch, loading }) {
                 <span key={tag}>{tag}</span>
               ))}
             </div>
-            <h1>{featuredBuilding.name}</h1>
+            <strong className="heroFeatureTitle">{featuredBuilding.name}</strong>
             <a
               className="heroDetailLink"
               href={buildingDetailPath({
