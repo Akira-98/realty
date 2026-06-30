@@ -22,10 +22,10 @@
 .detailHeader nav {
   display: flex;
   align-items: center;
-  gap: 42px;
-  color: #111;
-  font-size: 17px;
-  font-weight: 800;
+  gap: 30px;
+  color: #28343a;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .detailHeader nav a {
