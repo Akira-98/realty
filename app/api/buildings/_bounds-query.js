@@ -15,6 +15,8 @@ export const LIST_SELECT = [
   "building_name",
   "address",
   "building_scale",
+  "basement_floors",
+  "ground_floors",
   "business_district",
   "gross_floor_area",
   "approval_date_parsed",

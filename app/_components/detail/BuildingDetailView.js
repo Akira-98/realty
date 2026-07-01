@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 import { DetailMap } from "./DetailMap";
 import { DetailPriceGrid } from "./DetailPriceGrid";
 import { BuildingImageGallery } from "./BuildingImageGallery";
@@ -7,6 +11,10 @@ import {
   field,
   getBuildingDetailModel,
 } from "../../_lib/building-detail";
+
+function normalizeAddress(value) {
+  return String(value || "").trim();
+}
 
 const detailIcons = {
   area: (
@@ -95,13 +103,31 @@ function DetailIcon({ name }) {
   );
 }
 
-export function DetailItem({ icon, label, value }) {
+export function DetailItem({
+  action,
+  description,
+  icon,
+  label,
+  marks = [],
+  value,
+}) {
   return (
     <div className={icon ? "detailItem hasIcon" : "detailItem"}>
       <DetailIcon name={icon} />
       <div className="detailItemContent">
         <span className="detailItemLabel">{label}</span>
-        <strong>{field(value)}</strong>
+        <div className="detailItemValueRow">
+          <strong>{field(value)}</strong>
+          {action}
+        </div>
+        {description && <span className="detailItemDescription">{description}</span>}
+        {marks.length > 0 && (
+          <div className="detailReferenceMarks">
+            {marks.map((mark) => (
+              <span key={mark}>※ {mark}</span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -116,8 +142,11 @@ export function InfoSection({ title, items, children }) {
           {items.map((item) => (
             <DetailItem
               key={item.label || item.value}
+              action={item.action}
+              description={item.description}
               icon={item.icon}
               label={item.label}
+              marks={item.marks}
               value={item.value}
             />
           ))}
@@ -129,21 +158,55 @@ export function InfoSection({ title, items, children }) {
 }
 
 export function BuildingDetailView({ building, panel = false }) {
+  const [addressMode, setAddressMode] = useState("road");
   const {
     basicItems,
     facilityItems,
     heroMeta,
+    registerClassification,
     title,
     transportItems,
   } = getBuildingDetailModel(building);
+  const roadAddress = normalizeAddress(building.address);
+  const lotAddress = normalizeAddress(building.plat_address);
+  const canToggleAddress = Boolean(
+    roadAddress && lotAddress && roadAddress !== lotAddress,
+  );
+  const displayedAddress =
+    addressMode === "lot" && lotAddress ? lotAddress : roadAddress || lotAddress;
+  const addressToggleLabel = addressMode === "lot" ? "도로명" : "지번";
+  const addressToggleButton = canToggleAddress ? (
+    <button
+      type="button"
+      className="detailAddressToggle"
+      onClick={() => setAddressMode((currentMode) =>
+        currentMode === "lot" ? "road" : "lot"
+      )}
+    >
+      {addressToggleLabel}
+    </button>
+  ) : null;
+  const transportItemsForView = transportItems.map((item) =>
+    item.label === "주소"
+      ? { ...item, value: displayedAddress, action: addressToggleButton }
+      : item,
+  );
 
   return (
     <>
       <section className="detailHeroCard">
         <BuildingImageGallery images={building.images} title={title} />
         <div className="detailHeroInfo">
+          {registerClassification && (
+            <span className="detailRegisterClassification">
+              {registerClassification}
+            </span>
+          )}
           <h1>{title}</h1>
-          <p>{field(building.address)}</p>
+          <div className="detailHeroAddress">
+            <p>{field(displayedAddress)}</p>
+            {addressToggleButton}
+          </div>
           {heroMeta.length > 0 && (
             <p className="detailHeroMeta">{heroMeta.join(" · ")}</p>
           )}
@@ -163,12 +226,15 @@ export function BuildingDetailView({ building, panel = false }) {
 
       <div className="detailSectionsGrid">
         <InfoSection title="기본 정보" items={basicItems} />
-        <InfoSection title="교통 및 주차" items={transportItems} />
+        <InfoSection title="교통 및 주차" items={transportItemsForView} />
         <InfoSection title="시설 정보" items={facilityItems} />
         {!panel && (
           <InfoSection title="위치 정보">
             <div className="detailAddress">
-              <strong>{field(building.address)}</strong>
+              <div className="detailAddressLine">
+                <strong>{field(displayedAddress)}</strong>
+                {addressToggleButton}
+              </div>
             </div>
             <DetailMap lat={building.lat} lng={building.lng} label={title} />
           </InfoSection>

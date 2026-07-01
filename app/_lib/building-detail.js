@@ -3,6 +3,7 @@ import {
   withBuildingImageUrl,
   withBuildingImageUrlsForRows,
 } from "./building-images";
+import { formatFloorScale } from "./buildings";
 import { formatBuildingAge, formatWithUnit } from "./formatters";
 import { parseBuildingIdParam } from "./building-url";
 import { businessDistrictLabel } from "./search-filters";
@@ -14,6 +15,13 @@ export const BUILDING_DETAIL_SELECT = [
   "subway",
   "building_use",
   "building_scale",
+  "etc_purpose",
+  "register_classification",
+  "plat_address",
+  "district_unit_plan_zone",
+  "national_industrial_complex",
+  "basement_floors",
+  "ground_floors",
   "business_district",
   "scale",
   "gross_floor_area",
@@ -51,6 +59,12 @@ export function withSquareMeterUnit(value) {
 
 export function joinValues(...values) {
   return values.filter(Boolean).join(" ");
+}
+
+export function formatDisplayAddress(building) {
+  return [building?.address, building?.plat_address]
+    .filter(Boolean)
+    .join(" / ");
 }
 
 export function formatApprovalDate(value) {
@@ -161,13 +175,24 @@ export async function fetchPublicBuildingSitemapRows() {
 
 export function getBuildingDetailModel(building) {
   const title = field(building.building_name, "이름 없는 빌딩");
-  const buildingScale = building.building_scale;
+  const buildingScale = formatFloorScale(building);
+  const displayAddress = formatDisplayAddress(building);
   const businessDistrict = businessDistrictLabel(building.business_district);
   const buildingAge = formatBuildingAge(building.approval_date_parsed);
   const heroMeta = [businessDistrict, building.scale, buildingAge].filter(Boolean);
+  const purposeMarks = [
+    building.district_unit_plan_zone && "지구단위계획구역 포함",
+    building.national_industrial_complex && "국가산업단지 포함",
+  ].filter(Boolean);
   const basicItems = [
     { icon: "building", label: "규모", value: buildingScale },
-    { icon: "tag", label: "용도", value: building.building_use },
+    {
+      icon: "tag",
+      label: "용도",
+      value: building.building_use,
+      description: building.etc_purpose,
+      marks: purposeMarks,
+    },
     { icon: "calendar", label: "사용승인일", value: formatApprovalDate(building.approval_date) },
     { icon: "area", label: "연면적", value: withSquareMeterUnit(building.gross_floor_area) },
   ].filter(Boolean);
@@ -178,7 +203,7 @@ export function getBuildingDetailModel(building) {
   ];
   const transportItems = [
     { icon: "train", label: "지하철", value: building.subway },
-    { icon: "pin", label: "주소", value: building.address },
+    { icon: "pin", label: "주소", value: displayAddress },
     { icon: "parking", label: "주차", value: building.parking },
     { icon: "coin", label: "주차비", value: building.parking_fee },
   ];
@@ -186,8 +211,10 @@ export function getBuildingDetailModel(building) {
   return {
     basicItems,
     buildingScale,
+    displayAddress,
     facilityItems,
     heroMeta,
+    registerClassification: building.register_classification,
     title,
     transportItems,
   };

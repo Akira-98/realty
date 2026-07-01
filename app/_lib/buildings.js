@@ -18,9 +18,30 @@ function formatGrossFloorArea(value) {
   return formatWithUnit(value, "m²", /(㎡|m2|m²|제곱미터)/i);
 }
 
+function floorNumber(value) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+export function formatFloorScale(building) {
+  const basementFloors = floorNumber(building?.basement_floors);
+  const groundFloors = floorNumber(building?.ground_floors);
+  const parts = [
+    basementFloors > 0 && `지하 ${basementFloors}층`,
+    groundFloors !== null && `지상 ${groundFloors}층`,
+  ].filter(Boolean);
+
+  return parts.length > 0 ? parts.join(" / ") : building?.building_scale;
+}
+
 export function buildSummary(building) {
+  const floorScale = formatFloorScale(building);
+
   return [
-    building.building_scale && `규모 ${building.building_scale}`,
+    floorScale && `규모 ${floorScale}`,
     building.gross_floor_area && `연면적 ${formatGrossFloorArea(building.gross_floor_area)}`,
   ]
     .filter(Boolean)

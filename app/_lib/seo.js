@@ -1,3 +1,5 @@
+import { formatFloorScale } from "./buildings";
+
 export const SITE_NAME = "REALTY FIND";
 
 export const DEFAULT_SEO_DESCRIPTION =
@@ -17,10 +19,11 @@ export function absoluteUrl(path = "/") {
 }
 
 export function buildBuildingSeoDescription(building) {
+  const floorScale = formatFloorScale(building);
   const parts = [
     building?.building_name && `${building.building_name} 오피스 임대 정보`,
     building?.address,
-    building?.building_scale && `규모 ${building.building_scale}`,
+    floorScale && `규모 ${floorScale}`,
     building?.subway && `지하철 ${building.subway}`,
   ].filter(Boolean);
 

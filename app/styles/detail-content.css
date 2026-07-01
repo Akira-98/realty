@@ -241,6 +241,14 @@
   min-width: 0;
 }
 
+.detailRegisterClassification {
+  display: inline-block;
+  color: #1668f2;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
 .detailHeroInfo h1 {
   margin: 14px 0 10px;
   color: #070b0f;
@@ -255,6 +263,41 @@
   font-size: 17px;
   font-weight: 700;
   line-height: 1.6;
+}
+
+.detailHeroAddress,
+.detailAddressLine,
+.detailItemValueRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.detailHeroAddress p,
+.detailAddressLine strong,
+.detailItemValueRow strong {
+  min-width: 0;
+}
+
+.detailAddressToggle {
+  flex: 0 0 auto;
+  min-width: 48px;
+  min-height: 28px;
+  padding: 4px 10px;
+  border: 1px solid #d8e2e8;
+  border-radius: 999px;
+  background: #fff;
+  color: #263640;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.detailAddressToggle:hover {
+  border-color: #1668f2;
+  color: #1668f2;
 }
 
 .detailHeroInfo .detailHeroMeta {
@@ -364,6 +407,26 @@
   color: #101820;
   font-size: 22px;
   line-height: 1.35;
+}
+
+.detailItemDescription {
+  display: block;
+  margin-top: 6px;
+  color: #68777f;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.detailReferenceMarks {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  color: #1668f2;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.4;
 }
 
 .detailPriceGrid .detailItem strong {
