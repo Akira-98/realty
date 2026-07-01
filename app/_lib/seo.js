@@ -1,4 +1,4 @@
-import { formatFloorScale } from "./buildings";
+import { formatFloorScale } from "./building-display";
 
 export const SITE_NAME = "REALTY FIND";
 

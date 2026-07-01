@@ -98,7 +98,6 @@ CREATE OR REPLACE FUNCTION "public"."search_buildings_list"("sw_lat" double prec
       b.city,
       b.district,
       b.subway_name,
-      b.building_scale,
       b.business_district,
       b.gross_floor_area,
       b.approval_date_parsed,
@@ -112,7 +111,9 @@ CREATE OR REPLACE FUNCTION "public"."search_buildings_list"("sw_lat" double prec
       b.rent_num,
       b.maintenance_num,
       b.scale,
-      b.thumbnail_path
+      b.thumbnail_path,
+      b.basement_floors,
+      b.ground_floors
     from public.buildings b
     cross join args
     where b.is_public = true
@@ -152,7 +153,6 @@ CREATE OR REPLACE FUNCTION "public"."search_buildings_list"("sw_lat" double prec
       m.city,
       m.district,
       m.subway_name,
-      m.building_scale,
       m.business_district,
       m.gross_floor_area,
       m.approval_date_parsed,
@@ -166,7 +166,9 @@ CREATE OR REPLACE FUNCTION "public"."search_buildings_list"("sw_lat" double prec
       m.rent_num,
       m.maintenance_num,
       m.scale,
-      m.thumbnail_path
+      m.thumbnail_path,
+      m.basement_floors,
+      m.ground_floors
     from matching m
     cross join args
     order by m.building_name asc, m.id asc
@@ -186,20 +188,20 @@ CREATE OR REPLACE FUNCTION "public"."search_buildings_list"("sw_lat" double prec
     'filters', jsonb_build_object(
       'minDeposit', min_deposit,
       'maxDeposit', max_deposit,
-	      'minRent', min_rent,
-	      'maxRent', max_rent,
-	      'minArea', min_area,
-	      'maxArea', max_area,
-	      'scale', (select scale_filter from args),
-	      'businessDistrict', business_district_filter,
-	      'subwayWalkMax', subway_walk_max,
-	      'minApprovalYear', min_approval_year,
-	      'maxApprovalYear', max_approval_year,
-	      'city', (select city_filter from args),
-	      'district', (select district_filter from args),
-	      'nearLat', (select near_lat from args),
-	      'nearLng', (select near_lng from args),
-	      'nearRadiusM', (select safe_near_radius_m from args)
+      'minRent', min_rent,
+      'maxRent', max_rent,
+      'minArea', min_area,
+      'maxArea', max_area,
+      'scale', (select scale_filter from args),
+      'businessDistrict', business_district_filter,
+      'subwayWalkMax', subway_walk_max,
+      'minApprovalYear', min_approval_year,
+      'maxApprovalYear', max_approval_year,
+      'city', (select city_filter from args),
+      'district', (select district_filter from args),
+      'nearLat', (select near_lat from args),
+      'nearLng', (select near_lng from args),
+      'nearRadiusM', (select safe_near_radius_m from args)
     ),
     'count', coalesce((select count(*)::integer from list_rows), 0),
     'total', (select count from total_count),

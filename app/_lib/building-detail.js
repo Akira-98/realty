@@ -3,83 +3,23 @@ import {
   withBuildingImageUrl,
   withBuildingImageUrlsForRows,
 } from "./building-images";
-import { formatFloorScale } from "./buildings";
-import { formatBuildingAge, formatWithUnit } from "./formatters";
+import {
+  buildingHeroMeta,
+  field,
+  formatApprovalDate,
+  formatDisplayAddress,
+  formatFloorScale,
+  purposeReferenceMarks,
+  withSquareMeterUnit,
+} from "./building-display";
+import {
+  BUILDING_DETAIL_SELECT,
+  BUILDING_SITEMAP_SELECT,
+} from "./building-selects";
 import { parseBuildingIdParam } from "./building-url";
-import { businessDistrictLabel } from "./search-filters";
-
-export const BUILDING_DETAIL_SELECT = [
-  "id",
-  "building_name",
-  "address",
-  "subway",
-  "building_use",
-  "building_scale",
-  "etc_purpose",
-  "register_classification",
-  "plat_address",
-  "district_unit_plan_zone",
-  "national_industrial_complex",
-  "basement_floors",
-  "ground_floors",
-  "business_district",
-  "scale",
-  "gross_floor_area",
-  "approval_date",
-  "approval_date_parsed",
-  "deposit_num",
-  "rent_num",
-  "maintenance_num",
-  "parking_fee",
-  "elevator",
-  "parking",
-  "hvac",
-  "ceiling_height",
-  "lat",
-  "lng",
-  "is_public",
-  "thumbnail_path",
-].join(",");
-
-export const BUILDING_SITEMAP_SELECT = [
-  "id",
-  "building_name",
-  "updated_at",
-].join(",");
-
-const DETAIL_EMPTY_VALUE = "별도문의";
-
-export function field(value, fallback = DETAIL_EMPTY_VALUE) {
-  return value || fallback;
-}
-
-export function withSquareMeterUnit(value) {
-  return formatWithUnit(value, "m²", /(㎡|m2|m²|제곱미터)/i);
-}
 
 export function joinValues(...values) {
   return values.filter(Boolean).join(" ");
-}
-
-export function formatDisplayAddress(building) {
-  return [building?.address, building?.plat_address]
-    .filter(Boolean)
-    .join(" / ");
-}
-
-export function formatApprovalDate(value) {
-  if (!value) {
-    return DETAIL_EMPTY_VALUE;
-  }
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-  return new Intl.DateTimeFormat("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
 }
 
 export async function fetchBuildingDetail(id) {
@@ -177,13 +117,8 @@ export function getBuildingDetailModel(building) {
   const title = field(building.building_name, "이름 없는 빌딩");
   const buildingScale = formatFloorScale(building);
   const displayAddress = formatDisplayAddress(building);
-  const businessDistrict = businessDistrictLabel(building.business_district);
-  const buildingAge = formatBuildingAge(building.approval_date_parsed);
-  const heroMeta = [businessDistrict, building.scale, buildingAge].filter(Boolean);
-  const purposeMarks = [
-    building.district_unit_plan_zone && "지구단위계획구역 포함",
-    building.national_industrial_complex && "국가산업단지 포함",
-  ].filter(Boolean);
+  const heroMeta = buildingHeroMeta(building);
+  const purposeMarks = purposeReferenceMarks(building);
   const basicItems = [
     { icon: "building", label: "규모", value: buildingScale },
     {

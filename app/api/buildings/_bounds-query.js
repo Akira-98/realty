@@ -5,29 +5,13 @@ import {
   readListingFilters,
 } from "../../_lib/listing-filters";
 import { withBoundsPayloadImageUrls } from "../../_lib/building-images";
+import { BUILDING_LIST_SELECT } from "../../_lib/building-selects";
 
 export const BOUNDS_CACHE_HEADERS = {
   "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
 };
 
-export const LIST_SELECT = [
-  "id",
-  "building_name",
-  "address",
-  "building_scale",
-  "basement_floors",
-  "ground_floors",
-  "business_district",
-  "gross_floor_area",
-  "approval_date_parsed",
-  "rental_area_pyeong",
-  "deposit_total",
-  "rent_total",
-  "subway_walk_min",
-  "lat",
-  "lng",
-  "thumbnail_path",
-].join(",");
+export const LIST_SELECT = BUILDING_LIST_SELECT;
 
 export function numberParam(searchParams, name) {
   const rawValue = searchParams.get(name);

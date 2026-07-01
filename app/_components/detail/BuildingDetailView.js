@@ -2,19 +2,17 @@
 
 import { useState } from "react";
 
+import {
+  DetailAddressToggle,
+  useAddressDisplay,
+} from "./DetailAddressToggle";
 import { DetailMap } from "./DetailMap";
 import { DetailPriceGrid } from "./DetailPriceGrid";
 import { BuildingImageGallery } from "./BuildingImageGallery";
 import { SiteFooter } from "../SiteFooter";
 import { InquiryForm } from "../inquiries/InquiryForm";
-import {
-  field,
-  getBuildingDetailModel,
-} from "../../_lib/building-detail";
-
-function normalizeAddress(value) {
-  return String(value || "").trim();
-}
+import { field } from "../../_lib/building-display";
+import { getBuildingDetailModel } from "../../_lib/building-detail";
 
 const detailIcons = {
   area: (
@@ -167,24 +165,19 @@ export function BuildingDetailView({ building, panel = false }) {
     title,
     transportItems,
   } = getBuildingDetailModel(building);
-  const roadAddress = normalizeAddress(building.address);
-  const lotAddress = normalizeAddress(building.plat_address);
-  const canToggleAddress = Boolean(
-    roadAddress && lotAddress && roadAddress !== lotAddress,
-  );
-  const displayedAddress =
-    addressMode === "lot" && lotAddress ? lotAddress : roadAddress || lotAddress;
-  const addressToggleLabel = addressMode === "lot" ? "도로명" : "지번";
+  const {
+    canToggleAddress,
+    displayedAddress,
+    toggleLabel: addressToggleLabel,
+  } = useAddressDisplay(building, addressMode);
   const addressToggleButton = canToggleAddress ? (
-    <button
-      type="button"
-      className="detailAddressToggle"
-      onClick={() => setAddressMode((currentMode) =>
+    <DetailAddressToggle
+      canToggle={canToggleAddress}
+      label={addressToggleLabel}
+      onToggle={() => setAddressMode((currentMode) =>
         currentMode === "lot" ? "road" : "lot"
       )}
-    >
-      {addressToggleLabel}
-    </button>
+    />
   ) : null;
   const transportItemsForView = transportItems.map((item) =>
     item.label === "주소"
