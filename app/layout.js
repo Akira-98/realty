@@ -12,6 +12,7 @@ import "./styles/selected-bar.css";
 import "./styles/detail-page.css";
 import "./styles/detail-content.css";
 import "./styles/detail-panel.css";
+import "./styles/district-seo.css";
 import "./styles/inquiry-modal.css";
 import "./styles/admin-base.css";
 import "./styles/admin-login.css";

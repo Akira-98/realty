@@ -5,6 +5,7 @@ import { SiteFooter } from "../../_components/SiteFooter";
 import { BuildingDetailView } from "../../_components/detail/BuildingDetailView";
 import { fetchBuildingDetail } from "../../_lib/building-detail";
 import { buildingDetailPath } from "../../_lib/building-url";
+import { businessDistrictLabel } from "../../_lib/search-filters";
 import {
   SITE_NAME,
   absoluteUrl,
@@ -30,7 +31,12 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const title = `${building.building_name || "빌딩"} 임대 정보`;
+  const districtLabel = businessDistrictLabel(building.business_district);
+  const title = [
+    building.building_name || "빌딩",
+    districtLabel,
+    "사무실임대",
+  ].filter(Boolean).join(" ");
   const description = buildBuildingSeoDescription(building);
   const canonicalPath = buildingDetailPath(building);
   const image = building.thumbnail_url || absoluteUrl("/images/landing-office-hero.png");
