@@ -220,33 +220,45 @@
 
 .districtPagination {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
   margin-top: 34px;
+  padding: 14px 0 18px;
+  border-top: 1px solid #e7edf0;
 }
 
-.districtPagination a {
+.districtPagination a,
+.districtPagination span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
-  height: 40px;
-  border: 1px solid #ccd8dd;
-  border-radius: 6px;
-  padding: 0 12px;
-  color: #263640;
-  background: #fff;
-  font-size: 14px;
-  font-weight: 800;
+  min-width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 4px;
+  padding: 0 8px;
+  background: transparent;
+  color: #1e303b;
+  font-size: 13px;
+  font-weight: 900;
   text-decoration: none;
 }
 
 .districtPagination a[aria-current="page"] {
-  border-color: #172026;
-  background: #172026;
+  background: #102332;
   color: #fff;
+  pointer-events: none;
+}
+
+.districtPagination span {
+  color: #7b8990;
+}
+
+.districtPagination span.disabled {
+  color: #1e303b;
+  cursor: default;
+  opacity: 0.45;
 }
 
 @media (max-width: 900px) {

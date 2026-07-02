@@ -16,6 +16,9 @@ function pageRange(currentPage, totalPages) {
 
 export function DistrictSeoContent({ district, buildingPage }) {
   const { buildings, page, totalPages } = buildingPage;
+  const pages = pageRange(page, totalPages);
+  const isFirstPage = page === 1;
+  const isLastPage = page === totalPages;
 
   return (
     <main className="districtPage">
@@ -24,8 +27,8 @@ export function DistrictSeoContent({ district, buildingPage }) {
           REALTY FIND
         </Link>
         <nav aria-label="권역 페이지 메뉴">
-          <Link href={districtMapPath(district)}>지도에서 보기</Link>
-          <Link href="/inquiries/tenant">문의</Link>
+          <Link href={districtMapPath(district)}>빌딩정보(MAP)</Link>
+          <Link href="/inquiries/tenant">문의하기</Link>
         </nav>
       </header>
 
@@ -39,7 +42,7 @@ export function DistrictSeoContent({ district, buildingPage }) {
               지도에서 보기
             </Link>
             <Link className="districtSecondaryLink" href="/inquiries/tenant">
-              임차 문의
+              문의하기
             </Link>
           </div>
         </div>
@@ -88,10 +91,26 @@ export function DistrictSeoContent({ district, buildingPage }) {
           )}
           {totalPages > 1 && (
             <nav className="districtPagination" aria-label={`${district.label} 건물 목록 페이지`}>
-              {page > 1 && (
-                <Link href={districtPageHref(district, page - 1)}>이전</Link>
+              {isFirstPage ? (
+                <span className="disabled" aria-label="첫 페이지" aria-disabled="true">
+                  |&lt;
+                </span>
+              ) : (
+                <Link href={districtPageHref(district, 1)} aria-label="첫 페이지">
+                  |&lt;
+                </Link>
               )}
-              {pageRange(page, totalPages).map((pageNumber) => (
+              {isFirstPage ? (
+                <span className="disabled" aria-label="이전 페이지" aria-disabled="true">
+                  &lt;
+                </span>
+              ) : (
+                <Link href={districtPageHref(district, page - 1)} aria-label="이전 페이지">
+                  &lt;
+                </Link>
+              )}
+              {pages[0] > 1 && <span aria-hidden="true">...</span>}
+              {pages.map((pageNumber) => (
                 <Link
                   key={pageNumber}
                   href={districtPageHref(district, pageNumber)}
@@ -100,8 +119,24 @@ export function DistrictSeoContent({ district, buildingPage }) {
                   {pageNumber}
                 </Link>
               ))}
-              {page < totalPages && (
-                <Link href={districtPageHref(district, page + 1)}>다음</Link>
+              {pages[pages.length - 1] < totalPages && <span aria-hidden="true">...</span>}
+              {isLastPage ? (
+                <span className="disabled" aria-label="다음 페이지" aria-disabled="true">
+                  &gt;
+                </span>
+              ) : (
+                <Link href={districtPageHref(district, page + 1)} aria-label="다음 페이지">
+                  &gt;
+                </Link>
+              )}
+              {isLastPage ? (
+                <span className="disabled" aria-label="마지막 페이지" aria-disabled="true">
+                  &gt;|
+                </span>
+              ) : (
+                <Link href={districtPageHref(district, totalPages)} aria-label="마지막 페이지">
+                  &gt;|
+                </Link>
               )}
             </nav>
           )}

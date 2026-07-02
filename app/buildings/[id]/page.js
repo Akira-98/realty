@@ -86,7 +86,7 @@ export default async function BuildingDetailPage({ params }) {
         </Link>
         <nav aria-label="상세 메뉴">
           <Link href={GANGNAM_MAP_URL}>빌딩정보(MAP)</Link>
-          <Link href="/inquiries/tenant">문의</Link>
+          <Link href="/inquiries/tenant">문의하기</Link>
         </nav>
       </header>
 
